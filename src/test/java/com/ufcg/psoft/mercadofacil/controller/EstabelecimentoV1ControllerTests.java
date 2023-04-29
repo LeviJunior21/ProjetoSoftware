@@ -2,8 +2,10 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import org.junit.jupiter.api.*;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
+import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,13 +38,14 @@ public class EstabelecimentoV1ControllerTests {
     EstabelecimentoPostPutRequestDTO estabelecimentoPostRequestDTO;
     final String URI_PRODUTOS = "/v1/estabelecimentos";
 
-
     @BeforeEach
     void setup() {
         objectMapper.registerModule(new JavaTimeModule());
         estabelecimento = estabelecimentoRepository.save(Estabelecimento.builder()
                 .id(123456L)
                 .nome("Sorveteria")
+                .espera(new HashSet<Entregador>())
+                .entregadores(new HashSet<>())
                 .build()
         );
         estabelecimento2 = Estabelecimento.builder()
@@ -142,6 +146,40 @@ public class EstabelecimentoV1ControllerTests {
 
         // Assert
         assertTrue(responseJsonString.isBlank());
+    }
+
+    @Nested
+    @DisplayName("Testes para aceitações dos pedidos no estabelecimento.")
+    class TestePedidosAceitacoes {
+
+        Entregador entregador;
+        EntregadorPostPutRequestDTO entregadorPostPutRequestDTO;
+        @BeforeEach
+        void setup2() {
+            entregadorPostPutRequestDTO = EntregadorPostPutRequestDTO.builder()
+                    .nome("Lucas")
+                    .placa("131231")
+                    .cor("vermelho")
+                    .veiculo("moto")
+                    .build();
+        }
+
+        @Test
+        @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
+        void quandoEntregadorSolicitaPedidoEstabelecimento() throws Exception {
+            //Arrange
+            //Act
+            String responseJsonString = driver.perform(put(URI_PRODUTOS + "/" + estabelecimento.getId() + "/solicitar?idEstabelecimento=" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(entregadorPostPutRequestDTO)))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+            //Assert
+            assertEquals(1, resultado.getEntregadores().size());
+        }
     }
 
 }

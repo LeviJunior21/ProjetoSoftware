@@ -24,7 +24,7 @@ public class Carrinho {
     @Id
     private Long id;
 
-    @JsonProperty("lote")
+    @JsonProperty("lotes")
     @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Lote> lotes;
 }

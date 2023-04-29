@@ -1,7 +1,9 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.model.Entregador;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,10 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoExcluirService estabelecimentoExcluirService;
     @Autowired
     EstabelecimentoAlterarNomeService estabelecimentoAlterarNomeService;
+    @Autowired
+    EstabelecimentoAceitarService estabelecimentoAceitarService;
+    @Autowired
+    EstabelecimentoSolicitarPedidoService estabelecimentoSolicitarPedidoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
@@ -60,7 +66,7 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoAlterarNomeService.alterarParcialmente(id, estabelecimentoNomePatchRequestDTO));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/atualizar")
     public ResponseEntity<?> atualizarEstabelecimento(
             @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDto) {
@@ -77,5 +83,15 @@ public class EstabelecimentoV1Controller {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");
+    }
+
+    @PutMapping ("/{id}/solicitar")
+    public ResponseEntity<?> solicitarPedido(
+            @RequestBody @Valid EntregadorPostPutRequestDTO entregadorPostPutRequestDTO,
+            @RequestParam Long idEstabelecimento
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(entregadorPostPutRequestDTO, idEstabelecimento));
     }
 }
