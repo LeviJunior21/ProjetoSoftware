@@ -14,6 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "lotes")
 public class Lote {
+    @JsonProperty("carrinho")
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Carrinho carrinho;
+
     @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -27,4 +31,3 @@ public class Lote {
     @Column(nullable = false)
     private Integer numeroDeItens;
 }
-

@@ -29,7 +29,7 @@ public class ErrorHandlingControllerAdvice {
     @ResponseBody
     public CustomErrorType onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         CustomErrorType customErrorType = defaultCustomErrorTypeConstruct(
-                "Erros de validação encontrados"
+                "Erros de validacao encontrados"
         );
         for(FieldError fieldError: e.getBindingResult().getFieldErrors()) {
             customErrorType.getErrors().add(fieldError.getDefaultMessage());

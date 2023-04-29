@@ -6,27 +6,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "clientes")
-public class Cliente {
+@Table(name = "pizzas")
+public class Pizza {
+    @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @JsonProperty("cpf")
-    private Long cpf;
+
     @JsonProperty("nome")
+    @Column(nullable = false)
     private String nome;
-    @JsonProperty("idade")
-    private Integer idade;
-    @JsonProperty("endereco")
-    private String endereco;
-    @JsonProperty("carrinhos")
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Carrinho> carrinhos;
+
+    @JsonProperty("tipo")
+    @Column(nullable = false)
+    private String tipo;
+
+    @JsonProperty("valor")
+    @Column(nullable = false)
+    private Double valor;
 }

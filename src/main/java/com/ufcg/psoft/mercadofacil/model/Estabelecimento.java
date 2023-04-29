@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,27 +15,27 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "produtos")
-public class Produto {
+@Table(name = "estabelecimentos")
+public class Estabelecimento {
+
     @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @JsonProperty("nome")
     @Column(nullable = false)
     private String nome;
-    @JsonProperty("preco")
-    @Column(nullable = false)
-    private Double preco;
-    @JsonProperty("codigoDeBarras")
-    @Column(nullable = false)
-    private String codigoDeBarras;
-    @JsonProperty("fabricante")
-    @Column(nullable = false)
-    private String fabricante;
 
-    @JsonProperty("lotes")
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private Set<Lote> lotes;
+    @JsonProperty("entregadores")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Entregador> entregadores;
 
+    @JsonProperty("espera")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Entregador> espera;
+
+    @JsonProperty("pizzas")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Pizza> pizzas;
 }
