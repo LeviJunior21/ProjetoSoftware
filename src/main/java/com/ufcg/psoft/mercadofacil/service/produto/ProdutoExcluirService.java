@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.service;
+package com.ufcg.psoft.mercadofacil.service.produto;
 
 @FunctionalInterface
 public interface ProdutoExcluirService {

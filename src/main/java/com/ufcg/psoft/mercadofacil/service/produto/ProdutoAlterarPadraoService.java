@@ -1,6 +1,6 @@
-package com.ufcg.psoft.mercadofacil.service;
+package com.ufcg.psoft.mercadofacil.service.produto;
 
-import com.ufcg.psoft.mercadofacil.dto.ProdutoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.ProdutoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.ProdutoRepository;

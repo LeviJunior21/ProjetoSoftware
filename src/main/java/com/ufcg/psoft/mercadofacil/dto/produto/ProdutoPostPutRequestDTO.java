@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.dto;
+package com.ufcg.psoft.mercadofacil.dto.produto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

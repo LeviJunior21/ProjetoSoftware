@@ -1,10 +1,10 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.dto.ProdutoPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.service.ProdutoAlterarService;
-import com.ufcg.psoft.mercadofacil.service.ProdutoCriarPadraoService;
-import com.ufcg.psoft.mercadofacil.service.ProdutoExcluirService;
-import com.ufcg.psoft.mercadofacil.service.ProdutoListarService;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarService;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoCriarPadraoService;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoExcluirService;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoListarService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

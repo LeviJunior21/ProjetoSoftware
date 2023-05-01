@@ -62,12 +62,12 @@ public class EntregadorV1Controller {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarEstabelecimento(
-            @PathVariable Long idEstabelecimento,
+    public ResponseEntity<?> atualizarEntregador(
+            @PathVariable Long idEntregador,
             @RequestBody @Valid EntregadorPostPutRequestDTO entregadorPostPutRequestDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(entregadorAlterarService.alterar(idEstabelecimento, entregadorPostPutRequestDto));
+                .body(entregadorAlterarService.alterar(idEntregador, entregadorPostPutRequestDto));
     }
 
     @DeleteMapping("/{id}")

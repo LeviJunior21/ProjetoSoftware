@@ -2,7 +2,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ufcg.psoft.mercadofacil.dto.ProdutoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.ProdutoRepository;
 import org.junit.jupiter.api.*;
