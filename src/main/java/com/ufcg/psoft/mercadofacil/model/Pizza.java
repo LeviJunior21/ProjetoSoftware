@@ -27,6 +27,11 @@ public class Pizza {
     @Column(nullable = false)
     private String tipo;
 
+    @JsonProperty("tamanho")
+    @Column(nullable = false)
+    private String tamanho;
+
+
     @JsonProperty("valor")
     @Column(nullable = false)
     private Double valor;

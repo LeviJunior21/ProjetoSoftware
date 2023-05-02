@@ -92,6 +92,7 @@ public class EstabelecimentoV1Controller {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(entregadorPostPutRequestDTO, idEstabelecimento));
+                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(entregadorPostPutRequestDTO,
+                        idEstabelecimento));
     }
 }
