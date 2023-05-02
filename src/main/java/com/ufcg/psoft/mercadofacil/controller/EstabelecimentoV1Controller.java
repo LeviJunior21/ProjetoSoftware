@@ -37,13 +37,15 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
     @Autowired
     EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
+    @Autowired
+    EstabelecimentoGetService estabelecimentoGetService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
             @PathVariable Long id) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(estabelecimentoListarService.listar(id));
+                    .body(estabelecimentoGetService.get(id));
     }
 
     @GetMapping("")
@@ -73,10 +75,10 @@ public class EstabelecimentoV1Controller {
     @PutMapping("/{id}/atualizar")
     public ResponseEntity<?> atualizarEstabelecimento(
             @PathVariable Long id,
-            @RequestBody @Valid EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDto) {
+            @RequestBody @Valid EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarService.alterar(id, estabelecimentoPostPutRequestDto));
+                .body(estabelecimentoAlterarService.alterar(id, estabelecimentoNomePatchRequestDTO));
     }
 
     @DeleteMapping("/{id}/estabelecimento")

@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.ProdutoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -16,9 +17,9 @@ public class EstabelecimentoAlterarPadraoService implements EstabelecimentoAlter
     ModelMapper modelMapper;
 
     @Override
-    public Estabelecimento alterar(Long id, EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO) {
+    public Estabelecimento alterar(Long id, EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
-        modelMapper.map(estabelecimentoPostPutRequestDTO, estabelecimento);
+        modelMapper.map(estabelecimentoNomePatchRequestDTO, estabelecimento);
         return estabelecimentoRepository.save(estabelecimento);
     }
 }
