@@ -36,7 +36,7 @@ public class EstabelecimentoV1ControllerTests {
     ObjectMapper objectMapper = new ObjectMapper();
     EstabelecimentoPostPutRequestDTO estabelecimentoPutRequestDTO;
     EstabelecimentoPostPutRequestDTO estabelecimentoPostRequestDTO;
-    final String URI_PRODUTOS = "/v1/estabelecimentos";
+    final String URI_ESTABELECIMENTOS = "/v1/estabelecimentos";
 
     @BeforeEach
     void setup() {
@@ -54,9 +54,11 @@ public class EstabelecimentoV1ControllerTests {
                 build();
         estabelecimentoPostRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento Dez")
+                .id(123458L)
                 .build();
         estabelecimentoPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento Vinte")
+                .id(123459L)
                 .build();
     }
 
@@ -72,7 +74,7 @@ public class EstabelecimentoV1ControllerTests {
         // nenhuma necessidade além do setup()
 
         // Act
-        String responseJsonString = driver.perform(post(URI_PRODUTOS)
+        String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoPostRequestDTO)))
                 .andExpect(status().isCreated()) // Codigo 201
@@ -135,10 +137,82 @@ public class EstabelecimentoV1ControllerTests {
     }
 
     @Test
+    @DisplayName("Quando alteramos apenas o id do estabelecimento com dados inválido (maior que 6 digitos)")
+    void quandoCriamosUmEstabelecimentoComCodigoInvalidoMenorQueSeisDigitosBanco() throws Exception {
+        // Arrange
+        EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
+                .nome("Estabelecimento A")
+                .id(12345678L)
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("Erros de validacao encontrados", resultado.getMessage());
+        assertEquals("O codigo deve ter 6 digitos", resultado.getErrors().get(0));
+    }
+
+    @Test
+    @DisplayName("Quando alteramos apenas o id do estabelecimento com dados inválido (id null)")
+    void quandoCriamosUmEstabelecimentoComCodigoInvalidoDigitosNullBanco() throws Exception {
+        // Arrange
+        EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
+                .nome("Estabelecimento A")
+                .id(null)
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("Erros de validacao encontrados", resultado.getMessage());
+        assertEquals("O codigo deve ter 6 digitos", resultado.getErrors().get(0));
+    }
+
+    @Test
+    @DisplayName("Quando alteramos apenas o id do estabelecimento com dados inválido (id menor que 6 digitos)")
+    void quandoCriamosUmEstabelecimentoComCodigoInvalidoMaiorQueSeisDigitosBanco() throws Exception {
+        // Arrange
+        EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
+                .nome("Estabelecimento A")
+                .id(1234L)
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("Erros de validacao encontrados", resultado.getMessage());
+        assertEquals("O codigo deve ter 6 digitos", resultado.getErrors().get(0));
+    }
+
+    @Test
     @DisplayName("Quando excluimos o estabelecimento")
     void quandoExcluimosUmEstabelecimento() throws Exception {
         // Arrange
-        String responseJsonString = driver.perform(delete(URI_PRODUTOS + "/" + estabelecimento.getId())
+        String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent()) // Codigo 204
                 .andDo(print())
@@ -147,6 +221,7 @@ public class EstabelecimentoV1ControllerTests {
         // Assert
         assertTrue(responseJsonString.isBlank());
     }
+
 
     @Nested
     @DisplayName("Testes para aceitações dos pedidos no estabelecimento.")
@@ -169,7 +244,7 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEntregadorSolicitaPedidoEstabelecimento() throws Exception {
             //Arrange
             //Act
-            String responseJsonString = driver.perform(put(URI_PRODUTOS + "/" + estabelecimento.getId() + "/solicitar?idEstabelecimento=" + estabelecimento.getId())
+            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar?idEstabelecimento=" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(entregadorPostPutRequestDTO)))
                     .andExpect(status().isOk()) // Codigo 200
