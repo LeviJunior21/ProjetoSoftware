@@ -8,7 +8,11 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutReq
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pizza;
+import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEntregadorService;
+import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEsperaService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -214,7 +218,7 @@ public class EstabelecimentoV1ControllerTests {
     @DisplayName("Quando excluimos o estabelecimento")
     void quandoExcluimosUmEstabelecimento() throws Exception {
         // Arrange
-        String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
+        String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/estabelecimento")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent()) // Codigo 204
                 .andDo(print())
@@ -229,16 +233,21 @@ public class EstabelecimentoV1ControllerTests {
     @DisplayName("Testes para aceitações dos pedidos no estabelecimento.")
     class TestePedidosAceitacoes {
 
+        @Autowired
+        EntregadorRepository entregadorRepository;
         Entregador entregador;
         EntregadorPostPutRequestDTO entregadorPostPutRequestDTO;
         @BeforeEach
         void setup2() {
-            entregadorPostPutRequestDTO = EntregadorPostPutRequestDTO.builder()
+            entregador = entregadorRepository.save(Entregador.builder()
                     .nome("Lucas")
                     .placa("131231")
                     .cor("vermelho")
                     .veiculo("moto")
-                    .build();
+                    .id(10L)
+                    .build()
+            );
+            estabelecimento = estabelecimentoRepository.save(estabelecimento);
         }
 
         @Test
@@ -246,9 +255,8 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEntregadorSolicitaPedidoEstabelecimento() throws Exception {
             //Arrange
             //Act
-            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar?idEstabelecimento=" + estabelecimento.getId())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPostPutRequestDTO)))
+            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar/" + entregador.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -259,46 +267,78 @@ public class EstabelecimentoV1ControllerTests {
         }
     }
 
-    public class TesteListarCardapio{
-        Pizza pizza;
-        Estabelecimento estabelecimento;
-        @BeforeEach
-        void setup(){
-            pizza = Pizza.builder()
-                    .nome("calabresa")
-                    .tipo("salgado")
-                    .tamanho("média")
-                    .valor(10.00)
-                    .build();
+    @Nested
+    @DisplayName("Casos de teste para remoção de entregadores aceitos ou não do estabelecimento")
+    class CasosTesteRemocaoEntregador {
 
-            estabelecimento.getPizzas().add(pizza);
+        @Autowired
+        EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
+        @Autowired
+        EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
+        @Autowired
+        EntregadorRepository entregadorRepository;
+        Entregador entregador;
+        Entregador entregador2;
+
+        @BeforeEach
+        void setup() {
+
+            entregador = entregadorRepository.save(Entregador.builder()
+                    .nome("Lucas")
+                    .placa("12344444")
+                    .cor("vermelho")
+                    .entregando(false)
+                    .veiculo("carro")
+                    .build()
+            );
+
+            entregador2 = entregadorRepository.save(Entregador.builder()
+                    .nome("Lucas")
+                    .placa("12344444")
+                    .cor("vermelho")
+                    .entregando(false)
+                    .veiculo("carro")
+                    .build()
+            );
+
+            estabelecimento.getEntregadores().add(entregador);
+            estabelecimento.getEntregadores().add(entregador2);
+            estabelecimentoRepository.save(estabelecimento);
         }
 
-        /**
         @Test
-        @DisplayName("Lista pizza adicionada em cardapio estabelecimento")
-        void listaPizzas(){
-            //Arrange
-            Pizza pizza2 = Pizza.builder()
-                    .nome("nutella")
-                    .tipo("doce")
-                    .tamanho("grande")
-                    .valor(36.00)
-                    .build();
-            estabelecimento.getPizzas().add(pizza2);
+        @Transactional
+        @DisplayName("Quando remove um enregador da lista de espera")
+        void quandoRemoveEntregadorEspera() throws Exception {
+            // Arrange
+            // Act
 
-            //Act
-            String responseJsonString = driver.perform(put(URI_PRODUTOS + "/" + estabelecimento.getId() + "/solicitar?idEstabelecimento=" + estabelecimento.getId())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPostPutRequestDTO)))
-                    .andExpect(status().isOk()) // Codigo 200
+            String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/remover_espera/" + entregador.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
-
+            Estabelecimento response = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
+            // Assert
+            assertEquals(0, response.getEspera().size());
         }
-        */
-    }
 
+        @Test
+        @Transactional
+        @DisplayName("Quando remove um enregador da lista de espera")
+        void quandoRemoveEntregadorAceito() throws Exception {
+            // Arrange
+            // Act
+            String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/remover_entregador/" + entregador.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            Estabelecimento response = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
+            // Assert
+            assertEquals(2, response.getEntregadores().size());
+        }
+    }
 }

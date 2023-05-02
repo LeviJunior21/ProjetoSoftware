@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 
 @FunctionalInterface
 public interface EstabelecimentoSolicitarPedidoService {
-    public Estabelecimento solicitarPedido(EntregadorPostPutRequestDTO entregadorPostPutRequestDTO, Long idEstabelecimento);
+    public Estabelecimento solicitarPedido(Long idEstabelecimento, Long idEntregador);
 }

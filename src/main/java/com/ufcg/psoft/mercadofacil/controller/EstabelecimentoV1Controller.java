@@ -33,6 +33,10 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoAceitarService estabelecimentoAceitarService;
     @Autowired
     EstabelecimentoSolicitarPedidoService estabelecimentoSolicitarPedidoService;
+    @Autowired
+    EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
+    @Autowired
+    EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
@@ -75,7 +79,7 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoAlterarService.alterar(id, estabelecimentoPostPutRequestDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/estabelecimento")
     public ResponseEntity<?> excluirEstabelecimento(
             @PathVariable Long id
         ) {
@@ -85,14 +89,34 @@ public class EstabelecimentoV1Controller {
                 .body("");
     }
 
-    @PutMapping ("/{id}/solicitar")
+    @DeleteMapping("/{id}/remover_entregador/{idEntregador}")
+    public ResponseEntity<?> removerEntregador(
+            @PathVariable Long id,
+            @PathVariable Long idEntregador
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(estabelecimentoRemoverEntregadorService.excluirEspera(id, idEntregador));
+    }
+
+    @DeleteMapping("/{id}/remover_espera/{idEntregador}")
+    public ResponseEntity<?> removerEspera(
+            @PathVariable Long id,
+            @PathVariable Long idEntregador
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(estabelecimentoRemoverEsperaService.excluirEspera(id, idEntregador));
+    }
+
+    @PutMapping ("/{id}/solicitar/{idEntregador}")
     public ResponseEntity<?> solicitarPedido(
-            @RequestBody @Valid EntregadorPostPutRequestDTO entregadorPostPutRequestDTO,
-            @RequestParam Long idEstabelecimento
+            @PathVariable Long id,
+            @PathVariable Long idEntregador
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(entregadorPostPutRequestDTO,
-                        idEstabelecimento));
+                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, idEntregador));
     }
+
 }
