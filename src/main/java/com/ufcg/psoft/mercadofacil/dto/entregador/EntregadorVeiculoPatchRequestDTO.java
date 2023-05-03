@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EntregadorVeiculoPatchRequestDTO {
     @JsonProperty("veiculo")
-    @NotBlank(message = "Veiculo obrigatoio")
+    @NotBlank(message = "Veiculo obrigatorio")
     private String veiculo;
 }

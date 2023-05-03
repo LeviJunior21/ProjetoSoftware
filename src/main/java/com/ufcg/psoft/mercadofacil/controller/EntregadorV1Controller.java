@@ -1,8 +1,6 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorCorPatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorNomePatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.entregador.*;
 import com.ufcg.psoft.mercadofacil.service.entregador.EntregadorAlterarCorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,12 @@ public class EntregadorV1Controller {
 
     @Autowired
     EntregadorAlterarCorService entregadorAlterarCorService;
+
+    @Autowired
+    EntregadorAlterarPlacaService entregadorAlterarPlacaService;
+
+    @Autowired
+    EntregadorAlterarVeiculoService entregadorAlterarVeiculoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEntregador(
@@ -73,14 +77,33 @@ public class EntregadorV1Controller {
                 .body(entregadorAlterarCorService.alterarParcialmente(id, entregadorCorPatchRequestDTO));
     }
 
+    @PatchMapping("/{id}/placa")
+    public ResponseEntity<?> atualizarParcialmenteEntregadorPlaca(
+            @PathVariable Long id,
+            @RequestBody @Valid EntregadorPlacaPatchRequestDTO entregadorPlacaPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(entregadorAlterarPlacaService.alterarParcialmente(id, entregadorPlacaPatchRequestDTO));
+    }
+
+    @PatchMapping("/{id}/veiculo")
+    public ResponseEntity<?> atualizarParcialmenteEntregadorVeiculo(
+            @PathVariable Long id,
+            @RequestBody @Valid EntregadorVeiculoPatchRequestDTO entregadorVeiculoPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(entregadorAlterarVeiculoService.alterarParcialmente(id, entregadorVeiculoPatchRequestDTO));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarEntregador(
-            @PathVariable Long idEntregador,
+            @PathVariable Long id,
             @RequestBody @Valid EntregadorPostPutRequestDTO entregadorPostPutRequestDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(entregadorAlterarService.alterar(idEntregador, entregadorPostPutRequestDto));
+                .body(entregadorAlterarService.alterar(id, entregadorPostPutRequestDto));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluirEntregador(

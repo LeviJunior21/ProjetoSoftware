@@ -1,6 +1,9 @@
 package com.ufcg.psoft.mercadofacil.dto.entregador;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.model.Entregador;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,4 +31,10 @@ public class EntregadorPostPutRequestDTO {
     @JsonProperty("cor")
     @NotBlank(message = "Cor do carro obrigatorio")
     private String cor;
+
+    @JsonProperty("entregando")
+    private boolean entregando;
+
+    @JsonProperty("entregador")
+    private Entregador entregador;
 }

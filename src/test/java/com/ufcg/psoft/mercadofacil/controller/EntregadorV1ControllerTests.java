@@ -3,12 +3,10 @@ package com.ufcg.psoft.mercadofacil.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorCorPatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorNomePatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.entregador.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
+import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
@@ -108,7 +106,7 @@ public class EntregadorV1ControllerTests {
     }
 
     @Nested
-    @DisplayName("Conjunto de casos de verificação de regras sobre o nome")
+    @DisplayName("Conjunto de casos de verificação de regras sobre a cor")
     class EntregadorVerificacaoCor {
         @Test
         @DisplayName("Quando alteramos a cor do entregador com dados válidos")
@@ -155,6 +153,105 @@ public class EntregadorV1ControllerTests {
             assertEquals("Cor do carro obrigatorio", resultado.getErrors().get(0));
         }
     }
+
+    @Nested
+    @DisplayName("Conjunto de casos de verificação de regras sobre a placa")
+    class EntregadorVerificacaoPlaca {
+        @Test
+        @DisplayName("Quando alteramos a placa do entregador com dados válidos")
+        void quandoAlteramosPlacaDoEntregadorValido() throws Exception {
+            // Arrange
+            EntregadorPlacaPatchRequestDTO entregadorPlacaPatchRequestDTO = EntregadorPlacaPatchRequestDTO.builder()
+                    .placa("5atfa4")
+                    .build();
+
+            // Act
+            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/placa")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(entregadorPlacaPatchRequestDTO)))
+                    .andExpect(status().isOk())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+
+            // Assert
+            assertEquals(entregadorPlacaPatchRequestDTO.getPlaca(), resultado.getPlaca());
+        }
+
+        @Test
+        @DisplayName("Quando alteramos apenas a placa do entregador com dados inválidos (em branco)")
+        void quandoAlteramosCorDoEntregadorInvalidoBanco() throws Exception {
+            // Arrange
+            EntregadorPlacaPatchRequestDTO entregadorPlacaPatchRequestDTO = EntregadorPlacaPatchRequestDTO.builder()
+                    .placa("")
+                    .build();
+
+            // Act
+            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/placa")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(entregadorPlacaPatchRequestDTO)))
+                    .andExpect(status().isBadRequest())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Erros de validacao encontrados", resultado.getMessage());
+            assertEquals("Placa do carro obrigatorio", resultado.getErrors().get(0));
+        }
+    }
+
+    @Nested
+    @DisplayName("Conjunto de casos de verificação de regras sobre o veiculo")
+    class EntregadorVerificacaoVeiculo {
+        @Test
+        @DisplayName("Quando alteramos o veiculo do entregador com dados válidos")
+        void quandoAlteramosVeiculoDoEntregadorValido() throws Exception {
+            // Arrange
+            EntregadorVeiculoPatchRequestDTO entregadorVeiculoPatchRequestDTO = EntregadorVeiculoPatchRequestDTO.builder()
+                    .veiculo("moto")
+                    .build();
+
+            // Act
+            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/veiculo")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(entregadorVeiculoPatchRequestDTO)))
+                    .andExpect(status().isOk())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+
+            // Assert
+            assertEquals(entregadorVeiculoPatchRequestDTO.getVeiculo(), resultado.getVeiculo());
+        }
+
+        @Test
+        @DisplayName("Quando alteramos apenas o veiculo do entregador com dados inválidos (em branco)")
+        void quandoAlteramosVeiculoDoEntregadorInvalidoBanco() throws Exception {
+            // Arrange
+            EntregadorVeiculoPatchRequestDTO entregadorVeiculoPatchRequestDTO = EntregadorVeiculoPatchRequestDTO.builder()
+                    .veiculo("")
+                    .build();
+
+            // Act
+            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/veiculo")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(entregadorVeiculoPatchRequestDTO)))
+                    .andExpect(status().isBadRequest())
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Erros de validacao encontrados", resultado.getMessage());
+            assertEquals("Veiculo obrigatorio", resultado.getErrors().get(0));
+        }
+    }
+
     @Nested
     @DisplayName("Conjunto de casos de verificação de campos obrigatórios")
     class EntregadorVerificacaoFluxosBasicosApiRest  {
@@ -166,16 +263,18 @@ public class EntregadorV1ControllerTests {
         @BeforeEach
         void setup() {
             entregadorPostRequestDTO = EntregadorPostPutRequestDTO.builder()
+                    .cor("prata")
                     .nome("Lucas")
-                    .veiculo("carro")
-                    .cor("preto")
-                    .placa("76G34")
+                    .veiculo("Fuskinha")
+                    .placa("20103")
+                    .entregando(false)
                     .build();
             entregadorPutRequestDTO = EntregadorPostPutRequestDTO.builder()
-                    .nome("Lucas")
-                    .veiculo("carro")
-                    .cor("preto")
-                    .placa("76G34")
+                    .nome("Jao")
+                    .veiculo("moto")
+                    .cor("vermelho")
+                    .placa("72G34")
+                    .entregando(false)
                     .build();
         }
 
@@ -270,6 +369,32 @@ public class EntregadorV1ControllerTests {
 
         }
 
+        @Test
+        @Transactional
+        @DisplayName("Quando alteramos o entregador com dados válidos")
+        void quandoAlteramosEntregadorValido() throws Exception {
+            // Arrange
+            Long entregadorId = entregador.getId();
+
+            // Act
+            String responseJsonString = driver.perform(put(URI_ENTREGADORES + "/" + entregador.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(entregadorPutRequestDTO)))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+
+            // Assert
+            assertAll(
+                    () -> assertEquals(entregadorPutRequestDTO.getNome(), resultado.getNome()),
+                    () -> assertEquals(entregadorPutRequestDTO.getCor(), resultado.getCor()),
+                    () -> assertEquals(entregadorPutRequestDTO.getPlaca(), resultado.getPlaca()),
+                    () -> assertEquals(entregadorPutRequestDTO.getVeiculo(), resultado.getVeiculo())
+            );
+
+        }
         @Test
         @DisplayName("Quando excluímos um entregador salvo")
         void quandoExcluimosEntregadorValido() throws Exception {
