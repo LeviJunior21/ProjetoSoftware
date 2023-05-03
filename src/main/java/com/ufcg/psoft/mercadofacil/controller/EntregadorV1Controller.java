@@ -1,9 +1,9 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorCorPatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.service.entregador.EntregadorAlterarCorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +29,9 @@ public class EntregadorV1Controller {
     @Autowired
     EntregadorAlterarNomeService entregadorAlterarNomeService;
 
+    @Autowired
+    EntregadorAlterarCorService entregadorAlterarCorService;
+
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEntregador(
             @PathVariable Long id) {
@@ -53,12 +56,21 @@ public class EntregadorV1Controller {
     }
 
     @PatchMapping("/{id}/nome")
-    public ResponseEntity<?> atualizarParcialmenteEntregador(
+    public ResponseEntity<?> atualizarParcialmenteEntregadorNome(
             @PathVariable Long id,
             @RequestBody @Valid EntregadorNomePatchRequestDTO entregadorNomePatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(entregadorAlterarNomeService.alterarParcialmente(id, entregadorNomePatchRequestDTO));
+    }
+
+    @PatchMapping("/{id}/cor")
+    public ResponseEntity<?> atualizarParcialmenteEntregadorCor(
+            @PathVariable Long id,
+            @RequestBody @Valid EntregadorCorPatchRequestDTO entregadorCorPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(entregadorAlterarCorService.alterarParcialmente(id, entregadorCorPatchRequestDTO));
     }
 
     @PutMapping("/{id}")

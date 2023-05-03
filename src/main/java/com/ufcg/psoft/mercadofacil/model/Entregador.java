@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "entregadores")
 public class Entregador {
-    @JsonProperty("nome")
-    @Column(nullable = false)
-    private String nome;
-
     @JsonProperty("entregador")
     @ManyToOne(cascade = CascadeType.ALL)
     private Entregador entregador;
+
+    @JsonProperty("nome")
+    @Column(nullable = false)
+    private String nome;
 
     @JsonProperty("placa")
     @Column(nullable = false)
