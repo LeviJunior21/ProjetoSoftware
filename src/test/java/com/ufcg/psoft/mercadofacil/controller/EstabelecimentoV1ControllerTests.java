@@ -393,7 +393,7 @@ public class EstabelecimentoV1ControllerTests {
 
             @Test
             @Transactional
-            @DisplayName("Quando remove um enregador da lista de espera")
+            @DisplayName("Quando aceita um entregador da lista de espera")
             void quandoRemoveEntregadorAceito() throws Exception {
                 // Arrange
                 // Act
