@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,27 +13,27 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pizzas")
-public class Pizza {
-    @JsonProperty("id")
+@Table(name = "funcionarios")
+public class Funcionario implements Pessoa{
+    @JsonProperty("codigo")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @CodigoAcesso
     private Long id;
-
     @JsonProperty("nome")
     @Column(nullable = false)
     private String nome;
 
-    @JsonProperty("tipo")
+    @JsonProperty("placa")
     @Column(nullable = false)
-    private String tipo;
+    private String placa;
 
-    @JsonProperty("tamanho")
+    @JsonProperty("veiculo")
     @Column(nullable = false)
-    private String tamanho;
+    private String veiculo;
 
-
-    @JsonProperty("valor")
+    @JsonProperty("cor")
     @Column(nullable = false)
-    private Double valor;
+    private String cor;
+
 }

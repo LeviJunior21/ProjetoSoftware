@@ -31,9 +31,9 @@ public class Estabelecimento {
 
     @JsonProperty("espera")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Entregador> espera;
+    private Set<Funcionario> espera;
 
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Pizza> pizzas;
+    private Set<Produto> pizzas;
 }

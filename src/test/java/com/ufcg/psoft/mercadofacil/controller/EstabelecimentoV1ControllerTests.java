@@ -8,6 +8,7 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchR
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
+import com.ufcg.psoft.mercadofacil.model.Funcionario;
 import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEntregadorService;
@@ -51,7 +52,7 @@ public class EstabelecimentoV1ControllerTests {
         estabelecimento = estabelecimentoRepository.save(Estabelecimento.builder()
                 .id(123456L)
                 .nome("Sorveteria")
-                .espera(new HashSet<Entregador>())
+                .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
                 .pizzas(new HashSet<>())
                 .build()

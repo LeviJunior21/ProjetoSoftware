@@ -5,20 +5,19 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
-import com.ufcg.psoft.mercadofacil.model.Pizza;
+import com.ufcg.psoft.mercadofacil.model.Funcionario;
+import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashSet;
 
 import static org.springframework.http.RequestEntity.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,7 +40,7 @@ public class EstabelecimentoV1ListarCardapioTests {
         estabelecimento = estabelecimentoRepository.save(Estabelecimento.builder()
                 .id(123456L)
                 .nome("Sorveteria")
-                .espera(new HashSet<Entregador>())
+                .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
                 .pizzas(new HashSet<>())
                 .build()
@@ -65,22 +64,22 @@ public class EstabelecimentoV1ListarCardapioTests {
     @Nested
     @DisplayName("Teste de listagem cardapio")
     class TesteListarCardapio{
-        Pizza pizza;
+        Produto pizza;
         Estabelecimento estabelecimento;
-        Pizza pizza2;
+        Produto pizza2;
         @BeforeEach
         void setup(){
-            pizza = Pizza.builder()
+            pizza = Produto.builder()
                     .nome("calabresa")
                     .tipo("salgado")
                     .tamanho("média")
-                    .valor(10.00)
+                    .preco(10.00)
                     .build();
-            pizza2 = Pizza.builder()
+            pizza2 = Produto.builder()
                     .nome("nutella")
                     .tipo("doce")
                     .tamanho("grande")
-                    .valor(36.00)
+                    .preco(36.00)
                     .build();
             estabelecimento.getPizzas().add(pizza);
             estabelecimentoRepository.save(estabelecimento);

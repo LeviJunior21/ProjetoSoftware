@@ -26,15 +26,11 @@ public class Produto {
     @JsonProperty("preco")
     @Column(nullable = false)
     private Double preco;
-    @JsonProperty("codigoDeBarras")
+    @JsonProperty("tamanho")
     @Column(nullable = false)
-    private String codigoDeBarras;
-    @JsonProperty("fabricante")
+    private String tamanho;
+    @JsonProperty("tipo")
     @Column(nullable = false)
-    private String fabricante;
-
-    @JsonProperty("lotes")
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private Set<Lote> lotes;
+    private String tipo;
 
 }
