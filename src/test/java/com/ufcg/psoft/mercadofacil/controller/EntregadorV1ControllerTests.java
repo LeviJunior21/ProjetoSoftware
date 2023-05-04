@@ -6,8 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.entregador.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
-import com.ufcg.psoft.mercadofacil.model.Produto;
-import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
+import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class EntregadorV1ControllerTests {
     MockMvc driver;
 
     @Autowired
-    EntregadorRepository entregadorRepository;
+    FuncionarioRepository entregadorRepository;
 
     ObjectMapper objectMapper = new ObjectMapper();
 

@@ -1,9 +1,9 @@
 package com.ufcg.psoft.mercadofacil.service.entregador;
 
 import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPlacaPatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.exception.EntregadorNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
-import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
+import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +13,10 @@ public class EntregadorAlterarPadraoPlacaService implements EntregadorAlterarPla
     @Autowired
     ModelMapper modelMapper;
     @Autowired
-    EntregadorRepository entregadorRepository;
+    FuncionarioRepository entregadorRepository;
     @Override
     public Entregador alterarParcialmente(Long id, EntregadorPlacaPatchRequestDTO entregadorPlacaPatchRequestDTO) {
-        Entregador entregador = entregadorRepository.findById(id).orElseThrow(EntregadorNaoExisteException::new);
+        Entregador entregador = entregadorRepository.findById(id).orElseThrow(FuncionarioNaoExisteException::new);
         modelMapper.map(entregadorPlacaPatchRequestDTO, entregador);
         return entregadorRepository.save(entregador);
     }

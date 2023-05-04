@@ -9,7 +9,7 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutReq
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
-import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
+import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEntregadorService;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEsperaService;
@@ -301,7 +301,7 @@ public class EstabelecimentoV1ControllerTests {
         class TestePedidosAceitacoes {
 
             @Autowired
-            EntregadorRepository entregadorRepository;
+            FuncionarioRepository entregadorRepository;
             Entregador entregador;
             EntregadorPostPutRequestDTO entregadorPostPutRequestDTO;
 
@@ -344,7 +344,7 @@ public class EstabelecimentoV1ControllerTests {
             @Autowired
             EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
             @Autowired
-            EntregadorRepository entregadorRepository;
+            FuncionarioRepository entregadorRepository;
             Entregador entregador;
             Entregador entregador2;
 
