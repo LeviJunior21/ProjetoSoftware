@@ -50,7 +50,7 @@ public class EstabelecimentoV1Controller {
     public ResponseEntity<?> buscarTodosEstabelecimentos() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoListarService.listar(null));
+                .body(estabelecimentoListarService.listar());
     }
 
     @PostMapping()

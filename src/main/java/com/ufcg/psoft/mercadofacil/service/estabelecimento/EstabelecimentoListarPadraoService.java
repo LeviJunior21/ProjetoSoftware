@@ -14,7 +14,7 @@ public class EstabelecimentoListarPadraoService implements EstabelecimentoListar
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     @Override
-    public List<Estabelecimento> listar(Long id) {
+    public List<Estabelecimento> listar() {
         return estabelecimentoRepository.findAll();
     }
 }
