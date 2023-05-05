@@ -3,16 +3,13 @@ package com.ufcg.psoft.mercadofacil.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
-import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEntregadorService;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEsperaService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
@@ -379,8 +376,6 @@ public class EstabelecimentoV1ControllerTests {
         @DisplayName("Casos de teste para remoção de entregadores aceitos ou não do estabelecimento")
         class CasosTesteRemocaoEntregador {
 
-            @Autowired
-            EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
             @Autowired
             EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
             @Autowired

@@ -36,8 +36,6 @@ public class EstabelecimentoV1Controller {
     @Autowired
     EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
     @Autowired
-    EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
-    @Autowired
     EstabelecimentoGetService estabelecimentoGetService;
 
     @GetMapping("/{id}")
