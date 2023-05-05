@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
@@ -301,29 +302,30 @@ public class EstabelecimentoV1ControllerTests {
         class TestePedidosAceitacoes {
 
             @Autowired
-            FuncionarioRepository entregadorRepository;
-            Entregador entregador;
-            EntregadorPostPutRequestDTO entregadorPostPutRequestDTO;
+            FuncionarioRepository funcionarioRepository;
+            Funcionario funcionario;
+            FuncionarioPostPutRequestDTO funcionarioPostPutRequestDTO;
 
             @BeforeEach
             void setup2() {
-                entregador = entregadorRepository.save(Entregador.builder()
+                funcionario = funcionarioRepository.save(Funcionario.builder()
                         .nome("Lucas")
                         .placa("131231")
                         .cor("vermelho")
                         .veiculo("moto")
-                        .id(10L)
+                        .id(101010L)
                         .build()
                 );
                 estabelecimento = estabelecimentoRepository.save(estabelecimento);
             }
 
             @Test
+            @Transactional
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
             void quandoEntregadorSolicitaPedidoEstabelecimento() throws Exception {
                 //Arrange
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar/" + entregador.getId())
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar/" + funcionario.getId())
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk()) // Codigo 200
                         .andDo(print())
@@ -331,7 +333,7 @@ public class EstabelecimentoV1ControllerTests {
 
                 Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
                 //Assert
-                assertEquals(1, resultado.getEntregadores().size());
+                assertEquals(1, resultado.getEspera().size());
             }
         }
 
@@ -343,31 +345,27 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
             @Autowired
             EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
-            @Autowired
-            FuncionarioRepository entregadorRepository;
             Entregador entregador;
             Entregador entregador2;
 
             @BeforeEach
             void setup() {
 
-                entregador = entregadorRepository.save(Entregador.builder()
+                entregador = Entregador.builder()
                         .nome("Lucas")
                         .placa("12344444")
                         .cor("vermelho")
                         .entregando(false)
                         .veiculo("carro")
-                        .build()
-                );
+                        .build();
 
-                entregador2 = entregadorRepository.save(Entregador.builder()
+                entregador2 = Entregador.builder()
                         .nome("Lucas")
                         .placa("12344444")
                         .cor("vermelho")
                         .entregando(false)
                         .veiculo("carro")
-                        .build()
-                );
+                        .build();
 
                 estabelecimento.getEntregadores().add(entregador);
                 estabelecimento.getEntregadores().add(entregador2);
@@ -394,7 +392,7 @@ public class EstabelecimentoV1ControllerTests {
 
             @Test
             @Transactional
-            @DisplayName("Quando aceita um entregador da lista de espera")
+            @DisplayName("Quando remove um entregador da lista de espera")
             void quandoRemoveEntregadorAceito() throws Exception {
                 // Arrange
                 // Act

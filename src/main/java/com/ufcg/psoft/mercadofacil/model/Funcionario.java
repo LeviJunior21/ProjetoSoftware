@@ -18,7 +18,6 @@ public class Funcionario implements Pessoa{
     @JsonProperty("codigo")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @CodigoAcesso
     private Long id;
     @JsonProperty("nome")
     @Column(nullable = false)

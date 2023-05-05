@@ -20,12 +20,13 @@ public class EstabelecimentoAceitarPadraoService implements EstabelecimentoAceit
     ModelMapper modelMapper;
 
     @Override
-    public void aceitar(Long estabelecimentoId, Long funcionarioId) {
+    public Entregador aceitar(Long estabelecimentoId, Long funcionarioId) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoId).get();
         Funcionario funcionario = funcionarioRepository.findById(funcionarioId).get();
         Entregador entregador = new Entregador();
         modelMapper.map(funcionario, entregador);
         estabelecimento.getEntregadores().add(entregador);
         estabelecimentoRepository.save(estabelecimento);
+        return entregador;
     }
 }
