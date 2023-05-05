@@ -1,18 +1,16 @@
-package com.ufcg.psoft.mercadofacil.service.entregador;
+package com.ufcg.psoft.mercadofacil.service.funcionario;
 
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
-import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class EntregadorPedidoPadraoService implements EntregadorPedidoService {
+public class FuncionarioPedidoPadraoService implements FuncionarioPedidoService {
 
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
-    @Autowired
-    FuncionarioRepository entregadorRepository;
 
     @Override
     public Estabelecimento pedido(Funcionario funcionario, Long idEstabelecimento) {

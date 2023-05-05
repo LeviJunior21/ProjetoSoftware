@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @DisplayName("Classe de testes do controlador de entregador")
-public class EntregadorV1ControllerTests {
+public class FuncionarioV1ControllerTests {
 
     @Autowired
     MockMvc driver;
