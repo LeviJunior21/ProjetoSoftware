@@ -15,9 +15,6 @@ public class EstabelecimentoListarPadraoService implements EstabelecimentoListar
     EstabelecimentoRepository estabelecimentoRepository;
     @Override
     public List<Estabelecimento> listar(Long id) {
-        if(id!=null && id > 0) {
-            estabelecimentoRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
-        }
         return estabelecimentoRepository.findAll();
     }
 }

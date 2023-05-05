@@ -237,7 +237,7 @@ public class EstabelecimentoV1ControllerTests {
             Estabelecimento estabelecimentoResponse = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
             assertEquals("Pizzaria B", estabelecimentoResponse.getNome());
         }
-
+        
         @Test
         @DisplayName("Quando excluimos o estabelecimento")
         void quandoExcluimosUmEstabelecimento() throws Exception {
