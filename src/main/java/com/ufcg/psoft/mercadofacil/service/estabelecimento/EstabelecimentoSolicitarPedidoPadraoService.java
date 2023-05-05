@@ -18,8 +18,8 @@ public class EstabelecimentoSolicitarPedidoPadraoService implements Estabelecime
     FuncionarioRepository funcionarioRepository;
 
     @Override
-    public Estabelecimento solicitarPedido(Long idEstabelecimento, Long idEntregador) {
-        Funcionario funcionario = funcionarioRepository.findById(idEntregador).orElseThrow(FuncionarioNaoExisteException::new);
+    public Estabelecimento solicitarPedido(Long idEstabelecimento, Long idFuncionario) {
+        Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElseThrow(FuncionarioNaoExisteException::new);
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         estabelecimento.getEspera().add(funcionario);
         estabelecimentoRepository.save(estabelecimento);

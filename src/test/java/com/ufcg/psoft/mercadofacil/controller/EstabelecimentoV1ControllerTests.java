@@ -332,8 +332,46 @@ public class EstabelecimentoV1ControllerTests {
                         .andReturn().getResponse().getContentAsString();
 
                 Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+
                 //Assert
                 assertEquals(1, resultado.getEspera().size());
+            }
+
+            @Test
+            @Transactional
+            @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
+            void quandoAceitaPedidoFuncionarioMasNaoEstaNaEsperaEstabelecimento() throws Exception {
+                //Arrange
+                //Act
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/aceitar/" + funcionario.getId())
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk()) // Codigo 200
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+                //Assert
+                assertEquals(0, resultado.getEntregadores().size());
+            }
+
+            @Test
+            @Transactional
+            @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
+            void quandoAceitaPedidoFuncionarioEstaNaEsperaEstabelecimento() throws Exception {
+                //Arrange
+                estabelecimento.getEspera().add(funcionario);
+                //Act
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/aceitar/" + funcionario.getId())
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk()) // Codigo 200
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+
+                //Assert
+                assertEquals(0, resultado.getEspera().size());
+                assertEquals(1, resultado.getEntregadores().size());
             }
         }
 
@@ -345,66 +383,49 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoRemoverEntregadorService estabelecimentoRemoverEntregadorService;
             @Autowired
             EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
-            Entregador entregador;
-            Entregador entregador2;
+            @Autowired
+            FuncionarioRepository funcionarioRepository;
+
+            Funcionario funcionario10;
+            Estabelecimento estabelecimento2;
+            Long resultEstabelecimento;
 
             @BeforeEach
             void setup() {
-
-                entregador = Entregador.builder()
+                funcionario10 = funcionarioRepository.save(Funcionario.builder()
                         .nome("Lucas")
                         .placa("12344444")
                         .cor("vermelho")
-                        .entregando(false)
                         .veiculo("carro")
+                        .build()
+                );
+
+                estabelecimento2 = Estabelecimento.builder()
+                        .nome("Sorveteria")
+                        .espera(new HashSet<Funcionario>())
+                        .entregadores(new HashSet<>())
+                        .pizzas(new HashSet<>())
                         .build();
 
-                entregador2 = Entregador.builder()
-                        .nome("Lucas")
-                        .placa("12344444")
-                        .cor("vermelho")
-                        .entregando(false)
-                        .veiculo("carro")
-                        .build();
-
-                estabelecimento.getEntregadores().add(entregador);
-                estabelecimento.getEntregadores().add(entregador2);
-                estabelecimentoRepository.save(estabelecimento);
+                estabelecimento2.getEspera().add(funcionario10);
+                resultEstabelecimento = estabelecimentoRepository.save(estabelecimento2).getId();
             }
 
             @Test
             @Transactional
             @DisplayName("Quando remove um enregador da lista de espera")
-            void quandoRemoveEntregadorEspera() throws Exception {
+            void quandoRejeitoEntregadorEspera() throws Exception {
                 // Arrange
                 // Act
-
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/remover_espera/" + entregador.getId())
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento2.getId() + "/remover_espera/" + funcionario10.getId())
                                 .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isNoContent())
+                        .andExpect(status().isOk())
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
 
                 Estabelecimento response = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
                 // Assert
                 assertEquals(0, response.getEspera().size());
-            }
-
-            @Test
-            @Transactional
-            @DisplayName("Quando remove um entregador da lista de espera")
-            void quandoRemoveEntregadorAceito() throws Exception {
-                // Arrange
-                // Act
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/remover_entregador/" + entregador.getId())
-                                .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isNoContent())
-                        .andDo(print())
-                        .andReturn().getResponse().getContentAsString();
-
-                Estabelecimento response = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
-                // Assert
-                assertEquals(2, response.getEntregadores().size());
             }
         }
     }

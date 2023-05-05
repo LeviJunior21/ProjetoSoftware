@@ -91,24 +91,14 @@ public class EstabelecimentoV1Controller {
                 .body("");
     }
 
-    @DeleteMapping("/{id}/remover_entregador/{idEntregador}")
-    public ResponseEntity<?> removerEntregador(
-            @PathVariable Long id,
-            @PathVariable Long idEntregador
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(estabelecimentoRemoverEntregadorService.excluirEspera(id, idEntregador));
-    }
-
-    @DeleteMapping("/{id}/remover_espera/{idEntregador}")
+    @DeleteMapping("/{id}/remover_espera/{idFuncionario}")
     public ResponseEntity<?> removerEspera(
             @PathVariable Long id,
-            @PathVariable Long idEntregador
+            @PathVariable Long idFuncionario
     ) {
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(estabelecimentoRemoverEsperaService.excluirEspera(id, idEntregador));
+                .status(HttpStatus.OK)
+                .body(estabelecimentoRemoverEsperaService.excluirEspera(id, idFuncionario));
     }
 
     @PutMapping ("/{id}/solicitar/{idEntregador}")
@@ -121,4 +111,13 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, idEntregador));
     }
 
+    @PutMapping ("/{id}/aceitar/{idFuncionario}")
+    public ResponseEntity<?> aceitarPedido(
+            @PathVariable Long id,
+            @PathVariable Long idFuncionario
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoAceitarService.aceitar(id, idFuncionario));
+    }
 }

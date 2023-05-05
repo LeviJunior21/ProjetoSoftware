@@ -18,11 +18,13 @@ public class EstabelecimentoRemoverEsperaPadraoService implements Estabeleciment
     FuncionarioRepository funcionarioRepository;
 
     @Override
-    public Estabelecimento excluirEspera(Long idEstabelecimento, Long idEntregador) {
+    public Estabelecimento excluirEspera(Long idEstabelecimento, Long idFuncionario) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
-        Funcionario funcionario = funcionarioRepository.findById(idEntregador).orElseThrow(FuncionarioNaoExisteException::new);
-        estabelecimento.getEspera().remove(funcionario);
-        estabelecimentoRepository.save(estabelecimento);
+        Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElseThrow(FuncionarioNaoExisteException::new);
+        if (estabelecimento.getEspera().contains(funcionario)) {
+            estabelecimento.getEspera().remove(funcionario);
+            estabelecimentoRepository.save(estabelecimento);
+        }
         return estabelecimento;
     }
 }
