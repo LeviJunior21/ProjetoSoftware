@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.entregador.*;
+import com.ufcg.psoft.mercadofacil.dto.funcionario.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
+import com.ufcg.psoft.mercadofacil.model.Funcionario;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
@@ -31,67 +33,66 @@ public class FuncionarioV1ControllerTests {
     MockMvc driver;
 
     @Autowired
-    FuncionarioRepository entregadorRepository;
+    FuncionarioRepository funcionarioRepository;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    Entregador entregador;
+    Funcionario funcionario;
     @BeforeEach
     void setup() {
         objectMapper.registerModule(new JavaTimeModule());
-        entregador = entregadorRepository.save(
-                Entregador.builder()
+        funcionario = funcionarioRepository.save(
+                Funcionario.builder()
                         .cor("prata")
                         .nome("Lucas")
                         .veiculo("Fuskinha")
                         .placa("20103")
-                        .entregando(false)
                         .build()
         );
     }
 
     @AfterEach
     void tearDown() {
-        entregadorRepository.deleteAll();
+        funcionarioRepository.deleteAll();
     }
 
     @Nested
     @DisplayName("Conjunto de casos de verificação de regras sobre o nome")
-    class EntregadorVerificacaoNome {
+    class FuncionarioVerificacaoNome {
         @Test
-        @DisplayName("Quando alteramos o nome do entregador com dados válidos")
-        void quandoAlteramosNomeDoEntregadorValido() throws Exception {
+        @DisplayName("Quando alteramos o nome do funcionário com dados válidos")
+        void quandoAlteramosNomeDoFuncionarioValido() throws Exception {
             // Arrange
-            EntregadorNomePatchRequestDTO entregadorNomePatchRequestDTO = EntregadorNomePatchRequestDTO.builder()
-                    .nome("levi")
+            FuncionarioNomePatchRequestDTO funcionarioNomePatchRequestDTO = FuncionarioNomePatchRequestDTO.builder()
+                    .nome("Joao Silva")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/nome")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorNomePatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioNomePatchRequestDTO)))
                     .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
 
             // Assert
-            assertEquals(entregadorNomePatchRequestDTO.getNome(), resultado.getNome());
+            assertEquals(funcionarioNomePatchRequestDTO.getNome(), resultado.getNome());
         }
 
         @Test
-        @DisplayName("Quando alteramos apenas o nome do entregador com dados inválidos (em branco)")
-        void quandoAlteramosNomeDoEntregadorInvalidoBanco() throws Exception {
+        @DisplayName("Quando alteramos apenas o nome do funcionário com dados inválidos (em branco)")
+        void quandoAlteramosNomeDoFuncionarioInvalidoBanco() throws Exception {
             // Arrange
-            EntregadorNomePatchRequestDTO entregadorNomePatchRequestDTO = EntregadorNomePatchRequestDTO.builder()
+            FuncionarioNomePatchRequestDTO funcionarioNomePatchRequestDTO = FuncionarioNomePatchRequestDTO.builder()
                     .nome("")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/nome")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorNomePatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioNomePatchRequestDTO)))
                     .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -106,90 +107,90 @@ public class FuncionarioV1ControllerTests {
 
     @Nested
     @DisplayName("Conjunto de casos de verificação de regras sobre a cor")
-    class EntregadorVerificacaoCor {
+    class FuncionarioVerificacaoCor {
         @Test
-        @DisplayName("Quando alteramos a cor do entregador com dados válidos")
-        void quandoAlteramosCorDoEntregadorValido() throws Exception {
+        @DisplayName("Quando alteramos a cor do funcionário com dados válidos")
+        void quandoAlteramosCorDoFuncionarioValido() throws Exception {
             // Arrange
-            EntregadorCorPatchRequestDTO entregadorCorPatchRequestDTO = EntregadorCorPatchRequestDTO.builder()
-                    .cor("amarelo")
+            FuncionarioCorPatchRequestDTO funcionarioCorPatchRequestDTO = FuncionarioCorPatchRequestDTO.builder()
+                    .cor("azul")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/cor")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/cor")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorCorPatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioCorPatchRequestDTO)))
                     .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
 
             // Assert
-            assertEquals(entregadorCorPatchRequestDTO.getCor(), resultado.getCor());
+            assertEquals(funcionarioCorPatchRequestDTO.getCor(), resultado.getCor());
         }
+    }
 
-        @Test
-        @DisplayName("Quando alteramos apenas a cor do entregador com dados inválidos (em branco)")
-        void quandoAlteramosCorDoEntregadorInvalidoBanco() throws Exception {
-            // Arrange
-            EntregadorCorPatchRequestDTO entregadorCorPatchRequestDTO = EntregadorCorPatchRequestDTO.builder()
-                    .cor("")
-                    .build();
+    @Test
+    @DisplayName("Quando alteramos apenas a cor do funcionário com dados inválidos (em branco)")
+    void quandoAlteramosCorDoFuncionarioInvalidoBanco() throws Exception {
+        // Arrange
+        FuncionarioCorPatchRequestDTO funcionarioCorPatchRequestDTO = FuncionarioCorPatchRequestDTO.builder()
+                .cor("")
+                .build();
 
-            // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/cor")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorCorPatchRequestDTO)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(print())
-                    .andReturn().getResponse().getContentAsString();
+        // Act
+        String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/cor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(funcionarioCorPatchRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
 
-            CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
 
-            // Assert
-            assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Cor do carro obrigatorio", resultado.getErrors().get(0));
-        }
+        // Assert
+        assertEquals("Erros de validacao encontrados", resultado.getMessage());
+        assertEquals("Cor do carro obrigatorio", resultado.getErrors().get(0));
     }
 
     @Nested
     @DisplayName("Conjunto de casos de verificação de regras sobre a placa")
-    class EntregadorVerificacaoPlaca {
+    class FuncionarioVerificacaoPlaca {
         @Test
-        @DisplayName("Quando alteramos a placa do entregador com dados válidos")
-        void quandoAlteramosPlacaDoEntregadorValido() throws Exception {
+        @DisplayName("Quando alteramos a placa do funcionário com dados válidos")
+        void quandoAlteramosPlacaDoFuncionarioValido() throws Exception {
             // Arrange
-            EntregadorPlacaPatchRequestDTO entregadorPlacaPatchRequestDTO = EntregadorPlacaPatchRequestDTO.builder()
+            FuncionarioPlacaPatchRequestDTO funcionarioPlacaPatchRequestDTO = FuncionarioPlacaPatchRequestDTO.builder()
                     .placa("5atfa4")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/placa")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/placa")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPlacaPatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioPlacaPatchRequestDTO)))
                     .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
 
             // Assert
-            assertEquals(entregadorPlacaPatchRequestDTO.getPlaca(), resultado.getPlaca());
+            assertEquals(funcionarioPlacaPatchRequestDTO.getPlaca(), resultado.getPlaca());
         }
 
         @Test
-        @DisplayName("Quando alteramos apenas a placa do entregador com dados inválidos (em branco)")
-        void quandoAlteramosCorDoEntregadorInvalidoBanco() throws Exception {
+        @DisplayName("Quando alteramos apenas a placa do funcionário com dados inválidos (em branco)")
+        void quandoAlteramosPlacaDoFuncionarioInvalidoBanco() throws Exception {
             // Arrange
-            EntregadorPlacaPatchRequestDTO entregadorPlacaPatchRequestDTO = EntregadorPlacaPatchRequestDTO.builder()
+            FuncionarioPlacaPatchRequestDTO funcionarioPlacaPatchRequestDTO = FuncionarioPlacaPatchRequestDTO.builder()
                     .placa("")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/placa")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/placa")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPlacaPatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioPlacaPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -203,42 +204,42 @@ public class FuncionarioV1ControllerTests {
     }
 
     @Nested
-    @DisplayName("Conjunto de casos de verificação de regras sobre o veiculo")
-    class EntregadorVerificacaoVeiculo {
+    @DisplayName("Conjunto de casos de verificação de regras sobre o veículo")
+    class FuncionarioVerificacaoVeiculo {
         @Test
-        @DisplayName("Quando alteramos o veiculo do entregador com dados válidos")
-        void quandoAlteramosVeiculoDoEntregadorValido() throws Exception {
+        @DisplayName("Quando alteramos o veículo do funcionário com dados válidos")
+        void quandoAlteramosVeiculoDoFuncionarioValido() throws Exception {
             // Arrange
-            EntregadorVeiculoPatchRequestDTO entregadorVeiculoPatchRequestDTO = EntregadorVeiculoPatchRequestDTO.builder()
+            FuncionarioVeiculoPatchRequestDTO funcionarioVeiculoPatchRequestDTO = FuncionarioVeiculoPatchRequestDTO.builder()
                     .veiculo("moto")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/veiculo")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/veiculo")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorVeiculoPatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioVeiculoPatchRequestDTO)))
                     .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
 
             // Assert
-            assertEquals(entregadorVeiculoPatchRequestDTO.getVeiculo(), resultado.getVeiculo());
+            assertEquals(funcionarioVeiculoPatchRequestDTO.getVeiculo(), resultado.getVeiculo());
         }
 
         @Test
-        @DisplayName("Quando alteramos apenas o veiculo do entregador com dados inválidos (em branco)")
-        void quandoAlteramosVeiculoDoEntregadorInvalidoBanco() throws Exception {
+        @DisplayName("Quando alteramos apenas o veículo do funcionário com dados inválidos (em branco)")
+        void quandoAlteramosVeiculoDoFuncionarioInvalidoBanco() throws Exception {
             // Arrange
-            EntregadorVeiculoPatchRequestDTO entregadorVeiculoPatchRequestDTO = EntregadorVeiculoPatchRequestDTO.builder()
+            FuncionarioVeiculoPatchRequestDTO funcionarioVeiculoPatchRequestDTO = FuncionarioVeiculoPatchRequestDTO.builder()
                     .veiculo("")
                     .build();
 
             // Act
-            String responseJsonString = driver.perform(patch("/v1/entregadores/" + entregador.getId() + "/veiculo")
+            String responseJsonString = driver.perform(patch("/v1/funcionarios/" + funcionario.getId() + "/veiculo")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorVeiculoPatchRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioVeiculoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -253,22 +254,22 @@ public class FuncionarioV1ControllerTests {
 
     @Nested
     @DisplayName("Conjunto de casos de verificação de campos obrigatórios")
-    class EntregadorVerificacaoFluxosBasicosApiRest  {
+    class FuncionarioVerificacaoFluxosBasicosApiRest  {
 
-        final String URI_ENTREGADORES = "/v1/entregadores";
-        EntregadorPostPutRequestDTO entregadorPutRequestDTO;
-        EntregadorPostPutRequestDTO entregadorPostRequestDTO;
+        final String URI_FUNCIONARIOS = "/v1/funcionarios";
+        FuncionarioPostPutRequestDTO funcionarioPutRequestDTO;
+        FuncionarioPostPutRequestDTO funcionarioPostRequestDTO;
 
         @BeforeEach
         void setup() {
-            entregadorPostRequestDTO = EntregadorPostPutRequestDTO.builder()
+            funcionarioPostRequestDTO = FuncionarioPostPutRequestDTO.builder()
                     .cor("prata")
                     .nome("Lucas")
                     .veiculo("Fuskinha")
                     .placa("20103")
                     .entregando(false)
                     .build();
-            entregadorPutRequestDTO = EntregadorPostPutRequestDTO.builder()
+            funcionarioPutRequestDTO = FuncionarioPostPutRequestDTO.builder()
                     .nome("Jao")
                     .veiculo("moto")
                     .cor("vermelho")
@@ -278,33 +279,33 @@ public class FuncionarioV1ControllerTests {
         }
 
         @Test
-        @DisplayName("Quando buscamos por todos entregadores salvos")
-        void quandoBuscamosPorTodosEntregadoresSalvos() throws Exception {
+        @DisplayName("Quando buscamos por todos funcionários salvos")
+        void quandoBuscamosPorTodosFuncionariosSalvos() throws Exception {
             // Arrange
-            // Vamos ter 3 produtos no banco
-            Entregador entregador1 = Entregador.builder()
-                    .nome("Lucas")
+            // Vamos ter 3 funcionários no banco
+            Funcionario funcionario1 = Funcionario.builder()
+                    .nome("Lucas Silva")
                     .veiculo("carro")
                     .cor("preto")
                     .placa("76G34")
                     .build();
-            Entregador entregador2 = Entregador.builder()
-                    .nome("Lucas")
-                    .veiculo("carro")
-                    .cor("preto")
-                    .placa("76G34")
+            Funcionario funcionario2 = Funcionario.builder()
+                    .nome("Lucas Pereira")
+                    .veiculo("moto")
+                    .cor("vermelho")
+                    .placa("78K56")
                     .build();
-            entregadorRepository.saveAll(Arrays.asList(entregador1, entregador2));
+            funcionarioRepository.saveAll(Arrays.asList(funcionario1, funcionario2));
 
             // Act
-            String responseJsonString = driver.perform(get(URI_ENTREGADORES)
+            String responseJsonString = driver.perform(get(URI_FUNCIONARIOS)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPostRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioPostRequestDTO)))
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            List<Entregador> resultado = objectMapper.readValue(responseJsonString, new TypeReference<List<Entregador>>(){});
+            List<Funcionario> resultado = objectMapper.readValue(responseJsonString, new TypeReference<List<Funcionario>>(){});
 
 
             // Assert
@@ -314,94 +315,95 @@ public class FuncionarioV1ControllerTests {
         }
 
         @Test
-        @DisplayName("Quando buscamos um entregador salvo pelo id")
-        void quandoBuscamosPorUmEntregadorSalvo() throws Exception {
+        @DisplayName("Quando buscamos um funcionário salvo pelo id")
+        void quandoBuscamosPorUmFuncionarioSalvo() throws Exception {
             // Arrange
             // nenhuma necessidade além do setup()
 
             // Act
-            String responseJsonString = driver.perform(get(URI_ENTREGADORES + "/" + entregador.getId())
+            String responseJsonString = driver.perform(get(URI_FUNCIONARIOS + "/" + funcionario.getId())
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPostRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioPostRequestDTO)))
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            List<Entregador> listaResultados = objectMapper.readValue(responseJsonString, new TypeReference<List<Entregador>>(){});
-            Entregador resultado = listaResultados.stream().findFirst().orElse(Entregador.builder().build());
+            List<Funcionario> listaResultados = objectMapper.readValue(responseJsonString, new TypeReference<List<Funcionario>>(){});
+            Funcionario resultado = listaResultados.stream().findFirst().orElse(Funcionario.builder().build());
 
             // Assert
             assertAll(
-                    () -> assertEquals(entregador.getId().longValue(), resultado.getId().longValue()),
-                    () -> assertEquals(entregador.getNome(), resultado.getNome()),
-                    () -> assertEquals(entregador.getCor(), resultado.getCor()),
-                    () -> assertEquals(entregador.getPlaca(), resultado.getPlaca()),
-                    () -> assertEquals(entregador.getVeiculo(), resultado.getVeiculo())
+                    () -> assertEquals(funcionario.getId().longValue(), resultado.getId().longValue()),
+                    () -> assertEquals(funcionario.getNome(), resultado.getNome()),
+                    () -> assertEquals(funcionario.getCor(), resultado.getCor()),
+                    () -> assertEquals(funcionario.getPlaca(), resultado.getPlaca()),
+                    () -> assertEquals(funcionario.getVeiculo(), resultado.getVeiculo())
             );
 
         }
 
         @Test
-        @DisplayName("Quando criamos um novo entregador com dados válidos")
-        void quandoCriarEntregadorValido() throws Exception {
+        @DisplayName("Quando criamos um novo funcionário com dados válidos")
+        void quandoCriarFuncionarioValido() throws Exception {
             // Arrange
             // nenhuma necessidade além do setup()
 
             // Act
-            String responseJsonString = driver.perform(post(URI_ENTREGADORES)
+            String responseJsonString = driver.perform(post(URI_FUNCIONARIOS)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPostRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioPostRequestDTO)))
                     .andExpect(status().isCreated()) // Codigo 201
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
 
             // Assert
             assertAll(
                     () -> assertNotNull(resultado.getId()),
-                    () -> assertEquals(entregadorPostRequestDTO.getNome(), resultado.getNome()),
-                    () -> assertEquals(entregadorPostRequestDTO.getCor(), resultado.getCor()),
-                    () -> assertEquals(entregadorPostRequestDTO.getPlaca(), resultado.getPlaca()),
-                    () -> assertEquals(entregadorPostRequestDTO.getVeiculo(), resultado.getVeiculo())
+                    () -> assertEquals(funcionarioPostRequestDTO.getNome(), resultado.getNome()),
+                    () -> assertEquals(funcionarioPostRequestDTO.getCor(), resultado.getCor()),
+                    () -> assertEquals(funcionarioPostRequestDTO.getPlaca(), resultado.getPlaca()),
+                    () -> assertEquals(funcionarioPostRequestDTO.getVeiculo(), resultado.getVeiculo())
             );
 
         }
 
         @Test
         @Transactional
-        @DisplayName("Quando alteramos o entregador com dados válidos")
-        void quandoAlteramosEntregadorValido() throws Exception {
+        @DisplayName("Quando alteramos o funcionário com dados válidos")
+        void quandoAlteramosFuncionarioValido() throws Exception {
             // Arrange
-            Long entregadorId = entregador.getId();
+            Long funcionarioId = funcionario.getId();
 
             // Act
-            String responseJsonString = driver.perform(put(URI_ENTREGADORES + "/" + entregador.getId())
+            String responseJsonString = driver.perform(put(URI_FUNCIONARIOS + "/" + funcionario.getId())
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(entregadorPutRequestDTO)))
+                            .content(objectMapper.writeValueAsString(funcionarioPutRequestDTO)))
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Entregador resultado = objectMapper.readValue(responseJsonString, Entregador.EntregadorBuilder.class).build();
+            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
 
             // Assert
             assertAll(
-                    () -> assertEquals(entregadorPutRequestDTO.getNome(), resultado.getNome()),
-                    () -> assertEquals(entregadorPutRequestDTO.getCor(), resultado.getCor()),
-                    () -> assertEquals(entregadorPutRequestDTO.getPlaca(), resultado.getPlaca()),
-                    () -> assertEquals(entregadorPutRequestDTO.getVeiculo(), resultado.getVeiculo())
+                    () -> assertEquals(funcionarioPutRequestDTO.getNome(), resultado.getNome()),
+                    () -> assertEquals(funcionarioPutRequestDTO.getCor(), resultado.getCor()),
+                    () -> assertEquals(funcionarioPutRequestDTO.getPlaca(), resultado.getPlaca()),
+                    () -> assertEquals(funcionarioPutRequestDTO.getVeiculo(), resultado.getVeiculo())
             );
 
         }
+
         @Test
-        @DisplayName("Quando excluímos um entregador salvo")
-        void quandoExcluimosEntregadorValido() throws Exception {
+        @DisplayName("Quando excluímos um funcionário salvo")
+        void quandoExcluimosFuncionarioValido() throws Exception {
             // Arrange
             // nenhuma necessidade além do setup()
 
             // Act
-            String responseJsonString = driver.perform(delete(URI_ENTREGADORES + "/" + entregador.getId())
+            String responseJsonString = driver.perform(delete(URI_FUNCIONARIOS + "/" + funcionario.getId())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNoContent()) // Codigo 204
                     .andDo(print())
