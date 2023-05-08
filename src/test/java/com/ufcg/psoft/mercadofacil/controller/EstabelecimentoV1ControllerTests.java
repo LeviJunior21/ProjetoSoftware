@@ -195,7 +195,7 @@ public class EstabelecimentoV1ControllerTests {
 
         // Assert
         assertEquals("Erros de validacao encontrados", resultado.getMessage());
-        assertEquals("O codigo deve ter 6 digitos", resultado.getErrors().get(0));
+        assertEquals("O id nao pode ser null", resultado.getErrors().get(0));
     }
 
     @Test
@@ -235,6 +235,7 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                     .nome("Pizzaria B")
                     .codigoAcesso(123456)
+                    .id(221345L)
                     .build();
 
             String responseJSONString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/atualizar")

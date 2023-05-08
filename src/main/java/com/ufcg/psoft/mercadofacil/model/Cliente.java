@@ -15,18 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "clientes")
 public class Cliente {
+    @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @JsonProperty("cpf")
-    private Long cpf;
-    @JsonProperty("nome")
-    private String nome;
-    @JsonProperty("idade")
-    private Integer idade;
-    @JsonProperty("endereco")
+    @JsonProperty("nomeCompleto")
+    private String nomeCompleto;
+    @JsonProperty("enderecoPrincipal")
     private String endereco;
     @JsonProperty("carrinhos")
     @OneToMany(cascade = CascadeType.ALL)
     private List<Produto> carrinhos;
+    @JsonProperty("codigoAcesso")
+    private Integer codigoAcesso;
 }

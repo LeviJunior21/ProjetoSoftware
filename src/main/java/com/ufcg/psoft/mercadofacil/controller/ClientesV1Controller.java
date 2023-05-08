@@ -1,5 +1,9 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteEnderecoPatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteNomePatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.service.cliente.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,5 +18,77 @@ import org.springframework.web.bind.annotation.*;
 )
 public class ClientesV1Controller {
 
+    @Autowired
+    ClienteListarService clienteListarService;
+    @Autowired
+    ClienteCriarService clienteCriarService;
+    @Autowired
+    ClienteAlterarNomeService clienteAlterarNomeService;
+    @Autowired
+    ClienteAlterarEnderecoService clienteAlterarEnderecoService;
+    @Autowired
+    ClienteAlterarService clienteAlterarService;
+    @Autowired
+    ClienteExcluirService clienteExcluirService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarUmCliente(
+            @PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteListarService.listar(id));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> buscarTodosClientes() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteListarService.listar(null));
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> salvarCliente(
+            @RequestBody @Valid ClientePostPutRequestDTO clientePostPutRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(clienteCriarService.salvar(clientePostPutRequestDTO));
+    }
+
+    @PatchMapping("/{id}/nome")
+    public ResponseEntity<?> atualizarParcialmenteClienteNome(
+            @PathVariable Long id,
+            @RequestBody @Valid ClienteNomePatchRequestDTO clienteNomePatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteAlterarNomeService.alterarParcialmente(id, clienteNomePatchRequestDTO));
+    }
+
+    @PatchMapping("/{id}/endereco")
+    public ResponseEntity<?> atualizarParcialmenteClienteEndereco(
+            @PathVariable Long id,
+            @RequestBody @Valid ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteAlterarEnderecoService.alterarParcialmente(id, clienteEnderecoPatchRequestDTO));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarCliente(
+            @PathVariable Long id,
+            @RequestBody @Valid ClientePostPutRequestDTO clientePostPutRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteAlterarService.alterar(id, clientePostPutRequestDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluirCliente(
+            @PathVariable Long id
+    ) {
+        clienteExcluirService.excluir(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
 
 }
