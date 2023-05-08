@@ -47,6 +47,7 @@ public class FuncionarioV1ControllerTests {
                         .nome("Lucas")
                         .veiculo("Fuskinha")
                         .placa("20103")
+                        .codigoAcesso(324458)
                         .build()
         );
     }
@@ -65,6 +66,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioNomePatchRequestDTO funcionarioNomePatchRequestDTO = FuncionarioNomePatchRequestDTO.builder()
                     .nome("Joao Silva")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -87,6 +89,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioNomePatchRequestDTO funcionarioNomePatchRequestDTO = FuncionarioNomePatchRequestDTO.builder()
                     .nome("")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -114,6 +117,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioCorPatchRequestDTO funcionarioCorPatchRequestDTO = FuncionarioCorPatchRequestDTO.builder()
                     .cor("azul")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -137,6 +141,7 @@ public class FuncionarioV1ControllerTests {
         // Arrange
         FuncionarioCorPatchRequestDTO funcionarioCorPatchRequestDTO = FuncionarioCorPatchRequestDTO.builder()
                 .cor("")
+                .codigoAcesso(324458)
                 .build();
 
         // Act
@@ -163,6 +168,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioPlacaPatchRequestDTO funcionarioPlacaPatchRequestDTO = FuncionarioPlacaPatchRequestDTO.builder()
                     .placa("5atfa4")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -185,6 +191,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioPlacaPatchRequestDTO funcionarioPlacaPatchRequestDTO = FuncionarioPlacaPatchRequestDTO.builder()
                     .placa("")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -212,6 +219,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioVeiculoPatchRequestDTO funcionarioVeiculoPatchRequestDTO = FuncionarioVeiculoPatchRequestDTO.builder()
                     .veiculo("moto")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -234,6 +242,7 @@ public class FuncionarioV1ControllerTests {
             // Arrange
             FuncionarioVeiculoPatchRequestDTO funcionarioVeiculoPatchRequestDTO = FuncionarioVeiculoPatchRequestDTO.builder()
                     .veiculo("")
+                    .codigoAcesso(324458)
                     .build();
 
             // Act
@@ -265,12 +274,14 @@ public class FuncionarioV1ControllerTests {
             funcionarioPostRequestDTO = FuncionarioPostPutRequestDTO.builder()
                     .cor("prata")
                     .nome("Lucas")
+                    .codigoAcesso(324458)
                     .veiculo("Fuskinha")
                     .placa("20103")
                     .entregando(false)
                     .build();
             funcionarioPutRequestDTO = FuncionarioPostPutRequestDTO.builder()
                     .nome("Jao")
+                    .codigoAcesso(324458)
                     .veiculo("moto")
                     .cor("vermelho")
                     .placa("72G34")

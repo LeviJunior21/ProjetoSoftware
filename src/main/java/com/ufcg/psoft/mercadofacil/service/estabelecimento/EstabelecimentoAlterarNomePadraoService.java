@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import org.modelmapper.ModelMapper;
@@ -15,9 +16,12 @@ public class EstabelecimentoAlterarNomePadraoService implements EstabelecimentoA
     @Autowired
     ModelMapper modelMapper;
     @Override
-    public Estabelecimento alterarParcialmente(Long id, EstabelecimentoNomePatchRequestDTO produtoNomePatchRequestDTO) {
+    public Estabelecimento alterarParcialmente(Long id, EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
-        modelMapper.map(produtoNomePatchRequestDTO, estabelecimento);
+        if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoNomePatchRequestDTO.getCodigoAcesso()))  {
+            throw new CodigoAcessoDiferenteException();
+        }
+        modelMapper.map(estabelecimentoNomePatchRequestDTO, estabelecimento);
         return estabelecimentoRepository.save(estabelecimento);
     }
 }

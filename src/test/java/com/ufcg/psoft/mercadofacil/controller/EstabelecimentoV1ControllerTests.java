@@ -53,18 +53,22 @@ public class EstabelecimentoV1ControllerTests {
                 .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
                 .pizzas(new HashSet<>())
+                .codigoAcesso(123456)
                 .build()
         );
         estabelecimento2 = Estabelecimento.builder()
                 .nome("Pizzando")
                 .id(123489L)
+                .codigoAcesso(123458)
                 .build();
         estabelecimentoPostRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento Dez")
                 .id(123458L)
+                .codigoAcesso(123456)
                 .build();
         estabelecimentoPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento Vinte")
+                .codigoAcesso(123458)
                 .id(123459L)
                 .build();
     }
@@ -75,7 +79,7 @@ public class EstabelecimentoV1ControllerTests {
     }
 
     @Test
-    @DisplayName("Quando criamos um novo produto com dados válidos")
+    @DisplayName("Quando criamos um novo estabelecimento com dados válidos")
     void quandoCriarEstabelecimentoValido() throws Exception {
         // Arrange
         // nenhuma necessidade além do setup()
@@ -104,6 +108,7 @@ public class EstabelecimentoV1ControllerTests {
         // Arrange
         EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO = EstabelecimentoNomePatchRequestDTO.builder()
                 .nome("Padaria")
+                .codigoAcesso(123456)
                 .build();
 
         // Act
@@ -150,6 +155,7 @@ public class EstabelecimentoV1ControllerTests {
         EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento A")
                 .id(12345678L)
+                .codigoAcesso(12456)
                 .build();
 
         // Act
@@ -173,6 +179,7 @@ public class EstabelecimentoV1ControllerTests {
         // Arrange
         EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento A")
+                .codigoAcesso(123456)
                 .id(null)
                 .build();
 
@@ -198,6 +205,7 @@ public class EstabelecimentoV1ControllerTests {
         EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento A")
                 .id(1234L)
+                .codigoAcesso(1234567)
                 .build();
 
         // Act
@@ -224,13 +232,14 @@ public class EstabelecimentoV1ControllerTests {
         @DisplayName("Quando atualizamos um estabelecimento")
         void quandoAtualizamosUmEstabelecimento() throws Exception {
             // Arrange
-            EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO = EstabelecimentoNomePatchRequestDTO.builder()
+            EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                     .nome("Pizzaria B")
+                    .codigoAcesso(123456)
                     .build();
 
             String responseJSONString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/atualizar")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTO)))
+                    .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 

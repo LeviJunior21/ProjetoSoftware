@@ -28,5 +28,5 @@ public class Cliente {
     private String endereco;
     @JsonProperty("carrinhos")
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Carrinho> carrinhos;
+    private List<Produto> carrinhos;
 }

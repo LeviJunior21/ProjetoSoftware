@@ -1,6 +1,5 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.service.lote.LoteListarService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

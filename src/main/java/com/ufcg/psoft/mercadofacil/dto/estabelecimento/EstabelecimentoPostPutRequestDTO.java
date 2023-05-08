@@ -24,7 +24,9 @@ public class EstabelecimentoPostPutRequestDTO {
     @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @CodigoAcesso
-    @NotNull(message = "O codigo deve ter 6 digitos")
     private Long id;
+
+    @JsonProperty("codigoAcesso")
+    @CodigoAcesso
+    private Integer codigoAcesso;
 }

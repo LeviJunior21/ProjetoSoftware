@@ -73,10 +73,10 @@ public class EstabelecimentoV1Controller {
     @PutMapping("/{id}/atualizar")
     public ResponseEntity<?> atualizarEstabelecimento(
             @PathVariable Long id,
-            @RequestBody @Valid EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
+            @RequestBody @Valid EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarService.alterar(id, estabelecimentoNomePatchRequestDTO));
+                .body(estabelecimentoAlterarService.alterar(id, estabelecimentoPostPutRequestDTO));
     }
 
     @DeleteMapping("/{id}/estabelecimento")

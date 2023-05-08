@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.dto.funcionario;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +16,9 @@ public class FuncionarioNomePatchRequestDTO {
     @JsonProperty("nome")
     @NotBlank(message = "Nome obrigatorio")
     private String nome;
+
+    @JsonProperty("codigoAcesso")
+    @CodigoAcesso
+    private Integer codigoAcesso;
     
 }
