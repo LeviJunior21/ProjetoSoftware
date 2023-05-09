@@ -21,12 +21,6 @@ public class EstabelecimentoPostPutRequestDTO {
     @NotBlank
     private String nome;
 
-    @JsonProperty("id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @NotNull(message = "O id nao pode ser null")
-    private Long id;
-
     @JsonProperty("codigoAcesso")
     @CodigoAcesso
     private Integer codigoAcesso;

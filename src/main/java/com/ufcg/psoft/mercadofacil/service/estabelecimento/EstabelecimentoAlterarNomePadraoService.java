@@ -18,7 +18,7 @@ public class EstabelecimentoAlterarNomePadraoService implements EstabelecimentoA
     @Override
     public Estabelecimento alterarParcialmente(Long id, EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
-        if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoNomePatchRequestDTO.getCodigoAcesso()))  {
+        if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoNomePatchRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }
         modelMapper.map(estabelecimentoNomePatchRequestDTO, estabelecimento);

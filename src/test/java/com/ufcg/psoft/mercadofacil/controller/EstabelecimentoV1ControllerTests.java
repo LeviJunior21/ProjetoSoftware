@@ -63,13 +63,11 @@ public class EstabelecimentoV1ControllerTests {
                 .build();
         estabelecimentoPostRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento Dez")
-                .id(123458L)
                 .codigoAcesso(123456)
                 .build();
         estabelecimentoPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento Vinte")
                 .codigoAcesso(123458)
-                .id(123459L)
                 .build();
     }
 
@@ -126,6 +124,50 @@ public class EstabelecimentoV1ControllerTests {
     }
 
     @Test
+    @DisplayName("Quando alteramos com o codigo de acesso invalido pelo banco")
+    void quandoAlteramosEstabelecimentoComCodigoAcessoInvalidoPeloBanco() throws Exception {
+        EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
+                .codigoAcesso(988989)
+                .nome("Nome")
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(put("/v1/estabelecimentos/" + estabelecimento.getId() + "/atualizar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando alteramos com o codigo de acesso invalido pelo banco")
+    void quandoAlteramosNomeEstabelecimentoComCodigoAcessoInvalidoPeloBanco() throws Exception {
+        EstabelecimentoNomePatchRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoNomePatchRequestDTO.builder()
+                .codigoAcesso(988989)
+                .nome("Nome")
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(put("/v1/estabelecimentos/" + estabelecimento.getId() + "/atualizar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+    }
+
+    @Test
     @DisplayName("Quando alteramos apenas o nome do estabelecimento com dados inválido (em branco)")
     void quandoAlteramosNomeDoEstabelecimentoInvalidoBanco() throws Exception {
         // Arrange
@@ -154,7 +196,6 @@ public class EstabelecimentoV1ControllerTests {
         // Arrange
         EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento A")
-                .id(12345678L)
                 .codigoAcesso(12456)
                 .build();
 
@@ -174,37 +215,11 @@ public class EstabelecimentoV1ControllerTests {
     }
 
     @Test
-    @DisplayName("Quando alteramos apenas o id do estabelecimento com dados inválido (id null)")
-    void quandoCriamosUmEstabelecimentoComCodigoInvalidoDigitosNullBanco() throws Exception {
-        // Arrange
-        EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
-                .nome("Estabelecimento A")
-                .codigoAcesso(123456)
-                .id(null)
-                .build();
-
-        // Act
-        String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andDo(print())
-                .andReturn().getResponse().getContentAsString();
-
-        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
-
-        // Assert
-        assertEquals("Erros de validacao encontrados", resultado.getMessage());
-        assertEquals("O id nao pode ser null", resultado.getErrors().get(0));
-    }
-
-    @Test
     @DisplayName("Quando alteramos apenas o id do estabelecimento com dados inválido (id menor que 6 digitos)")
     void quandoCriamosUmEstabelecimentoComCodigoInvalidoMaiorQueSeisDigitosBanco() throws Exception {
         // Arrange
         EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                 .nome("Estabelecimento A")
-                .id(1234L)
                 .codigoAcesso(1234567)
                 .build();
 
@@ -235,7 +250,6 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                     .nome("Pizzaria B")
                     .codigoAcesso(123456)
-                    .id(14L)
                     .build();
 
             String responseJSONString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/atualizar")

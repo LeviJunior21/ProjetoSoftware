@@ -17,9 +17,6 @@ public class EstabelecimentoCriarPadraoService implements EstabelecimentoCriarSe
     @Override
     public Estabelecimento salvar(EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO) {
         Estabelecimento estabelecimento = modelMapper.map(estabelecimentoPostPutRequestDTO, Estabelecimento.class);
-        if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoPostPutRequestDTO.getCodigoAcesso()))  {
-            throw new CodigoAcessoDiferenteException();
-        }
         return estabelecimentoRepository.save(estabelecimento);
     }
 }

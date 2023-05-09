@@ -185,6 +185,29 @@ public class ClienteV1ControllerTests {
         }
 
         @Test
+        @DisplayName("Quando altero endereco usando codigo invalido menor")
+        void quandoAlteroUsuarioCodigoInvalidoPeloBanco() throws Exception {
+            //Arrange
+            ClientePostPutRequestDTO clientePostPutRequestDTO1 = ClientePostPutRequestDTO.builder()
+                    .nomeCompleto("Nome")
+                    .enderecoPrincipal("Rua S")
+                    .codigoAcesso(123489)
+                    .build();
+            //Act
+            String responseJSONString = driver.perform(put(URI_CLIENTE + "/" + cliente1.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePostPutRequestDTO1)))
+                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            //Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+
+        @Test
         @DisplayName("Quando altero endereco do usuario vazio")
         void quandoAlteroEnderecoUsuarioInvalido() throws Exception {
             //Arrange

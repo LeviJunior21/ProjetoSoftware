@@ -18,9 +18,6 @@ public class ClienteCriarPadraoService implements ClienteCriarService {
     @Override
     public Cliente salvar(ClientePostPutRequestDTO clientePostPutRequestDTO) {
         Cliente cliente = modelMapper.map(clientePostPutRequestDTO, Cliente.class);
-        if (!cliente.getCodigoAcesso().equals(clientePostPutRequestDTO.getCodigoAcesso()))  {
-            throw new CodigoAcessoDiferenteException();
-        }
         return clienteRepository.save(cliente);
     }
 }
