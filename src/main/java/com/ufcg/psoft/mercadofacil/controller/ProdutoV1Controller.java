@@ -1,11 +1,15 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.service.cliente.ClienteBuscarService;
-import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarService;
-import com.ufcg.psoft.mercadofacil.service.produto.ProdutoCriarPadraoService;
-import com.ufcg.psoft.mercadofacil.service.produto.ProdutoExcluirService;
-import com.ufcg.psoft.mercadofacil.service.produto.ProdutoListarService;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoNomePatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoPrecoPatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoTamanhoPatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoTipoPatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.produto.*;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarNomeService;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarPrecoService;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarTamanhoService;
+import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarTipoService;
+import com.ufcg.psoft.mercadofacil.service.produto.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +32,14 @@ public class ProdutoV1Controller {
     ProdutoAlterarService produtoAtualizarService;
     @Autowired
     ProdutoExcluirService produtoExcluirService;
+    @Autowired
+    ProdutoAlterarNomeService produtoAlterarNomeService;
+    @Autowired
+    ProdutoAlterarPrecoService produtoAlterarPrecoService;
+    @Autowired
+    ProdutoAlterarTamanhoService produtoAlterarTamanhoService;
+    @Autowired
+    ProdutoAlterarTipoService produtoAlterarTipoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmProduto(
@@ -52,6 +64,41 @@ public class ProdutoV1Controller {
                 .body(produtoCriarService.salvar(produtoPostPutRequestDto));
     }
 
+    @PatchMapping("/{id}/nome")
+    public ResponseEntity<?> atualizarParcialmenteProdutoNome(
+            @PathVariable Long id,
+            @RequestBody @Valid ProdutoNomePatchRequestDTO produtoNomePatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(produtoAlterarNomeService.alterarParcialmente(id, produtoNomePatchRequestDTO));
+    }
+
+    @PatchMapping("/{id}/preco")
+    public ResponseEntity<?> atualizarParcialmenteProdutoPreco(
+            @PathVariable Long id,
+            @RequestBody @Valid ProdutoPrecoPatchRequestDTO produtoPrecoPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(produtoAlterarPrecoService.alterarParcialmente(id, produtoPrecoPatchRequestDTO));
+    }
+
+    @PatchMapping("/{id}/tamanho")
+    public ResponseEntity<?> atualizarParcialmenteProdutoTamanho(
+            @PathVariable Long id,
+            @RequestBody @Valid ProdutoTamanhoPatchRequestDTO produtoTamanhoPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(produtoAlterarTamanhoService.alterarParcialmente(id, produtoTamanhoPatchRequestDTO));
+    }
+
+    @PatchMapping("/{id}/tipo")
+    public ResponseEntity<?> atualizarParcialmenteProdutoTipo(
+            @PathVariable Long id,
+            @RequestBody @Valid ProdutoTipoPatchRequestDTO produtoTipoPatchRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(produtoAlterarTipoService.alterarParcialmente(id, produtoTipoPatchRequestDTO));
+    }
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarProduto(
             @PathVariable Long id,
