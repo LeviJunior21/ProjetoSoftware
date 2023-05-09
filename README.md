@@ -1,34 +1,25 @@
-# Mercado Fácil
+# Pits A
 
-Um supermercado da cidade de Campina Grande precisa de um sistema que gerencie o estoque e venda de produtos na sua loja. Neste sistema, o administrador deve obter uma visão geral e o controle sobre o funcionamento do supermercado, por exemplo, ele deve poder adicionar novos produtos, acompanhar quantas unidades do produto estão disponíveis, alterar preços, ser notificado sobre eventos críticos, gerenciar as vendas e oferecer alguns serviços personalizados para o cliente.
+Recentemente, diversas empresas do ramo alimentício têm se desvinculado dos grandes aplicativos de delivery. As causas dessa tendência são diversas e vão desde a transformação no modo de operação de cada estabelecimento, até as taxas abusivas das grandes plataformas.
+Porém, em 2023, simplesmente não é viável voltar ao modo de trabalho “pré-Ifood”... Foi por isso que a pizzaria Pits A decidiu desenvolver seu próprio aplicativo de delivery. E adivinha só… vocês foram escolhidos para ajudar!
+
 
 ## User Stories já implementadas
 
-- Eu, como administrador, gostaria de adicionar um novo produto no sistema,
-  informando seu nome, código de barra, fabricante e preço;
-- Eu, como administrador, gostaria de consultar o nome, código de barra,
-  preço e fabricante de cada produto do supermercado;
-- Eu, como administrador, gostaria de modificar atributos de um determinado
-  produto no sistema;
-- Eu, como administrador, gostaria de remover um determinado produto do sistema;
-- Eu, como administrador, gostaria de listar produtos cadastrados no sistema
-- Eu, como administrador, gostaria de adicionar um novo cliente no sistema,
-  informando seu nome, cpf, idade e endereço;
-- Eu, como administrador, gostaria de consultar o nome, cpf,
-  idade e endereço de cada cliente do supermercado;
-- Eu, como administrador, gostaria de modificar atributos de um determinado
-  cliente no sistema;
-- Eu, como administrador, gostaria de remover um determinado cliente do sistema;
-- Eu, como administrador, gostaria de listar clientes cadastrados no sistema
-- Eu, como administrador, gostaria de criar lotes associados aos produtos,
-- Eu, como administrador, gostaria de listar lotes cadastrados no sistema
+- Eu, enquanto administrador do sistema , quero utilizar o sistema para criar,  editar e remover um estabelecimento;
+- Eu, enquanto cliente, quero utilizar o sistema para me cadastrar como cliente do sistema. Mais detalhadamente, deve ser possível criar, ler, editar e remover clientes;
+- Eu, enquanto funcionário(a) terceirizado(a), quero utilizar o sistema para me cadastrar como entregador(a) do sistema. Mais detalhadamente, deve ser possível criar, ler, editar e remover entregadores;
+- Eu, enquanto funcionário(a) terceirizado(a), quero utilizar o sistema para me associar como entregador(a) de um estabelecimento;
+- Eu, enquanto estabelecimento, quero utilizar o sistema para aprovar ou rejeitar entregadores do estabelecimento;
+- Eu, enquanto estabelecimento, quero utilizar o sistema para o CRUD dos sabores de pizza vendidos pelo estabelecimento. Mais detalhadamente, deve ser possível criar, ler, editar e remover sabores;
+- Eu, enquanto cliente, quero visualizar o cardápio de um estabelecimento;
 
 ## Estrutura básica
 
-- Um projeto: MercadoFacil;
-- Controllers que implementam os endpoints da API Rest (VersionController, ClienteControlle, ProdutoController e LoteController).
-- Três repositórios são utilizados: ClienteRepository, ProdutoRepository e LoteRepository, que são responsáveis por manipular as entidades Cliente, Produto e Lote em um banco de dados em memória;
-- O modelo é composto pelas classes Cliente.java, Produto.java e Lote.java que podem ser
+- Um projeto: PitsA;
+- Controllers que implementam os endpoints da API Rest (VersionController, ClientesV1Controller, ProdutoV1Controller e FuncionarioV1Controller, EstabelecimentoV1Controller).
+- Quatro repositórios são utilizados: ClienteRepository, ProdutoRepository e FuncionarioRepository e EstabelecimentoRepository, que são responsáveis por manipular as entidades Cliente, Produto, Estabelecimento e Funcionario em um banco de dados em memória;
+- O modelo é composto pelas classes Cliente.java, Produto.java, Entregador.java, Estabelecimento.java e Funcionario.java, que podem ser
   encontradas no pacote model;
 - O pacote exceptions guarda as classes de exceções que podem ser levantadas
   dentro do sistema;
@@ -57,6 +48,9 @@ Código base gerado via [start.sprint.io](https://start.spring.io/#!type=maven-p
 
 ## Contato e Dúvidas
 
-- fabio@computacao.ufcg.edu.br
+- lucas.pereira@ccc.ufcg.edu.br
+- levi.pereira.junior@ccc.ufcg.edu.br
+- victor.verissimo@ccc.ufcg.edu.br
+- vimerson.silva@ccc.ufcg.edu.br
 
 
