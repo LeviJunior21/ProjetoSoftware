@@ -29,6 +29,8 @@ public class ClientesV1Controller {
     @Autowired
     ClienteAlterarService clienteAlterarService;
     @Autowired
+    ClienteBuscarService clienteBuscarService;
+    @Autowired
     ClienteExcluirService clienteExcluirService;
 
     @GetMapping("/{id}")
@@ -36,7 +38,7 @@ public class ClientesV1Controller {
             @PathVariable Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(clienteListarService.listar(id));
+                .body(clienteBuscarService.get(id));
     }
 
     @GetMapping("")

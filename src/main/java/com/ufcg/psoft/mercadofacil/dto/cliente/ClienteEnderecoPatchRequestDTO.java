@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ClienteEnderecoPatchRequestDTO {
 
     @JsonProperty("enderecoPrincipal")
-    @NotBlank(message = "O endereco do cliente null é invalido")
+    @NotBlank(message = "Endereco vazio invalido")
     private String enderecoPrincipal;
 
     @JsonProperty("codigoAcesso")

@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
 import com.ufcg.psoft.mercadofacil.dto.produto.ProdutoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.service.cliente.ClienteBuscarService;
 import com.ufcg.psoft.mercadofacil.service.produto.ProdutoAlterarService;
 import com.ufcg.psoft.mercadofacil.service.produto.ProdutoCriarPadraoService;
 import com.ufcg.psoft.mercadofacil.service.produto.ProdutoExcluirService;

@@ -235,7 +235,7 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
                     .nome("Pizzaria B")
                     .codigoAcesso(123456)
-                    .id(221345L)
+                    .id(14L)
                     .build();
 
             String responseJSONString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/atualizar")

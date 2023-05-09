@@ -22,7 +22,7 @@ public class Cliente {
     @JsonProperty("nomeCompleto")
     private String nomeCompleto;
     @JsonProperty("enderecoPrincipal")
-    private String endereco;
+    private String enderecoPrincipal;
     @JsonProperty("carrinhos")
     @OneToMany(cascade = CascadeType.ALL)
     private List<Produto> carrinhos;
