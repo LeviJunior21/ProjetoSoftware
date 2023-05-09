@@ -17,7 +17,7 @@ Porém, em 2023, simplesmente não é viável voltar ao modo de trabalho “pré
 ## Estrutura básica
 
 - Um projeto: PitsA;
-- Controllers que implementam os endpoints da API Rest (VersionController, ClientesV1Controller, ProdutoV1Controller e FuncionarioV1Controller, EstabelecimentoV1Controller).
+- Controllers que implementam os endpoints da API Rest (VersionController, ClientesV1Controller, ProdutoV1Controller, FuncionarioV1Controller e EstabelecimentoV1Controller).
 - Quatro repositórios são utilizados: ClienteRepository, ProdutoRepository e FuncionarioRepository e EstabelecimentoRepository, que são responsáveis por manipular as entidades Cliente, Produto, Estabelecimento e Funcionario em um banco de dados em memória;
 - O modelo é composto pelas classes Cliente.java, Produto.java, Entregador.java, Estabelecimento.java e Funcionario.java, que podem ser
   encontradas no pacote model;
