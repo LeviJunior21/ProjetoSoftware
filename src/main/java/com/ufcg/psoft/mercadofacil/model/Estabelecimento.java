@@ -25,6 +25,7 @@ public class Estabelecimento {
     private Long id;
 
     @JsonProperty("codigoAcesso")
+    @CodigoAcesso
     private Integer codigoAcesso;
 
     @JsonProperty("nome")
