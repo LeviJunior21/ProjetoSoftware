@@ -47,6 +47,7 @@ public class ClienteV1ControllerTests {
     ClientePostPutRequestDTO clientePostPutRequestDTO;
     ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO;
     ClienteNomePatchRequestDTO clienteNomePatchRequestDTO;
+
     final String URI_CLIENTE = "/v1/clientes";
 
     @BeforeEach
@@ -470,6 +471,8 @@ public class ClienteV1ControllerTests {
 
             List<Cliente> clientes = objectMapper.readValue(responseJSONString, new TypeReference<List<Cliente>>() {});
             Cliente cliente = clientes.stream().findFirst().orElse(Cliente.builder().build());
+
+            //Assert
             assertEquals("Levi de Lima Pereira Junior", cliente.getNomeCompleto());
             assertEquals(2, clientes.size());
         }
