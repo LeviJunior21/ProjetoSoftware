@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProdutoTamanhoPatchRequestDTO {
     @JsonProperty("tamanho")
-    @NotBlank(message = "Tamanho da pizza é obrigatório")
+    @NotBlank(message = "Tamanho da pizza eh obrigatorio")
     private String tamanho;
 }

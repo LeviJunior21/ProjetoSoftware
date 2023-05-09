@@ -14,15 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProdutoPostPutRequestDTO {
     @JsonProperty("nome")
-    @NotBlank(message = "Nome é obrigatório")
+    @NotBlank(message = "Nome eh obrigatorio")
     private String nome;
     @JsonProperty("preco")
     @Positive(message = "Preço deve ser maior ou igual a zero")
     private Double preco;
     @JsonProperty("tamanho")
-    @NotBlank(message = "Tamanho da pizza é obrigatório")
+    @NotBlank(message = "Tamanho da pizza eh obrigatorio")
     private String tamanho;
     @JsonProperty("tipo")
-    @NotBlank(message = "Tipo da pizza é obrigatório")
+    @NotBlank(message = "Tipo da pizza eh obrigatorio")
     private String tipo;
 }

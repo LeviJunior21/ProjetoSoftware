@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProdutoPrecoPatchRequestDTO {
     @JsonProperty("preco")
-    @Positive(message = "Preço deve ser maior ou igual a zero")
+    @Positive(message = "Preco deve ser maior ou igual a zero")
     private Double preco;
 }

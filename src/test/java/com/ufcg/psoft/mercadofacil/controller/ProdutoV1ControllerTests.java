@@ -41,7 +41,7 @@ public class ProdutoV1ControllerTests {
                 Produto.builder()
                         .nome("portuguesa")
                         .preco(38.00)
-                        .tamanho("média")
+                        .tamanho("media")
                         .tipo("salgada")
                         .build()
         );
@@ -61,7 +61,7 @@ public class ProdutoV1ControllerTests {
                     .nome("Calabresa")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/nome")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoNomePatchRequestDTO)))
                     .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class ProdutoV1ControllerTests {
                     .nome("")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/nome")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoNomePatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -93,7 +93,7 @@ public class ProdutoV1ControllerTests {
 
             //Assert
             assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Nome obrigatório", resultado.getErrors().get(0));
+            assertEquals("Nome eh obrigatorio", resultado.getErrors().get(0));
         }
     }
 
@@ -108,7 +108,7 @@ public class ProdutoV1ControllerTests {
                     .preco(34.00)
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/preco")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/preco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoPrecoPatchRequestDTO)))
                     .andExpect(status().isOk())
@@ -129,7 +129,7 @@ public class ProdutoV1ControllerTests {
                     .preco(-20.00)
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/preco")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/preco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoPrecoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -140,7 +140,7 @@ public class ProdutoV1ControllerTests {
 
             //Assert
             assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Preço deve ser maior ou igual a zero", resultado.getErrors().get(0));
+            assertEquals("Preco deve ser maior ou igual a zero", resultado.getErrors().get(0));
         }
     }
 
@@ -155,7 +155,7 @@ public class ProdutoV1ControllerTests {
                     .tamanho("grande")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/tamanho")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/tamanho")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoTamanhoPatchRequestDTO)))
                     .andExpect(status().isOk())
@@ -176,7 +176,7 @@ public class ProdutoV1ControllerTests {
                     .tamanho("")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/tamanho")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/tamanho")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoTamanhoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -187,7 +187,7 @@ public class ProdutoV1ControllerTests {
 
             //Assert
             assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Tamanho da pizza é obrigatório", resultado.getErrors().get(0));
+            assertEquals("Tamanho da pizza eh obrigatorio", resultado.getErrors().get(0));
         }
     }
 
@@ -202,7 +202,7 @@ public class ProdutoV1ControllerTests {
                     .tipo("doce")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/tipo")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/tipo")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoTipoPatchRequestDTO)))
                     .andExpect(status().isOk())
@@ -223,7 +223,7 @@ public class ProdutoV1ControllerTests {
                     .tipo("")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/produtos" + produto.getId() + "/tipo")
+            String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/tipo")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(produtoTipoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -234,7 +234,7 @@ public class ProdutoV1ControllerTests {
 
             //Assert
             assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Tipo da pizza é obrigatório", resultado.getErrors().get(0));
+            assertEquals("Tipo da pizza eh obrigatorio", resultado.getErrors().get(0));
         }
     }
 
@@ -252,7 +252,7 @@ public class ProdutoV1ControllerTests {
             produtoPostRequestDTO = ProdutoPostPutRequestDTO.builder()
                     .nome("portuguesa")
                     .preco(38.00)
-                    .tamanho("média")
+                    .tamanho("media")
                     .tipo("salgada")
                     .build();
             produtoPutRequestDTO = ProdutoPostPutRequestDTO.builder()
@@ -270,13 +270,13 @@ public class ProdutoV1ControllerTests {
             Produto produto1 = Produto.builder()
                     .nome("marguerita")
                     .preco(30.00)
-                    .tamanho("média")
+                    .tamanho("media")
                     .tipo("salgada")
                     .build();
             Produto produto2 = Produto.builder()
                     .nome("quatro queijos")
                     .preco(25.00)
-                    .tamanho("média")
+                    .tamanho("media")
                     .tipo("salgada")
                     .build();
             Produto produto3 = Produto.builder()

@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProdutoTipoPatchRequestDTO {
     @JsonProperty("tipo")
-    @NotBlank(message = "Tipo da pizza é obrigatório")
+    @NotBlank(message = "Tipo da pizza eh obrigatorio")
     private String tipo;
 }
