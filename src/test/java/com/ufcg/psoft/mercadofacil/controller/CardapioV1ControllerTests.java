@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.RequestEntity.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,7 +83,7 @@ public class CardapioV1ControllerTests {
             pizza = Produto.builder()
                     .nome("calabresa")
                     .tipo("salgado")
-                    .tamanho("média")
+                    .tamanho("media")
                     .preco(10.00)
                     .build();
             pizza2 = Produto.builder()
@@ -159,11 +160,156 @@ public class CardapioV1ControllerTests {
                     .andReturn().getResponse().getContentAsString();
 
             Set<Produto> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {});
-            Produto pizza  = pizzasSalgadas.stream().findFirst().orElse(Produto.builder().build());
+            Produto pizzaRetorno  = pizzasSalgadas.stream().findFirst().orElse(Produto.builder().build());
 
             assertEquals(1, pizzasSalgadas.size());
+
+            assertAll(
+                    () -> assertEquals(pizza.getNome(), pizzaRetorno.getNome()),
+                    () -> assertEquals(pizza.getTamanho(), pizzaRetorno.getTamanho()),
+                    () -> assertEquals(pizza.getPreco(), pizzaRetorno.getPreco()),
+                    () -> assertEquals(pizza.getTipo(), pizzaRetorno.getTipo())
+            );
         }
 
+        @Test
+        @DisplayName("Lista pizza adicionada em cardapio estabelecimento")
+        void verificaListagemPizzasSalgadasCasoTamanhoMedio() throws Exception{
+            //Arrange
+
+            String responseJSONString = driver.perform(get(URI_PIZZAS + "/" + estabelecimento.getId() + "/todasPizzasSalgadas")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            Set<Produto> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {});
+            Produto pizzaRetorno  = pizzasSalgadas.stream().findFirst().orElse(Produto.builder().build());
+
+            assertEquals(1, pizzasSalgadas.size());
+
+            assertAll(
+                    () -> assertEquals(pizza.getNome(), pizzaRetorno.getNome()),
+                    () -> assertEquals(pizza.getTamanho(), pizzaRetorno.getTamanho()),
+                    () -> assertEquals(pizza.getPreco(), pizzaRetorno.getPreco()),
+                    () -> assertEquals(pizza.getTipo(), pizzaRetorno.getTipo())
+            );
+        }
+
+        @Test
+        @DisplayName("Lista pizza adicionada em cardapio estabelecimento")
+        void verificaListagemPizzaSalgadaGrande() throws Exception{
+            //Arrange
+            Produto pizzaSalgadaGrande = Produto.builder()
+                    .nome("calabresa")
+                    .tipo("salgado")
+                    .tamanho("grande")
+                    .preco(30.00)
+                    .build();
+
+            estabelecimento.getPizzas().add(pizzaSalgadaGrande);
+
+            //Act
+            String responseJSONString = driver.perform(get(URI_PIZZAS + "/" + estabelecimento.getId() + "/todasPizzasSalgadas")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            Set<Produto> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {});
+            Produto pizzaRetorno  = pizzasSalgadas.stream().filter(produto -> ("salgado".equals(produto.getTipo()) && "grande".equals(produto.getTamanho()))).findFirst().orElse(Produto.builder().build());
+
+            assertEquals(2, pizzasSalgadas.size());
+
+            assertAll(
+                    () -> assertEquals(pizzaSalgadaGrande.getNome(), pizzaRetorno.getNome()),
+                    () -> assertEquals(pizzaSalgadaGrande.getTamanho(), pizzaRetorno.getTamanho()),
+                    () -> assertEquals(pizzaSalgadaGrande.getPreco(), pizzaRetorno.getPreco()),
+                    () -> assertEquals(pizzaSalgadaGrande.getTipo(), pizzaRetorno.getTipo())
+            );
+
+        }
+
+        @Test
+        @DisplayName("Lista pizza adicionada em cardapio estabelecimento")
+        void verificaListagemPizzasDocesTamanhoMedia() throws Exception{
+            //Arrange
+            Produto pizzaDoceMedia = Produto.builder()
+                    .nome("nutella")
+                    .tipo("doce")
+                    .tamanho("media")
+                    .preco(15.00)
+                    .build();
+
+            estabelecimento.getPizzas().add(pizzaDoceMedia);
+
+            //Act
+            String responseJSONString = driver.perform(get(URI_PIZZAS + "/" + estabelecimento.getId() + "/todasPizzasDoces")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            Set<Produto> pizzasDoces = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {});
+            Produto pizzaRetorno  = pizzasDoces.stream()
+                    .filter(produto -> ("doce".equals(produto.getTipo()) && "media".equals(produto.getTamanho())))
+                    .findFirst().orElse(Produto.builder().build());
+
+            assertEquals(2, pizzasDoces.size());
+
+            assertAll(
+                    () -> assertEquals(pizzaDoceMedia.getNome(), pizzaRetorno.getNome()),
+                    () -> assertEquals(pizzaDoceMedia.getTamanho(), pizzaRetorno.getTamanho()),
+                    () -> assertEquals(pizzaDoceMedia.getPreco(), pizzaRetorno.getPreco()),
+                    () -> assertEquals(pizzaDoceMedia.getTipo(), pizzaRetorno.getTipo())
+            );
+
+        }
+
+        @Test
+        @DisplayName("Lista pizza adicionada em cardapio estabelecimento")
+        void verificaListagemPizzasDoces() throws Exception{
+            //Arrange
+
+            String responseJSONString = driver.perform(get(URI_PIZZAS + "/" + estabelecimento.getId() + "/todasPizzasDoces")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            Set<Produto> pizzasDoces = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {});
+            Produto pizzaRetorno  = pizzasDoces.stream().findFirst().orElse(Produto.builder().build());
+
+            assertEquals(1, pizzasDoces.size());
+
+            assertAll(
+                    () -> assertEquals(pizza2.getNome(), pizzaRetorno.getNome()),
+                    () -> assertEquals(pizza2.getTamanho(), pizzaRetorno.getTamanho()),
+                    () -> assertEquals(pizza2.getPreco(), pizzaRetorno.getPreco()),
+                    () -> assertEquals(pizza2.getTipo(), pizzaRetorno.getTipo())
+            );
+        }
+
+        @Test
+        @DisplayName("Lista pizza adicionada em cardapio estabelecimento")
+        void verificaCodigoDeAcessoEstabelecimento() throws Exception{
+            //Arrange
+
+            String responseJSONString = driver.perform(get("/v1/estabelecimentos" + "/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            Estabelecimento estabelecimentoResultante = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
+
+            // Assert
+            assertEquals(estabelecimento.getNome(), estabelecimentoResultante.getNome());
+        }
 
     }
 
