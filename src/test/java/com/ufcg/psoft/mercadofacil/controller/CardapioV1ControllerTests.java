@@ -37,6 +37,7 @@ public class CardapioV1ControllerTests {
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     Estabelecimento estabelecimento;
+    Estabelecimento estabelecimento2;
 
     ObjectMapper objectMapper = new ObjectMapper();
     EstabelecimentoPostPutRequestDTO estabelecimentoPutRequestDTO;
