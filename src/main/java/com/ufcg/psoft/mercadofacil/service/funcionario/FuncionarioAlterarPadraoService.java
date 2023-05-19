@@ -1,6 +1,5 @@
 package com.ufcg.psoft.mercadofacil.service.funcionario;
 
-import com.ufcg.psoft.mercadofacil.dto.entregador.EntregadorPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;

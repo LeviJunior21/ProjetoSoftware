@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.ProdutoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
@@ -16,8 +17,10 @@ public class EstabelecimentoExcluirPadraoService implements EstabelecimentoExclu
     ModelMapper modelMapper;
 
     @Override
-    public void excluir(Long id) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
-        estabelecimentoRepository.delete(estabelecimento);
+    public void excluir(EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoRemoveRequestDTO.getId()).orElseThrow(ProdutoNaoExisteException::new);
+        if (estabelecimentoRemoveRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso())) {
+            estabelecimentoRepository.delete(estabelecimento);
+        }
     }
 }

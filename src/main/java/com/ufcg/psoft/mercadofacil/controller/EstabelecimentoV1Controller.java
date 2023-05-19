@@ -1,7 +1,9 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoAceitarRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoRemoveRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,24 +79,24 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoAlterarService.alterar(id, estabelecimentoPostPutRequestDTO));
     }
 
-    @DeleteMapping("/{id}/estabelecimento")
+    @DeleteMapping("/estabelecimento")
     public ResponseEntity<?> excluirEstabelecimento(
-            @PathVariable Long id
-        ) {
-        estabelecimentoExcluirService.excluir(id);
+            @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO
+            ) {
+        estabelecimentoExcluirService.excluir(estabelecimentoRemoveRequestDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");
     }
 
-    @DeleteMapping("/{id}/remover_espera/{idFuncionario}")
+    @DeleteMapping("/{id}/remover_espera")
     public ResponseEntity<?> removerEspera(
-            @PathVariable Long id,
-            @PathVariable Long idFuncionario
+            @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO,
+            @PathVariable Long id
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoRemoverEsperaService.excluirEspera(id, idFuncionario));
+                .body(estabelecimentoRemoverEsperaService.excluirEspera(estabelecimentoRemoveRequestDTO, id));
     }
 
     @PutMapping ("/{id}/solicitar/{idEntregador}")
@@ -107,13 +109,13 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, idEntregador));
     }
 
-    @PutMapping ("/{id}/aceitar/{idFuncionario}")
+    @PutMapping ("/{id}/aceitar")
     public ResponseEntity<?> aceitarPedido(
             @PathVariable Long id,
-            @PathVariable Long idFuncionario
+            @RequestBody @Valid EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAceitarService.aceitar(id, idFuncionario));
+                .body(estabelecimentoAceitarService.aceitar(estabelecimentoAceitarRequestDTO, id));
     }
 }

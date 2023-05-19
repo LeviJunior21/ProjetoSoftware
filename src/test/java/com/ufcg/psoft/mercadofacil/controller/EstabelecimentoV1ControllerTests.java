@@ -3,8 +3,10 @@ package com.ufcg.psoft.mercadofacil.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoAceitarRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
@@ -48,7 +50,6 @@ public class EstabelecimentoV1ControllerTests {
     void setup() {
         objectMapper.registerModule(new JavaTimeModule());
         estabelecimento = estabelecimentoRepository.save(Estabelecimento.builder()
-                .id(123456L)
                 .nome("Sorveteria")
                 .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
@@ -58,7 +59,6 @@ public class EstabelecimentoV1ControllerTests {
         );
         estabelecimento2 = Estabelecimento.builder()
                 .nome("Pizzando")
-                .id(123489L)
                 .codigoAcesso(123458)
                 .build();
         estabelecimentoPostRequestDTO = EstabelecimentoPostPutRequestDTO.builder()
@@ -242,6 +242,7 @@ public class EstabelecimentoV1ControllerTests {
     @DisplayName("Casos de teste para ApiRestFull.")
     class CasosDeTesteApiRestFull {
 
+        EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO;
         @Test
         @Transactional
         @DisplayName("Quando atualizamos um estabelecimento")
@@ -265,9 +266,15 @@ public class EstabelecimentoV1ControllerTests {
         @Test
         @DisplayName("Quando excluimos o estabelecimento")
         void quandoExcluimosUmEstabelecimento() throws Exception {
+            estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
+                    .codigoAcesso(123456)
+                    .id(estabelecimento.getId())
+                    .build();
             // Arrange
-            String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/estabelecimento")
-                            .contentType(MediaType.APPLICATION_JSON))
+            String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/estabelecimento")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
+                    )
                     .andExpect(status().isNoContent()) // Codigo 204
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -326,6 +333,7 @@ public class EstabelecimentoV1ControllerTests {
             FuncionarioRepository funcionarioRepository;
             Funcionario funcionario;
             FuncionarioPostPutRequestDTO funcionarioPostPutRequestDTO;
+            EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO;
 
             @BeforeEach
             void setup2() {
@@ -363,27 +371,43 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
             void quandoAceitaPedidoFuncionarioMasNaoEstaNaEsperaEstabelecimento() throws Exception {
                 //Arrange
+                estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
+                        .codigoAcesso(123456)
+                        .id(estabelecimento.getId())
+                        .build();
+
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/aceitar/" + funcionario.getId())
-                                .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk()) // Codigo 200
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/aceitar")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO))
+                        )
+                        .andExpect(status().isBadRequest()) // Codigo 200
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
 
-                Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
-                //Assert
-                assertEquals(0, resultado.getEntregadores().size());
+                CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+                // Assert
+                assertEquals("Erros de validacao encontrados", resultado.getMessage());
+                assertEquals("O codigo deve ter 6 digitos", resultado.getErrors().get(0));
             }
 
             @Test
             @Transactional
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
-            void quandoAceitaPedidoFuncionarioEstaNaEsperaEstabelecimento() throws Exception {
+            void quandoAceitaPedidoFuncionarioEstaNaoEsperaEstabelecimento() throws Exception {
                 //Arrange
+                estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
+                                .codigoAcesso(123456)
+                                .id(estabelecimento.getId())
+                                .build();
                 estabelecimento.getEspera().add(funcionario);
+
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/aceitar/" + funcionario.getId())
-                                .contentType(MediaType.APPLICATION_JSON))
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/aceitar")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO))
+                        )
                         .andExpect(status().isOk()) // Codigo 200
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
@@ -434,10 +458,16 @@ public class EstabelecimentoV1ControllerTests {
             @Transactional
             @DisplayName("Quando remove um enregador da lista de espera")
             void quandoRejeitoEntregadorEspera() throws Exception {
+                estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
+                        .id(estabelecimento.getId())
+                        .codigoAcesso(123456)
+                        .build();
                 // Arrange
                 // Act
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento2.getId() + "/remover_espera/" + funcionario10.getId())
-                                .contentType(MediaType.APPLICATION_JSON))
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + funcionario10.getId() + "/remover_espera")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
+                        )
                         .andExpect(status().isOk())
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();

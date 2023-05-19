@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -18,10 +19,10 @@ public class EstabelecimentoRemoverEsperaPadraoService implements Estabeleciment
     FuncionarioRepository funcionarioRepository;
 
     @Override
-    public Estabelecimento excluirEspera(Long idEstabelecimento, Long idFuncionario) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
+    public Estabelecimento excluirEspera(EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO, Long idFuncionario) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoRemoveRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
         Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElseThrow(FuncionarioNaoExisteException::new);
-        if (estabelecimento.getEspera().contains(funcionario)) {
+        if (estabelecimentoRemoveRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso()) && estabelecimento.getEspera().contains(funcionario)) {
             estabelecimento.getEspera().remove(funcionario);
             estabelecimentoRepository.save(estabelecimento);
         }
