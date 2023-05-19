@@ -7,5 +7,5 @@ import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 
 @FunctionalInterface
 public interface EstabelecimentoAceitarService {
-    public Estabelecimento aceitar(EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO, Long funcionarioId);
+    Estabelecimento aceitar(EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO, Long funcionarioId);
 }

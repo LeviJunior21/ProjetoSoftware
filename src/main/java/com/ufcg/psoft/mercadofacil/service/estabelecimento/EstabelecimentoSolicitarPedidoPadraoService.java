@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.FuncionarioSolicitaEntradaRequestDTO;
+import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
@@ -18,9 +20,12 @@ public class EstabelecimentoSolicitarPedidoPadraoService implements Estabelecime
     FuncionarioRepository funcionarioRepository;
 
     @Override
-    public Estabelecimento solicitarPedido(Long idEstabelecimento, Long idFuncionario) {
-        Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElseThrow(FuncionarioNaoExisteException::new);
+    public Estabelecimento solicitarPedido(Long idEstabelecimento, FuncionarioSolicitaEntradaRequestDTO funcionarioSolicitaEntradaRequestDTO) {
+        Funcionario funcionario = funcionarioRepository.findById(funcionarioSolicitaEntradaRequestDTO.getId()).orElseThrow(FuncionarioNaoExisteException::new);
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
+        if (!funcionario.getCodigoAcesso().equals(funcionarioSolicitaEntradaRequestDTO.getCodigoAcesso())) {
+            throw new CodigoAcessoDiferenteException();
+        }
         estabelecimento.getEspera().add(funcionario);
         estabelecimentoRepository.save(estabelecimento);
         return estabelecimento;

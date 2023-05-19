@@ -22,6 +22,7 @@ public class EstabelecimentoAlterarNomePadraoService implements EstabelecimentoA
             throw new CodigoAcessoDiferenteException();
         }
         modelMapper.map(estabelecimentoNomePatchRequestDTO, estabelecimento);
-        return estabelecimentoRepository.save(estabelecimento);
+        Estabelecimento retorno = estabelecimentoRepository.save(estabelecimento);
+        return retorno;
     }
 }

@@ -1,9 +1,7 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoAceitarRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoRemoveRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
+import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,12 +36,13 @@ public class EstabelecimentoV1Controller {
     @Autowired
     EstabelecimentoGetService estabelecimentoGetService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/estabelecimento")
     public ResponseEntity<?> buscarUmEstabelecimento(
-            @PathVariable Long id) {
+            @RequestBody @Valid EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO
+            ) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(estabelecimentoGetService.get(id));
+                    .body(estabelecimentoGetService.get(estabelecimentoGetRequestDTO));
     }
 
     @GetMapping("")
@@ -99,14 +98,14 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoRemoverEsperaService.excluirEspera(estabelecimentoRemoveRequestDTO, id));
     }
 
-    @PutMapping ("/{id}/solicitar/{idEntregador}")
+    @PutMapping ("/{id}/solicitar")
     public ResponseEntity<?> solicitarPedido(
             @PathVariable Long id,
-            @PathVariable Long idEntregador
+            @RequestBody @Valid FuncionarioSolicitaEntradaRequestDTO funcionarioSolicitaEntradaRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, idEntregador));
+                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, funcionarioSolicitaEntradaRequestDTO));
     }
 
     @PutMapping ("/{id}/aceitar")

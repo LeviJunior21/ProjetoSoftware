@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoGetRequestDTO;
+import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
@@ -13,8 +15,11 @@ public class EstabelecimentoGetPadraoService implements EstabelecimentoGetServic
     EstabelecimentoRepository estabelecimentoRepository;
 
     @Override
-    public Estabelecimento get(Long id) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
+    public Estabelecimento get(EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoGetRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
+        if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoGetRequestDTO.getCodigoAcesso())) {
+            throw new CodigoAcessoDiferenteException();
+        }
         return estabelecimento;
     }
 }
