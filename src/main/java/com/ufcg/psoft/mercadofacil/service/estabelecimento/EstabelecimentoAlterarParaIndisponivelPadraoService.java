@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoMensagemGetDTO;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.PizzaNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -14,7 +15,7 @@ public class EstabelecimentoAlterarParaIndisponivelPadraoService implements Esta
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     @Override
-    public Estabelecimento alterarDisponibilidade(Long idPizza, Long idEstabelecimento) {
+    public EstabelecimentoMensagemGetDTO alterarDisponibilidade(Long idPizza, Long idEstabelecimento) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pizza pizza = estabelecimento.getCardapio().stream()
                 .filter(elem -> elem.getId().equals(idPizza)).findFirst().orElseThrow(PizzaNaoExisteException::new);
@@ -24,6 +25,6 @@ public class EstabelecimentoAlterarParaIndisponivelPadraoService implements Esta
         pizza.setDisponibilidade("indisponivel");
         estabelecimento.getCardapio().add(pizza);
         estabelecimentoRepository.save(estabelecimento);
-        return estabelecimento;
+        return new EstabelecimentoMensagemGetDTO();
     }
 }

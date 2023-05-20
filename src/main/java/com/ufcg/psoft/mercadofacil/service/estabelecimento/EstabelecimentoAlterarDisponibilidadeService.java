@@ -1,9 +1,9 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
 
-import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoMensagemGetDTO;
 
 @FunctionalInterface
 public interface EstabelecimentoAlterarDisponibilidadeService {
-    public Estabelecimento alterarDisponibilidade(Long idPizza, Long idEstabelecimento);
+    EstabelecimentoMensagemGetDTO alterarDisponibilidade(Long idPizza, Long idEstabelecimento);
 }

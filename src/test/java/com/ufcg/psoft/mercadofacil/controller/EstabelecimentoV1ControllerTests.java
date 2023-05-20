@@ -5,9 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
-import com.ufcg.psoft.mercadofacil.model.Funcionario;
-import com.ufcg.psoft.mercadofacil.model.Pizza;
+import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
@@ -54,6 +53,7 @@ public class EstabelecimentoV1ControllerTests {
                 .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
                 .cardapio(new HashSet<>())
+                .interessados(new HashSet<>())
                 .codigoAcesso(123456)
                 .build()
         );
@@ -82,21 +82,55 @@ public class EstabelecimentoV1ControllerTests {
     class PizzaVerificaCondicoes {
         @Autowired
         PizzaRepository pizzaRepository;
+
+        @Autowired
+        ClienteRepository clienteRepository;
         Pizza pizza;
         Pizza pizza2;
+        Cliente cliente;
+        Produto produto;
+        Produto produto1;
+        ClienteInteressado clienteInteressado;
         @BeforeEach
         void setup() {
+            produto1 = Produto.builder()
+                    .nome("Frango")
+                    .preco(2.00)
+                    .tipo("Salgada")
+                    .tamanho("Grande")
+                    .build();
+
+            produto = Produto.builder()
+                    .nome("Calabresa")
+                    .preco(2.00)
+                    .tipo("Salgada")
+                    .tamanho("Grande")
+                    .build();
+
             pizza = pizzaRepository.save(Pizza.builder()
                     .disponibilidade("disponivel")
                     .sabor(new HashSet<>())
                     .build());
+            pizza.getSabor().add(produto);
             estabelecimento.getCardapio().add(pizza);
 
             pizza2 = pizzaRepository.save(Pizza.builder()
-                    .disponibilidade("disponivel")
+                    .disponibilidade("indisponivel")
                     .sabor(new HashSet<>())
                     .build());
+            pizza2.getSabor().add(produto1);
             estabelecimento.getCardapio().add(pizza2);
+
+            cliente = clienteRepository.save(Cliente.builder()
+                    .nomeCompleto("Matheus")
+                    .build());
+
+            clienteInteressado = ClienteInteressado.builder()
+                    .id(cliente.getId())
+                    .nomeCompleto(cliente.getNomeCompleto())
+                    .saborDeInteresse(produto1.getNome())
+                    .build();
+            estabelecimento.getInteressados().add(clienteInteressado);
         }
 
         @Test
@@ -111,10 +145,10 @@ public class EstabelecimentoV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
-            assertEquals("indisponivel", resultado.getCardapio().stream().findFirst().get().getDisponibilidade());
+            assertNull(resultado.getMensagem());
         }
 
         @Test
@@ -122,22 +156,17 @@ public class EstabelecimentoV1ControllerTests {
         @DisplayName("Quando um estabelecimento alterar a disponibilidade da pizza para disponivel")
         void quandoEstabelecimentoAlterarParaDisponivel() throws Exception {
             //Arrange
-            Pizza pizza3 = pizzaRepository.save(Pizza.builder()
-                    .disponibilidade("indisponivel")
-                    .sabor(new HashSet<>())
-                    .build());
-            estabelecimento.getCardapio().add(pizza3);
 
             //Act
-            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/disponivel/" + pizza3.getId())
+            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/disponivel/" + pizza2.getId())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
-            Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
-            assertEquals("disponivel", resultado.getCardapio().stream().filter(elem -> pizza3.getDisponibilidade().equals(elem.getDisponibilidade())).findFirst().get().getDisponibilidade());
+            assertEquals("Matheus, seu sabor de interesse: Frango, esta disponivel\n", resultado.getMensagem());
         }
 
         @Test

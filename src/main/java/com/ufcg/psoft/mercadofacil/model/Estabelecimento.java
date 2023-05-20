@@ -1,16 +1,12 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,5 +41,6 @@ public class Estabelecimento {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pizza> cardapio;
     @JsonProperty("interessados")
-    private List<String> interessados;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ClienteInteressado> interessados;
 }
