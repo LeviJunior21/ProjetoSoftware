@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -439,6 +440,53 @@ public class ClienteV1ControllerTests {
             //Assert
             assertTrue(responseJSONString.isBlank());
             assertEquals(1, clienteRepository.findAll().size());
+        }
+
+        @Test
+        @DisplayName("Quando busco cliente por codigo de acesso invalido")
+        void quandoBuscoClientePorCodigoAcessoInvalido() throws Exception {
+            // Arrange
+            clienteGetRequestDTO = ClienteGetRequestDTO.builder()
+                    .id(cliente2.getId())
+                    .codigoAcesso(123459)
+                    .build();
+
+            //Act
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            //Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+
+        @Test
+        @DisplayName("Quando excluo cliente por codigo de acesso invalido")
+        void quandoExcluoClientePorCodigoAcessoInvalido() throws Exception {
+            // Arrange
+            clienteRemoveRequestDTO = ClienteRemoveRequestDTO.builder()
+                    .id(cliente1.getId())
+                    .codigoAcesso(123459)
+                    .build();
+
+            //Act
+            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/cliente")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(clienteRemoveRequestDTO)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            //Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
         }
 
         @Test
