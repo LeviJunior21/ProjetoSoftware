@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -15,8 +16,10 @@ public class EstabelecimentoCriarPadraoService implements EstabelecimentoCriarSe
     @Autowired
     ModelMapper modelMapper;
     @Override
-    public Estabelecimento salvar(EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO) {
+    public EstabelecimentoDTO salvar(EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO) {
         Estabelecimento estabelecimento = modelMapper.map(estabelecimentoPostPutRequestDTO, Estabelecimento.class);
-        return estabelecimentoRepository.save(estabelecimento);
+        estabelecimentoRepository.save(estabelecimento);
+        EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento, EstabelecimentoDTO.class);
+        return estabelecimentoDTO;
     }
 }

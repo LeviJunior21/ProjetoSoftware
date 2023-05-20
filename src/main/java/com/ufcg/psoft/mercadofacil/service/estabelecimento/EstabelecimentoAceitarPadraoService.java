@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoAceitarRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.*;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -22,7 +23,7 @@ public class EstabelecimentoAceitarPadraoService implements EstabelecimentoAceit
     ModelMapper modelMapper;
 
     @Override
-    public Estabelecimento aceitar(EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO, Long funcionarioId) {
+    public EstabelecimentoDTO aceitar(EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO, Long funcionarioId) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoAceitarRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
         Funcionario funcionario = funcionarioRepository.findById(funcionarioId).orElseThrow(FuncionarioNaoExisteException::new);
         if (estabelecimentoAceitarRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso())) {
@@ -40,6 +41,8 @@ public class EstabelecimentoAceitarPadraoService implements EstabelecimentoAceit
         else {
             throw new CodigoAcessoDiferenteException();
         }
-        return estabelecimento;
+
+        EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento, EstabelecimentoDTO.class);
+        return estabelecimentoDTO;
     }
 }

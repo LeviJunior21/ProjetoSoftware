@@ -87,12 +87,12 @@ public class EstabelecimentoV1ControllerTests {
                 .andDo(print())
                 .andReturn().getResponse().getContentAsString();
 
-        Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+        EstabelecimentoDTO estabelecimentoResultante = objectMapper.readValue(responseJsonString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
 
         // Assert
         assertAll(
-                () -> assertNotNull(resultado.getId()),
-                () -> assertEquals(estabelecimentoPostRequestDTO.getNome(), resultado.getNome())
+                () -> assertNotNull(estabelecimentoResultante.getId()),
+                () -> assertEquals(estabelecimentoPostRequestDTO.getNome(), estabelecimentoResultante.getNome())
         );
 
     }
@@ -114,10 +114,10 @@ public class EstabelecimentoV1ControllerTests {
                 .andDo(print())
                 .andReturn().getResponse().getContentAsString();
 
-        Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+        EstabelecimentoDTO estabelecimentoResultante = objectMapper.readValue(responseJsonString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
 
         // Assert
-        assertEquals(resultado.getNome(), "Padaria");
+        assertEquals("Padaria", estabelecimentoResultante.getNome());
     }
 
     @Test
@@ -258,8 +258,8 @@ public class EstabelecimentoV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Estabelecimento estabelecimentoResponse = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
-            assertEquals("Pizzaria B", estabelecimentoResponse.getNome());
+            EstabelecimentoDTO estabelecimentoResultante = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            assertEquals("Pizzaria B", estabelecimentoResultante.getNome());
         }
         
         @Test
@@ -294,8 +294,8 @@ public class EstabelecimentoV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            List<Estabelecimento> estabelecimentos = objectMapper.readValue(responseJSONString, new TypeReference<List<Estabelecimento>>() {});
-            Estabelecimento estabelecimento1 = estabelecimentos.stream().findFirst().orElse(Estabelecimento.builder().build());
+            List<EstabelecimentoDTO> estabelecimentos = objectMapper.readValue(responseJSONString, new TypeReference<List<EstabelecimentoDTO>>() {});
+            EstabelecimentoDTO estabelecimento1 = estabelecimentos.stream().findFirst().orElse(EstabelecimentoDTO.builder().build());
 
             //Assert
             assertEquals(1, estabelecimentos.size());
@@ -326,7 +326,7 @@ public class EstabelecimentoV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Estabelecimento estabelecimentoResultante = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
+            EstabelecimentoDTO estabelecimentoResultante = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
 
             // Assert
             assertEquals(estabelecimento.getNome(), estabelecimentoResultante.getNome());
@@ -376,7 +376,7 @@ public class EstabelecimentoV1ControllerTests {
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
 
-                Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+                EstabelecimentoDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
 
                 //Assert
                 assertEquals(1, resultado.getEspera().size());
@@ -427,7 +427,7 @@ public class EstabelecimentoV1ControllerTests {
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
 
-                Estabelecimento resultado = objectMapper.readValue(responseJsonString, Estabelecimento.EstabelecimentoBuilder.class).build();
+                EstabelecimentoDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
 
                 //Assert
                 assertEquals(0, resultado.getEspera().size());
@@ -488,7 +488,7 @@ public class EstabelecimentoV1ControllerTests {
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
 
-                Estabelecimento response = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
+                EstabelecimentoDTO response = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
                 // Assert
                 assertEquals(0, response.getEspera().size());
             }
