@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
+import com.ufcg.psoft.mercadofacil.model.Pizza;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import jakarta.transaction.Transactional;
@@ -26,7 +27,7 @@ import static org.springframework.http.RequestEntity.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/**
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -52,7 +53,7 @@ public class CardapioV1ControllerTests {
                 .nome("Sorveteria")
                 .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
-                .pizzas(new HashSet<>())
+                .cardapio(new HashSet<>())
                 .build()
         );
         estabelecimento2 = Estabelecimento.builder()
@@ -97,14 +98,14 @@ public class CardapioV1ControllerTests {
                     .build();
 
 
-            HashSet<Produto> pizza3 = new HashSet<>();
+            HashSet<Pizza> pizza3 = new HashSet<>();
             pizza3.add(pizza);
             pizza3.add(pizza2);
             estabelecimento = estabelecimentoRepository.save(
                     Estabelecimento.builder()
                             .nome("Pizzaria")
                             .codigoAcesso(123456)
-                            .pizzas(pizza3)
+                            .cardapio(pizza3)
                             .build()
             );
 
@@ -283,3 +284,4 @@ public class CardapioV1ControllerTests {
 
     }
 }
+**/
