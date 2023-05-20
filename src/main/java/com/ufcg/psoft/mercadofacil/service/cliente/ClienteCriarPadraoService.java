@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.cliente;
 
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
@@ -16,8 +17,10 @@ public class ClienteCriarPadraoService implements ClienteCriarService {
     ClienteRepository clienteRepository;
 
     @Override
-    public Cliente salvar(ClientePostPutRequestDTO clientePostPutRequestDTO) {
+    public ClienteDTO salvar(ClientePostPutRequestDTO clientePostPutRequestDTO) {
         Cliente cliente = modelMapper.map(clientePostPutRequestDTO, Cliente.class);
-        return clienteRepository.save(cliente);
+        Cliente cliente1 = clienteRepository.save(cliente);
+        ClienteDTO clienteDTO = modelMapper.map(cliente1, ClienteDTO.class);
+        return clienteDTO;
     }
 }

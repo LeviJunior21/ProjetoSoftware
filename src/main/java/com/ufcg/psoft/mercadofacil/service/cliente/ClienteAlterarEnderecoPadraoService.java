@@ -1,6 +1,8 @@
 package com.ufcg.psoft.mercadofacil.service.cliente;
 
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteEnderecoPatchRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
@@ -17,12 +19,14 @@ public class ClienteAlterarEnderecoPadraoService implements ClienteAlterarEndere
     ModelMapper modelMapper;
 
     @Override
-    public Cliente alterarParcialmente(ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO) {
+    public ClienteDTO alterarParcialmente(ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO) {
         Cliente cliente = clienteRepository.findById(clienteEnderecoPatchRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clienteEnderecoPatchRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();
         }
         modelMapper.map(clienteEnderecoPatchRequestDTO, cliente);
-        return clienteRepository.save(cliente);
+        Cliente cliente1 = clienteRepository.save(cliente);
+        ClienteDTO clienteDTO = modelMapper.map(cliente1, ClienteDTO.class);
+        return clienteDTO;
     }
 }

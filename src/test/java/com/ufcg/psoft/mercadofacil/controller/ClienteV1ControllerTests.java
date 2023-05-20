@@ -99,7 +99,7 @@ public class ClienteV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSON, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSON, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals(clienteNomePatchRequestDTO.getNomeCompleto(), cliente.getNomeCompleto());
@@ -119,7 +119,7 @@ public class ClienteV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSON, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSON, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals(clienteEnderecoPatchRequestDTO.getEnderecoPrincipal(), cliente.getEnderecoPrincipal());
@@ -391,7 +391,7 @@ public class ClienteV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSONString, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSONString, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals("Lucas", cliente.getNomeCompleto());
@@ -411,7 +411,7 @@ public class ClienteV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSONString, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSONString, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals("Lucas", cliente.getNomeCompleto());
@@ -459,7 +459,7 @@ public class ClienteV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSONString, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSONString, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals("Lucas de Souza Pereira", cliente.getNomeCompleto());
@@ -499,8 +499,8 @@ public class ClienteV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            List<Cliente> clientes = objectMapper.readValue(responseJSONString, new TypeReference<List<Cliente>>() {});
-            Cliente cliente = clientes.stream().findFirst().orElse(Cliente.builder().build());
+            List<ClienteDTO> clientes = objectMapper.readValue(responseJSONString, new TypeReference<List<ClienteDTO>>() {});
+            ClienteDTO cliente = clientes.stream().findFirst().orElse(ClienteDTO.builder().build());
 
             //Assert
             assertEquals("Levi de Lima Pereira Junior", cliente.getNomeCompleto());
