@@ -21,13 +21,15 @@ public class EstabelecimentoAlterarParaDisponivelPadraoService implements Estabe
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pizza pizza = estabelecimento.getCardapio().stream()
                 .filter(elem -> elem.getId().equals(idPizza)).findFirst().orElseThrow(PizzaNaoExisteException::new);
+        EstabelecimentoMensagemGetDTO estabelecimentoMensagemGetDTO = new EstabelecimentoMensagemGetDTO();
+        estabelecimentoMensagemGetDTO.setMensagem("");
         if (pizza.getDisponibilidade().equals("disponivel")) {
-            return null;
+            estabelecimentoRepository.save(estabelecimento);
+            return estabelecimentoMensagemGetDTO;
         }
         pizza.setDisponibilidade("disponivel");
         estabelecimento.getCardapio().add(pizza);
         estabelecimentoRepository.save(estabelecimento);
-        EstabelecimentoMensagemGetDTO estabelecimentoMensagemGetDTO = new EstabelecimentoMensagemGetDTO();
         estabelecimentoMensagemGetDTO.setMensagem(construirMensagem(idEstabelecimento, pizza));
         return  estabelecimentoMensagemGetDTO;
     }

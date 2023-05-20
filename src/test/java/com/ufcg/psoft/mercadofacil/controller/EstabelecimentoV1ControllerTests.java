@@ -148,7 +148,7 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
-            assertNull(resultado.getMensagem());
+            assertEquals("", resultado.getMensagem());
         }
 
         @Test
@@ -181,9 +181,33 @@ public class EstabelecimentoV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
+            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
+
             //Assert
-            assertEquals("", responseJsonString);
+            //assertNull(resultado.getMensagem());
+            assertEquals("", resultado.getMensagem());
         }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento alterar a disponibilidade da pizza para indisponivel ja estando indisponivel")
+        void quandoEstabelecimentoAlterarParaIndisponivelEstandoIndisponivel() throws Exception {
+            //Arrange
+            //Act
+            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/indisponivel/" + pizza2.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
+
+            //Assert
+            //assertNull(resultado.getMensagem());
+            assertEquals("", resultado.getMensagem());
+        }
+
+
     }
 
 
