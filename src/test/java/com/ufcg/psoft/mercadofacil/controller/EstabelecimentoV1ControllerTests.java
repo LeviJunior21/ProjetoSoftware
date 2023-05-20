@@ -432,6 +432,30 @@ public class EstabelecimentoV1ControllerTests {
 
             @Test
             @Transactional
+            @DisplayName("Quando um entregador solicita pedido para um estabelecimento mas o codigo de acesso é inválido")
+            void quandoEntregadorSolicitaPedidoEstabelecimentoMasCodigoAcessoInvalido() throws Exception {
+                //Arrange
+                funcionarioSolicitaEntradaRequestDTO = FuncionarioSolicitaEntradaRequestDTO.builder()
+                        .id(funcionario.getId())
+                        .codigoAcesso(123457)
+                        .build();
+                //Act
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaRequestDTO))
+                        )
+                        .andExpect(status().isBadRequest()) // Codigo 200
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+                // Assert
+                assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+            }
+
+            @Test
+            @Transactional
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
             void quandoAceitaPedidoFuncionarioMasNaoEstaNaEsperaEstabelecimento() throws Exception {
                 //Arrange
@@ -488,7 +512,7 @@ public class EstabelecimentoV1ControllerTests {
                 // Arrange
                 EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
                         .id(estabelecimento.getId())
-                        .codigoAcesso(124599)
+                        .codigoAcesso(124999)
                         .build();
                 estabelecimento.getEspera().add(funcionario);
 
@@ -563,6 +587,78 @@ public class EstabelecimentoV1ControllerTests {
                 EstabelecimentoDTO response = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
                 // Assert
                 assertEquals(0, response.getEspera().size());
+            }
+
+            @Test
+            @Transactional
+            @DisplayName("Quando remove um enregador da lista de espera mas o codigo de acesso do estabelecimento é inválido")
+            void quandoRejeitoEntregadorEsperaMasCodigoAcessoEhInvalido() throws Exception {
+                estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
+                        .id(estabelecimento2.getId())
+                        .codigoAcesso(123457)
+                        .build();
+                // Arrange
+                // Act
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + funcionario10.getId() + "/remover_espera")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
+                        )
+                        .andExpect(status().isBadRequest())
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+                // Assert
+                assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+            }
+
+            @Test
+            @Transactional
+            @DisplayName("Quando tento remove um enregador da lista de espera mas que não esta na lista de espra.")
+            void quandoRejeitoEntregadorEsperaMasOentregadorNaoEstaNaEspera() throws Exception {
+                estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
+                        .id(estabelecimento.getId())
+                        .codigoAcesso(123456)
+                        .build();
+                // Arrange
+                // Act
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + funcionario10.getId() + "/remover_espera")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
+                        )
+                        .andExpect(status().isBadRequest())
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+                // Assert
+                assertEquals("O estabelecimento nao contem esse funcionario na lista de espera!", resultado.getMessage());
+            }
+
+            @Test
+            @Transactional
+            @DisplayName("Quando remove um entregador da lista de espera mas o codigo de acesso eh invalido")
+            void quandoTentamosRejeitarEntregadorEsperaMasCodigoAcessoEhInvalido() throws Exception {
+                estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
+                        .id(estabelecimento2.getId())
+                        .codigoAcesso(123457)
+                        .build();
+                // Arrange
+                // Act
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/estabelecimento")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
+                        )
+                        .andExpect(status().isBadRequest())
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+                // Assert
+                assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
             }
         }
     }
