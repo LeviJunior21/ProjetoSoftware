@@ -104,10 +104,11 @@ public class EstabelecimentoV1ControllerTests {
         EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO = EstabelecimentoNomePatchRequestDTO.builder()
                 .nome("Padaria")
                 .codigoAcesso(123456)
+                .id(estabelecimento.getId())
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(patch("/v1/estabelecimentos/" + estabelecimento.getId() + "/nome")
+        String responseJsonString = driver.perform(patch("/v1/estabelecimentos" + "/alterar_nome")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTO)))
                 .andExpect(status().isOk())
@@ -173,7 +174,7 @@ public class EstabelecimentoV1ControllerTests {
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(patch("/v1/estabelecimentos/" + estabelecimento.getId() + "/nome")
+        String responseJsonString = driver.perform(patch("/v1/estabelecimentos" + "/alterar_nome")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTO)))
                 .andExpect(status().isBadRequest())
@@ -209,6 +210,53 @@ public class EstabelecimentoV1ControllerTests {
         // Assert
         assertEquals("Erros de validacao encontrados", resultado.getMessage());
         assertEquals("O codigo deve ter 6 digitos", resultado.getErrors().get(0));
+    }
+
+    @Test
+    @DisplayName("Quando buscamos pelo estabelecimento por id válido mas o codigo de acesso é inválido")
+    void quandoBuscamosUmEstabelecimentoVlidoPeloIdComCodigoInvalidoPeloCodigoAcesso() throws Exception {
+        // Arrange
+        EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO = EstabelecimentoGetRequestDTO.builder()
+                .id(estabelecimento.getId())
+                .codigoAcesso(124599)
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(get(URI_ESTABELECIMENTOS + "/estabelecimento")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoGetRequestDTO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando tentamos alterar o nome de um estabelecimento por id válido mas o codigo de acesso é inválido")
+    void quandoTentamosAlterarNomeEstabelecimentoValidoPeloIdMasPeloCodigoAcessoInvalido() throws Exception {
+        // Arrange
+        EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTOO = EstabelecimentoNomePatchRequestDTO.builder()
+                .id(estabelecimento.getId())
+                .nome("Padaria")
+                .codigoAcesso(124599)
+                .build();
+
+        // Act
+        String responseJsonString = driver.perform(patch(URI_ESTABELECIMENTOS + "/alterar_nome")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTOO)))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString();
+
+        CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+        // Assert
+        assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
     }
 
     @Test
@@ -410,7 +458,7 @@ public class EstabelecimentoV1ControllerTests {
             @Test
             @Transactional
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
-            void quandoAceitaPedidoFuncionarioEstaNaoEsperaEstabelecimento() throws Exception {
+            void quandoAceitaPedidoFuncionarioEstaEsperaEstabelecimento() throws Exception {
                 //Arrange
                 estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
                                 .codigoAcesso(123456)
@@ -432,6 +480,30 @@ public class EstabelecimentoV1ControllerTests {
                 //Assert
                 assertEquals(0, resultado.getEspera().size());
                 assertEquals(1, resultado.getEntregadores().size());
+            }
+
+            @Test
+            @DisplayName("Quando tentamos aceitar um entregador do estabelecimento por id válido mas o codigo de acesso é inválido")
+            void quandoTentamosAceitarEntregadorEstabelecimentoValidoPeloIdMasPeloCodigoAcessoInvalido() throws Exception {
+                // Arrange
+                EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
+                        .id(estabelecimento.getId())
+                        .codigoAcesso(124599)
+                        .build();
+                estabelecimento.getEspera().add(funcionario);
+
+                // Act
+                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/aceitar")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO)))
+                        .andExpect(status().isBadRequest())
+                        .andDo(print())
+                        .andReturn().getResponse().getContentAsString();
+
+                CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+                // Assert
+                assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
             }
         }
 

@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 
 @FunctionalInterface
 public interface EstabelecimentoAlterarNomeService {
-    public EstabelecimentoDTO alterarParcialmente(Long id, EstabelecimentoNomePatchRequestDTO produtoNomePatchRequestDTO);
+    EstabelecimentoDTO alterarParcialmente(EstabelecimentoNomePatchRequestDTO produtoNomePatchRequestDTO);
 }

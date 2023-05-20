@@ -17,8 +17,8 @@ public class EstabelecimentoAlterarNomePadraoService implements EstabelecimentoA
     @Autowired
     ModelMapper modelMapper;
     @Override
-    public EstabelecimentoDTO alterarParcialmente(Long id, EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
+    public EstabelecimentoDTO alterarParcialmente(EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoNomePatchRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
         if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoNomePatchRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }

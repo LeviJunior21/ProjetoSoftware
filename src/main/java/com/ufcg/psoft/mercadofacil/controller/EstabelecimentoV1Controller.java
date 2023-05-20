@@ -60,13 +60,12 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoCriarService.salvar(estabelecimentoPostPutRequestDTO));
     }
 
-    @PatchMapping("/{id}/nome")
+    @PatchMapping("/alterar_nome")
     public ResponseEntity<?> atualizarParcialmenteEstabelecimento(
-            @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarNomeService.alterarParcialmente(id, estabelecimentoNomePatchRequestDTO));
+                .body(estabelecimentoAlterarNomeService.alterarParcialmente(estabelecimentoNomePatchRequestDTO));
     }
 
     @PutMapping("/{id}/atualizar")

@@ -18,7 +18,6 @@ public class EstabelecimentoAceitarPadraoService implements EstabelecimentoAceit
     EstabelecimentoRepository estabelecimentoRepository;
     @Autowired
     FuncionarioRepository funcionarioRepository;
-
     @Autowired
     ModelMapper modelMapper;
 
