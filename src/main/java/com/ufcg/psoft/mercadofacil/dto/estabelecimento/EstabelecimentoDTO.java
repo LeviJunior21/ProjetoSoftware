@@ -1,14 +1,15 @@
-package com.ufcg.psoft.mercadofacil.model;
+package com.ufcg.psoft.mercadofacil.dto.estabelecimento;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
+import com.ufcg.psoft.mercadofacil.model.Entregador;
+import com.ufcg.psoft.mercadofacil.model.Funcionario;
+import com.ufcg.psoft.mercadofacil.model.Produto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.Set;
 
 @Entity
@@ -16,16 +17,11 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "estabelecimentos")
-public class Estabelecimento {
-
+public class EstabelecimentoDTO {
     @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
-    @JsonProperty("codigoAcesso")
-    private Integer codigoAcesso;
 
     @JsonProperty("nome")
     @Column(nullable = false)
@@ -42,5 +38,4 @@ public class Estabelecimento {
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Produto> pizzas;
-
 }

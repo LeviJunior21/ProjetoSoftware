@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.cliente;
 
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
@@ -19,12 +20,14 @@ public class ClienteAlterarNomePadraoService implements ClienteAlterarNomeServic
     ModelMapper modelMapper;
 
     @Override
-    public Cliente alterarParcialmente(Long id, ClienteNomePatchRequestDTO clienteNomePatchRequestDTO) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
+    public ClienteDTO alterarParcialmente(ClienteNomePatchRequestDTO clienteNomePatchRequestDTO) {
+        Cliente cliente = clienteRepository.findById(clienteNomePatchRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clienteNomePatchRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();
         }
         modelMapper.map(clienteNomePatchRequestDTO, cliente);
-        return clienteRepository.save(cliente);
+        Cliente cliente1 = clienteRepository.save(cliente);
+        ClienteDTO clienteDTO = modelMapper.map(cliente1, ClienteDTO.class);
+        return clienteDTO;
     }
 }

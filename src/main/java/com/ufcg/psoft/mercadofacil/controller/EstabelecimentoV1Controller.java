@@ -1,7 +1,7 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoNomePatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
+import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,12 +36,13 @@ public class EstabelecimentoV1Controller {
     @Autowired
     EstabelecimentoGetService estabelecimentoGetService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/estabelecimento")
     public ResponseEntity<?> buscarUmEstabelecimento(
-            @PathVariable Long id) {
+            @RequestBody @Valid EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO
+            ) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(estabelecimentoGetService.get(id));
+                    .body(estabelecimentoGetService.get(estabelecimentoGetRequestDTO));
     }
 
     @GetMapping("")
@@ -59,13 +60,12 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoCriarService.salvar(estabelecimentoPostPutRequestDTO));
     }
 
-    @PatchMapping("/{id}/nome")
+    @PatchMapping("/alterar_nome")
     public ResponseEntity<?> atualizarParcialmenteEstabelecimento(
-            @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarNomeService.alterarParcialmente(id, estabelecimentoNomePatchRequestDTO));
+                .body(estabelecimentoAlterarNomeService.alterarParcialmente(estabelecimentoNomePatchRequestDTO));
     }
 
     @PutMapping("/{id}/atualizar")
@@ -77,43 +77,43 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoAlterarService.alterar(id, estabelecimentoPostPutRequestDTO));
     }
 
-    @DeleteMapping("/{id}/estabelecimento")
+    @DeleteMapping("/estabelecimento")
     public ResponseEntity<?> excluirEstabelecimento(
-            @PathVariable Long id
-        ) {
-        estabelecimentoExcluirService.excluir(id);
+            @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO
+            ) {
+        estabelecimentoExcluirService.excluir(estabelecimentoRemoveRequestDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");
     }
 
-    @DeleteMapping("/{id}/remover_espera/{idFuncionario}")
+    @DeleteMapping("/{id}/remover_espera")
     public ResponseEntity<?> removerEspera(
-            @PathVariable Long id,
-            @PathVariable Long idFuncionario
+            @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO,
+            @PathVariable Long id
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoRemoverEsperaService.excluirEspera(id, idFuncionario));
+                .body(estabelecimentoRemoverEsperaService.excluirEspera(estabelecimentoRemoveRequestDTO, id));
     }
 
-    @PutMapping ("/{id}/solicitar/{idEntregador}")
+    @PutMapping ("/{id}/solicitar")
     public ResponseEntity<?> solicitarPedido(
             @PathVariable Long id,
-            @PathVariable Long idEntregador
+            @RequestBody @Valid FuncionarioSolicitaEntradaRequestDTO funcionarioSolicitaEntradaRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, idEntregador));
+                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, funcionarioSolicitaEntradaRequestDTO));
     }
 
-    @PutMapping ("/{id}/aceitar/{idFuncionario}")
+    @PutMapping ("/{id}/aceitar")
     public ResponseEntity<?> aceitarPedido(
             @PathVariable Long id,
-            @PathVariable Long idFuncionario
+            @RequestBody @Valid EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAceitarService.aceitar(id, idFuncionario));
+                .body(estabelecimentoAceitarService.aceitar(estabelecimentoAceitarRequestDTO, id));
     }
 }

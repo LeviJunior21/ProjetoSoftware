@@ -1,6 +1,9 @@
 package com.ufcg.psoft.mercadofacil.service.cliente;
 
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import org.modelmapper.ModelMapper;
@@ -15,8 +18,12 @@ public class ClienteBuscarPadraoService implements ClienteBuscarService {
     ModelMapper modelMapper;
 
     @Override
-    public Cliente get(Long id) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
-        return cliente;
+    public ClienteDTO get(ClienteGetRequestDTO clienteGetRequestDTO) {
+        Cliente cliente = clienteRepository.findById(clienteGetRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
+        if (!cliente.getCodigoAcesso().equals(clienteGetRequestDTO.getCodigoAcesso())) {
+            throw new CodigoAcessoDiferenteException();
+        }
+        ClienteDTO clienteDTO = modelMapper.map(cliente, ClienteDTO.class);
+        return clienteDTO;
     }
 }

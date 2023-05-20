@@ -1,11 +1,10 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteEnderecoPatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteNomePatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -21,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,13 +63,14 @@ public class ClienteV1ControllerTests {
         cliente2 = clienteRepository.save(Cliente.builder()
                 .nomeCompleto("Lucas de Souza Pereira")
                 .enderecoPrincipal("Rua de Campina Grande")
-                .codigoAcesso(123456)
+                .codigoAcesso(123458)
                 .carrinhos(new ArrayList<>())
                 .build()
         );
 
         clienteNomePatchRequestDTO = ClienteNomePatchRequestDTO.builder()
                 .nomeCompleto("Levi")
+                .id(cliente1.getId())
                 .codigoAcesso(123456)
                 .build();
         clienteEnderecoPatchRequestDTO = ClienteEnderecoPatchRequestDTO.builder()
@@ -95,11 +96,11 @@ public class ClienteV1ControllerTests {
             String responseJSON = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteNomePatchRequestDTO)))
-                    .andExpect(status().isOk()) // Codigo 201
+                    .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSON, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSON, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals(clienteNomePatchRequestDTO.getNomeCompleto(), cliente.getNomeCompleto());
@@ -109,15 +110,17 @@ public class ClienteV1ControllerTests {
         @DisplayName("Quando altero endereco do usuario")
         void quandoAlteroEnderecoUsuario() throws Exception {
             //Arrange
+            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
+
             //Act
-            String responseJSON = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
+            String responseJSON = driver.perform(patch(URI_CLIENTE + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
-                    .andExpect(status().isOk()) // Codigo 201
+                    .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSON, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSON, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals(clienteEnderecoPatchRequestDTO.getEnderecoPrincipal(), cliente.getEnderecoPrincipal());
@@ -133,7 +136,7 @@ public class ClienteV1ControllerTests {
             String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteNomePatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -150,12 +153,13 @@ public class ClienteV1ControllerTests {
             //Arrange
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal("Rua CG");
             clienteEnderecoPatchRequestDTO.setCodigoAcesso(123458);
+            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -175,7 +179,7 @@ public class ClienteV1ControllerTests {
             String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteNomePatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -193,12 +197,13 @@ public class ClienteV1ControllerTests {
                     .nomeCompleto("Nome")
                     .enderecoPrincipal("Rua S")
                     .codigoAcesso(123489)
+                    .id(cliente1.getId())
                     .build();
             //Act
-            String responseJSONString = driver.perform(put(URI_CLIENTE + "/" + cliente1.getId())
+            String responseJSONString = driver.perform(put(URI_CLIENTE + "/cliente")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePostPutRequestDTO1)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -213,12 +218,13 @@ public class ClienteV1ControllerTests {
         void quandoAlteroEnderecoUsuarioInvalido() throws Exception {
             //Arrange
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal("");
+            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -239,7 +245,7 @@ public class ClienteV1ControllerTests {
             String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteNomePatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -257,10 +263,10 @@ public class ClienteV1ControllerTests {
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal(null);
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -284,7 +290,7 @@ public class ClienteV1ControllerTests {
             String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteNomePatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -301,12 +307,13 @@ public class ClienteV1ControllerTests {
             //Arrange
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal("Rua CG");
             clienteEnderecoPatchRequestDTO.setCodigoAcesso(123);
+            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -330,7 +337,7 @@ public class ClienteV1ControllerTests {
             String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteNomePatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -348,13 +355,14 @@ public class ClienteV1ControllerTests {
             clienteEnderecoPatchRequestDTO = ClienteEnderecoPatchRequestDTO.builder()
                     .enderecoPrincipal("Rua CG")
                     .codigoAcesso(1234567)
+                    .id(cliente1.getId())
                     .build();
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -369,6 +377,8 @@ public class ClienteV1ControllerTests {
     @Nested
     @DisplayName("Casos de teste da API Rest Full")
     class casosTesteApiRestFull {
+        ClienteGetRequestDTO clienteGetRequestDTO;
+        ClienteRemoveRequestDTO clienteRemoveRequestDTO;
 
         @Test
         @DisplayName("Quando crio um cliente válido")
@@ -382,7 +392,7 @@ public class ClienteV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSONString, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSONString, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals("Lucas", cliente.getNomeCompleto());
@@ -393,15 +403,16 @@ public class ClienteV1ControllerTests {
         @DisplayName("Quando atualizo um cliente válido")
         void quandoAtualidoClienteValido() throws Exception {
             //Arrange
+            clientePostPutRequestDTO.setId(cliente1.getId());
             //Act
-            String responseJSONString = driver.perform(put(URI_CLIENTE + "/" + cliente2.getId())
+            String responseJSONString = driver.perform(put(URI_CLIENTE + "/cliente")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePostPutRequestDTO)))
                     .andExpect(status().isOk())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSONString, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSONString, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals("Lucas", cliente.getNomeCompleto());
@@ -413,8 +424,15 @@ public class ClienteV1ControllerTests {
         @Transactional
         void quandoDeletoClienteExistente() throws Exception {
             //Arrange
+            clienteRemoveRequestDTO = ClienteRemoveRequestDTO.builder()
+                    .codigoAcesso(cliente2.getCodigoAcesso())
+                    .id(cliente2.getId())
+                    .build();
+
             //Act
-            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/" + cliente2.getId()))
+            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/cliente")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clienteRemoveRequestDTO)))
                     .andExpect(status().isNoContent())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -425,17 +443,71 @@ public class ClienteV1ControllerTests {
         }
 
         @Test
+        @DisplayName("Quando busco cliente por codigo de acesso invalido")
+        void quandoBuscoClientePorCodigoAcessoInvalido() throws Exception {
+            // Arrange
+            clienteGetRequestDTO = ClienteGetRequestDTO.builder()
+                    .id(cliente2.getId())
+                    .codigoAcesso(123459)
+                    .build();
+
+            //Act
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            //Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+
+        @Test
+        @DisplayName("Quando excluo cliente por codigo de acesso invalido")
+        void quandoExcluoClientePorCodigoAcessoInvalido() throws Exception {
+            // Arrange
+            clienteRemoveRequestDTO = ClienteRemoveRequestDTO.builder()
+                    .id(cliente1.getId())
+                    .codigoAcesso(123459)
+                    .build();
+
+            //Act
+            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/cliente")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(clienteRemoveRequestDTO)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            //Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+
+        @Test
         @DisplayName("Quando pego um cliente pelo ID")
         void quandoPegoClientePeloID() throws Exception {
             //Arrange
+            clienteGetRequestDTO = ClienteGetRequestDTO.builder()
+                    .id(cliente2.getId())
+                    .codigoAcesso(123458)
+                    .build();
+
             //Act
-            String responseJSONString = driver.perform(get(URI_CLIENTE + "/" + cliente2.getId())
-                            .contentType(MediaType.APPLICATION_JSON))
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
+                    )
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Cliente cliente = objectMapper.readValue(responseJSONString, Cliente.ClienteBuilder.class).build();
+            ClienteDTO cliente = objectMapper.readValue(responseJSONString, ClienteDTO.ClienteDTOBuilder.class).build();
 
             //Assert
             assertEquals("Lucas de Souza Pereira", cliente.getNomeCompleto());
@@ -444,10 +516,16 @@ public class ClienteV1ControllerTests {
         @Test
         @DisplayName("Quando pego um cliente pelo ID que nao existe")
         void quandoClientePeloIDInexistente() throws Exception {
+            clienteGetRequestDTO = ClienteGetRequestDTO.builder()
+                    .id(18L)
+                    .codigoAcesso(123456)
+                    .build();
             //Arrange
             //Act
-            String responseJSONString = driver.perform(get(URI_CLIENTE + "/" + 1010L)
-                            .contentType(MediaType.APPLICATION_JSON))
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
+                    )
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andReturn().getResponse().getContentAsString();
@@ -469,8 +547,8 @@ public class ClienteV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            List<Cliente> clientes = objectMapper.readValue(responseJSONString, new TypeReference<List<Cliente>>() {});
-            Cliente cliente = clientes.stream().findFirst().orElse(Cliente.builder().build());
+            List<ClienteDTO> clientes = objectMapper.readValue(responseJSONString, new TypeReference<List<ClienteDTO>>() {});
+            ClienteDTO cliente = clientes.stream().findFirst().orElse(ClienteDTO.builder().build());
 
             //Assert
             assertEquals("Levi de Lima Pereira Junior", cliente.getNomeCompleto());

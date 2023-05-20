@@ -1,26 +1,29 @@
 package com.ufcg.psoft.mercadofacil.dto.cliente;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
-import jakarta.validation.constraints.NotBlank;
+import com.ufcg.psoft.mercadofacil.model.Produto;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClienteEnderecoPatchRequestDTO {
+public class ClienteDTO {
     @JsonProperty("id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
+    @JsonProperty("nomeCompleto")
+    private String nomeCompleto;
     @JsonProperty("enderecoPrincipal")
-    @NotBlank(message = "Endereco vazio invalido")
     private String enderecoPrincipal;
-
-    @JsonProperty("codigoAcesso")
-    @CodigoAcesso
-    private Integer codigoAcesso;
+    @JsonProperty("carrinhos")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Produto> carrinhos;
 }
