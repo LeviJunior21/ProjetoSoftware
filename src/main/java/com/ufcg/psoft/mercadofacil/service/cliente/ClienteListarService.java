@@ -6,5 +6,5 @@ import java.util.List;
 
 @FunctionalInterface
 public interface ClienteListarService {
-    List<Cliente> listar(Long id);
+    List<Cliente> listar();
 }

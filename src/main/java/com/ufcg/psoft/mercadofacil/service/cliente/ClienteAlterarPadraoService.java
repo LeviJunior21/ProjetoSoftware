@@ -18,8 +18,8 @@ public class ClienteAlterarPadraoService implements ClienteAlterarService {
     ModelMapper modelMapper;
 
     @Override
-    public Cliente alterar(Long id, ClientePostPutRequestDTO clientePostPutRequestDTO) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
+    public Cliente alterar(ClientePostPutRequestDTO clientePostPutRequestDTO) {
+        Cliente cliente = clienteRepository.findById(clientePostPutRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clientePostPutRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();
         }

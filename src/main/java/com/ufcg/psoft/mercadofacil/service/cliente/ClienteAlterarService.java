@@ -5,5 +5,5 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 
 @FunctionalInterface
 public interface ClienteAlterarService {
-    Cliente alterar(Long id, ClientePostPutRequestDTO clientePostPutRequestDTO);
+    Cliente alterar(ClientePostPutRequestDTO clientePostPutRequestDTO);
 }

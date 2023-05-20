@@ -13,7 +13,7 @@ public class ClienteListarPadraoService implements ClienteListarService {
     ClienteRepository clienteRepository;
 
     @Override
-    public List<Cliente> listar(Long id) {
+    public List<Cliente> listar() {
         return clienteRepository.findAll();
     }
 }
