@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,6 +43,13 @@ public class Estabelecimento {
 
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+<<<<<<< HEAD
     private Set<Produto> pizzas;
 
+=======
+    private Set<Pizza> cardapio;
+
+    @JsonProperty("interessados")
+    private List<String> interessados;
+>>>>>>> user_nove
 }

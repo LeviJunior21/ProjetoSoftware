@@ -35,6 +35,10 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
     @Autowired
     EstabelecimentoGetService estabelecimentoGetService;
+    @Autowired
+    EstabelecimentoAlterarParaIndisponivelPadraoService estabelecimentoAlterarParaIndisponivelService;
+    @Autowired
+    EstabelecimentoAlterarParaDisponivelPadraoService estabelecimentoAlterarParaDisponivelService;
 
     @GetMapping("/estabelecimento")
     public ResponseEntity<?> buscarUmEstabelecimento(
@@ -115,5 +119,25 @@ public class EstabelecimentoV1Controller {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(estabelecimentoAceitarService.aceitar(estabelecimentoAceitarRequestDTO, id));
+    }
+
+    @PutMapping ("/{id}/indisponivel/{idPizza}")
+    public ResponseEntity<?> mudarParaIndisponivel(
+            @PathVariable Long id,
+            @PathVariable Long idPizza
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoAlterarParaIndisponivelService.alterarDisponibilidade(idPizza, id));
+    }
+
+    @PutMapping ("/{id}/disponivel/{idPizza}")
+    public ResponseEntity<?> mudarParaDisponivel(
+            @PathVariable Long id,
+            @PathVariable Long idPizza
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoAlterarParaDisponivelService.alterarDisponibilidade(idPizza, id));
     }
 }

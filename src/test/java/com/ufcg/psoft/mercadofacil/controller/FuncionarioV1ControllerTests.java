@@ -126,7 +126,7 @@ public class FuncionarioV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            Funcionario resultado = objectMapper.readValue(responseJsonString, Funcionario.FuncionarioBuilder.class).build();
+            FuncionarioDTO resultado = objectMapper.readValue(responseJsonString, FuncionarioDTO.FuncionarioDTOBuilder.class).build();
 
             // Assert
             assertEquals(funcionarioCorPatchRequestDTO.getCor(), resultado.getCor());
