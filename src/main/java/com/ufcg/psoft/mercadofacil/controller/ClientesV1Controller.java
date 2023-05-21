@@ -31,12 +31,13 @@ public class ClientesV1Controller {
     @Autowired
     ClienteExcluirService clienteExcluirService;
 
-    @GetMapping("/cliente")
+    @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmCliente(
+            @PathVariable Long id,
             @RequestBody @Valid ClienteGetRequestDTO clienteGetRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(clienteBuscarService.get(clienteGetRequestDTO));
+                .body(clienteBuscarService.get(id, clienteGetRequestDTO));
     }
 
     @GetMapping("")
@@ -56,33 +57,37 @@ public class ClientesV1Controller {
 
     @PatchMapping("/{id}/nome")
     public ResponseEntity<?> atualizarParcialmenteClienteNome(
+            @PathVariable Long id,
             @RequestBody @Valid ClienteNomePatchRequestDTO clienteNomePatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(clienteAlterarNomeService.alterarParcialmente(clienteNomePatchRequestDTO));
+                .body(clienteAlterarNomeService.alterarParcialmente(id, clienteNomePatchRequestDTO));
     }
 
-    @PatchMapping("/endereco")
+    @PatchMapping("/{id}/endereco")
     public ResponseEntity<?> atualizarParcialmenteClienteEndereco(
+            @PathVariable Long id,
             @RequestBody @Valid ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(clienteAlterarEnderecoService.alterarParcialmente(clienteEnderecoPatchRequestDTO));
+                .body(clienteAlterarEnderecoService.alterarParcialmente(id, clienteEnderecoPatchRequestDTO));
     }
 
-    @PutMapping("/cliente")
+    @PutMapping("/{id}")
     public ResponseEntity<?> atualizarCliente(
+            @PathVariable Long id,
             @RequestBody @Valid ClientePostPutRequestDTO clientePostPutRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(clienteAlterarService.alterar(clientePostPutRequestDTO));
+                .body(clienteAlterarService.alterar(id, clientePostPutRequestDTO));
     }
 
-    @DeleteMapping("/cliente")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> excluirCliente(
+            @PathVariable Long id,
             @RequestBody @Valid ClienteRemoveRequestDTO clienteRemoveRequestDTO
     ) {
-        clienteExcluirService.excluir(clienteRemoveRequestDTO);
+        clienteExcluirService.excluir(id, clienteRemoveRequestDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");

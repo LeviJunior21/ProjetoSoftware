@@ -529,8 +529,8 @@ public class EstabelecimentoV1ControllerTests {
             FuncionarioRepository funcionarioRepository;
             Funcionario funcionario;
             FuncionarioPostPutRequestDTO funcionarioPostPutRequestDTO;
-            EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO;
-            FuncionarioSolicitaEntradaRequestDTO funcionarioSolicitaEntradaRequestDTO;
+            EstabelecimentoAceitarPostRequestDTO estabelecimentoAceitarPostRequestDTO;
+            FuncionarioSolicitaEntradaPostRequestDTO funcionarioSolicitaEntradaPostRequestDTO;
 
             @BeforeEach
             void setup2() {
@@ -552,14 +552,14 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
             void quandoEntregadorSolicitaPedidoEstabelecimento() throws Exception {
                 //Arrange
-                funcionarioSolicitaEntradaRequestDTO = FuncionarioSolicitaEntradaRequestDTO.builder()
+                funcionarioSolicitaEntradaPostRequestDTO = FuncionarioSolicitaEntradaPostRequestDTO.builder()
                         .id(funcionario.getId())
                         .codigoAcesso(123459)
                         .build();
                 //Act
                 String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/solicitacao")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaRequestDTO))
+                                .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaPostRequestDTO))
                         )
                         .andExpect(status().isOk()) // Codigo 200
                         .andDo(print())
@@ -576,14 +576,14 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento mas o codigo de acesso é inválido")
             void quandoEntregadorSolicitaPedidoEstabelecimentoMasCodigoAcessoInvalido() throws Exception {
                 //Arrange
-                funcionarioSolicitaEntradaRequestDTO = FuncionarioSolicitaEntradaRequestDTO.builder()
+                funcionarioSolicitaEntradaPostRequestDTO = FuncionarioSolicitaEntradaPostRequestDTO.builder()
                         .id(funcionario.getId())
                         .codigoAcesso(123457)
                         .build();
                 //Act
                 String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/solicitacao")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaRequestDTO))
+                                .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaPostRequestDTO))
                         )
                         .andExpect(status().isBadRequest()) // Codigo 200
                         .andDo(print())
@@ -600,15 +600,14 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
             void quandoAceitaPedidoFuncionarioMasNaoEstaNaEsperaEstabelecimento() throws Exception {
                 //Arrange
-                estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
+                estabelecimentoAceitarPostRequestDTO = EstabelecimentoAceitarPostRequestDTO.builder()
                         .codigoAcesso(123456)
-                        .id(estabelecimento.getId())
                         .build();
 
                 //Act
-                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/lista-espera/aprovacao")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/" + funcionario.getId() + "/aprovacao")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO))
+                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarPostRequestDTO))
                         )
                         .andExpect(status().isBadRequest()) // Codigo 200
                         .andDo(print())
@@ -625,16 +624,15 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando um entregador solicita pedido para um estabelecimento")
             void quandoAceitaPedidoFuncionarioEstaEsperaEstabelecimento() throws Exception {
                 //Arrange
-                estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
+                estabelecimentoAceitarPostRequestDTO = EstabelecimentoAceitarPostRequestDTO.builder()
                                 .codigoAcesso(123456)
-                                .id(estabelecimento.getId())
                                 .build();
                 estabelecimento.getEspera().add(funcionario);
 
                 //Act
-                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/lista-espera/aprovacao")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/" + funcionario.getId() + "/aprovacao")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO))
+                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarPostRequestDTO))
                         )
                         .andExpect(status().isOk()) // Codigo 200
                         .andDo(print())
@@ -651,16 +649,15 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando tentamos aceitar um entregador do estabelecimento por id válido mas o codigo de acesso é inválido")
             void quandoTentamosAceitarEntregadorEstabelecimentoValidoPeloIdMasPeloCodigoAcessoInvalido() throws Exception {
                 // Arrange
-                EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO = EstabelecimentoAceitarRequestDTO.builder()
-                        .id(estabelecimento.getId())
+                EstabelecimentoAceitarPostRequestDTO estabelecimentoAceitarPostRequestDTO = EstabelecimentoAceitarPostRequestDTO.builder()
                         .codigoAcesso(124999)
                         .build();
                 estabelecimento.getEspera().add(funcionario);
 
                 // Act
-                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/lista-espera/aprovacao")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/" + funcionario.getId() + "/aprovacao")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO)))
+                                .content(objectMapper.writeValueAsString(estabelecimentoAceitarPostRequestDTO)))
                         .andExpect(status().isBadRequest())
                         .andDo(print())
                         .andReturn().getResponse().getContentAsString();
@@ -712,7 +709,6 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando remove um enregador da lista de espera")
             void quandoRejeitoEntregadorEspera() throws Exception {
                 estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
-                        .id(estabelecimento2.getId())
                         .codigoAcesso(123458)
                         .build();
                 // Arrange
@@ -735,7 +731,6 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando remove um enregador da lista de espera mas o codigo de acesso do estabelecimento é inválido")
             void quandoRejeitoEntregadorEsperaMasCodigoAcessoEhInvalido() throws Exception {
                 estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
-                        .id(estabelecimento2.getId())
                         .codigoAcesso(123457)
                         .build();
                 // Arrange
@@ -759,7 +754,6 @@ public class EstabelecimentoV1ControllerTests {
             @DisplayName("Quando tento remove um enregador da lista de espera mas que não esta na lista de espra.")
             void quandoRejeitoEntregadorEsperaMasOentregadorNaoEstaNaEspera() throws Exception {
                 estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
-                        .id(estabelecimento.getId())
                         .codigoAcesso(123456)
                         .build();
                 // Arrange

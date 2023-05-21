@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClienteGetRequestDTO {
-    @JsonProperty("id")
-    private Long id;
-
     @JsonProperty("codigoAcesso")
     @CodigoAcesso
     private Integer codigoAcesso;

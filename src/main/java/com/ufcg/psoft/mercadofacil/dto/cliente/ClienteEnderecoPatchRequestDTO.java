@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClienteEnderecoPatchRequestDTO {
-    @JsonProperty("id")
-    private Long id;
-
     @JsonProperty("enderecoPrincipal")
     @NotBlank(message = "Endereco vazio invalido")
     private String enderecoPrincipal;

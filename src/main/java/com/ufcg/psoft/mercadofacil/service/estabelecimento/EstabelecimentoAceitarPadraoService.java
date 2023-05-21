@@ -1,6 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoAceitarRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoAceitarPostRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.*;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
@@ -22,10 +22,10 @@ public class EstabelecimentoAceitarPadraoService implements EstabelecimentoAceit
     ModelMapper modelMapper;
 
     @Override
-    public EstabelecimentoDTO aceitar(EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO, Long funcionarioId) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoAceitarRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
-        Funcionario funcionario = funcionarioRepository.findById(funcionarioId).orElseThrow(FuncionarioNaoExisteException::new);
-        if (estabelecimentoAceitarRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso())) {
+    public EstabelecimentoDTO aceitar(Long idEstabelecimento, Long idFuncionario, EstabelecimentoAceitarPostRequestDTO estabelecimentoAceitarPostRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
+        Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElseThrow(FuncionarioNaoExisteException::new);
+        if (estabelecimentoAceitarPostRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso())) {
             if (estabelecimento.getEspera().contains(funcionario)) {
                 Entregador entregador = new Entregador();
                 modelMapper.map(funcionario, entregador);

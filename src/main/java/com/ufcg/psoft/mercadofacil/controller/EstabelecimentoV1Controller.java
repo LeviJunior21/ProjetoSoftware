@@ -1,7 +1,6 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
-import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -108,21 +107,22 @@ public class EstabelecimentoV1Controller {
     @PostMapping ("/{id}/lista-espera/solicitacao")
     public ResponseEntity<?> solicitarPedido(
             @PathVariable Long id,
-            @RequestBody @Valid FuncionarioSolicitaEntradaRequestDTO funcionarioSolicitaEntradaRequestDTO
+            @RequestBody @Valid FuncionarioSolicitaEntradaPostRequestDTO funcionarioSolicitaEntradaPostRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, funcionarioSolicitaEntradaRequestDTO));
+                .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, funcionarioSolicitaEntradaPostRequestDTO));
     }
 
-    @PostMapping ("/{id}/lista-espera/aprovacao")
+    @PostMapping ("/{idEstabelecimento}/lista-espera/{idFuncionario}/aprovacao")
     public ResponseEntity<?> aceitarPedido(
-            @PathVariable Long id,
-            @RequestBody @Valid EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO
+            @PathVariable Long idEstabelecimento,
+            @PathVariable Long idFuncionario,
+            @RequestBody @Valid EstabelecimentoAceitarPostRequestDTO estabelecimentoAceitarPostRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAceitarService.aceitar(estabelecimentoAceitarRequestDTO, id));
+                .body(estabelecimentoAceitarService.aceitar(idEstabelecimento, idFuncionario, estabelecimentoAceitarPostRequestDTO));
     }
 
     @PutMapping ("/{id}/indisponivel/{idPizza}")

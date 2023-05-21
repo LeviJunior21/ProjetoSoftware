@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 
 @FunctionalInterface
 public interface ClienteAlterarNomeService {
-    ClienteDTO alterarParcialmente(ClienteNomePatchRequestDTO clienteNomePatchRequestDTO);
+    ClienteDTO alterarParcialmente(Long id, ClienteNomePatchRequestDTO clienteNomePatchRequestDTO);
 }

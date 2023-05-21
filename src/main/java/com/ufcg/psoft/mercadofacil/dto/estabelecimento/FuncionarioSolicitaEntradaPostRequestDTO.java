@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstabelecimentoAceitarRequestDTO {
+public class FuncionarioSolicitaEntradaPostRequestDTO {
     @JsonProperty("id")
     private Long id;
 

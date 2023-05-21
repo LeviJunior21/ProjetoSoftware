@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 
 @FunctionalInterface
 public interface ClienteBuscarService {
-    ClienteDTO get(ClienteGetRequestDTO clienteGetRequestDTO);
+    ClienteDTO get(Long id, ClienteGetRequestDTO clienteGetRequestDTO);
 }

@@ -70,7 +70,6 @@ public class ClienteV1ControllerTests {
 
         clienteNomePatchRequestDTO = ClienteNomePatchRequestDTO.builder()
                 .nomeCompleto("Levi")
-                .id(cliente1.getId())
                 .codigoAcesso(123456)
                 .build();
         clienteEnderecoPatchRequestDTO = ClienteEnderecoPatchRequestDTO.builder()
@@ -110,10 +109,9 @@ public class ClienteV1ControllerTests {
         @DisplayName("Quando altero endereco do usuario")
         void quandoAlteroEnderecoUsuario() throws Exception {
             //Arrange
-            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSON = driver.perform(patch(URI_CLIENTE + "/endereco")
+            String responseJSON = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
                     .andExpect(status().isOk())
@@ -153,10 +151,9 @@ public class ClienteV1ControllerTests {
             //Arrange
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal("Rua CG");
             clienteEnderecoPatchRequestDTO.setCodigoAcesso(123458);
-            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -199,8 +196,9 @@ public class ClienteV1ControllerTests {
                     .codigoAcesso(123489)
                     .id(cliente1.getId())
                     .build();
+
             //Act
-            String responseJSONString = driver.perform(put(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(put(URI_CLIENTE + "/" + cliente1.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePostPutRequestDTO1)))
                     .andExpect(status().isBadRequest())
@@ -218,10 +216,9 @@ public class ClienteV1ControllerTests {
         void quandoAlteroEnderecoUsuarioInvalido() throws Exception {
             //Arrange
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal("");
-            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -263,7 +260,7 @@ public class ClienteV1ControllerTests {
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal(null);
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -307,10 +304,9 @@ public class ClienteV1ControllerTests {
             //Arrange
             clienteEnderecoPatchRequestDTO.setEnderecoPrincipal("Rua CG");
             clienteEnderecoPatchRequestDTO.setCodigoAcesso(123);
-            clienteEnderecoPatchRequestDTO.setId(cliente1.getId());
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -355,11 +351,10 @@ public class ClienteV1ControllerTests {
             clienteEnderecoPatchRequestDTO = ClienteEnderecoPatchRequestDTO.builder()
                     .enderecoPrincipal("Rua CG")
                     .codigoAcesso(1234567)
-                    .id(cliente1.getId())
                     .build();
 
             //Act
-            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/endereco")
+            String responseJSONString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/endereco")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteEnderecoPatchRequestDTO)))
                     .andExpect(status().isBadRequest())
@@ -403,9 +398,8 @@ public class ClienteV1ControllerTests {
         @DisplayName("Quando atualizo um cliente válido")
         void quandoAtualidoClienteValido() throws Exception {
             //Arrange
-            clientePostPutRequestDTO.setId(cliente1.getId());
             //Act
-            String responseJSONString = driver.perform(put(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(put(URI_CLIENTE + "/" + cliente1.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePostPutRequestDTO)))
                     .andExpect(status().isOk())
@@ -426,11 +420,10 @@ public class ClienteV1ControllerTests {
             //Arrange
             clienteRemoveRequestDTO = ClienteRemoveRequestDTO.builder()
                     .codigoAcesso(cliente2.getCodigoAcesso())
-                    .id(cliente2.getId())
                     .build();
 
             //Act
-            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/" + cliente2.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteRemoveRequestDTO)))
                     .andExpect(status().isNoContent())
@@ -447,12 +440,11 @@ public class ClienteV1ControllerTests {
         void quandoBuscoClientePorCodigoAcessoInvalido() throws Exception {
             // Arrange
             clienteGetRequestDTO = ClienteGetRequestDTO.builder()
-                    .id(cliente2.getId())
                     .codigoAcesso(123459)
                     .build();
 
             //Act
-            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/" + cliente2.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
                     )
@@ -471,12 +463,11 @@ public class ClienteV1ControllerTests {
         void quandoExcluoClientePorCodigoAcessoInvalido() throws Exception {
             // Arrange
             clienteRemoveRequestDTO = ClienteRemoveRequestDTO.builder()
-                    .id(cliente1.getId())
                     .codigoAcesso(123459)
                     .build();
 
             //Act
-            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(delete(URI_CLIENTE + "/" + cliente1.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(clienteRemoveRequestDTO)))
                     .andDo(print())
@@ -494,12 +485,11 @@ public class ClienteV1ControllerTests {
         void quandoPegoClientePeloID() throws Exception {
             //Arrange
             clienteGetRequestDTO = ClienteGetRequestDTO.builder()
-                    .id(cliente2.getId())
                     .codigoAcesso(123458)
                     .build();
 
             //Act
-            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/" + cliente2.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
                     )
@@ -516,13 +506,14 @@ public class ClienteV1ControllerTests {
         @Test
         @DisplayName("Quando pego um cliente pelo ID que nao existe")
         void quandoClientePeloIDInexistente() throws Exception {
+            //Arrange
             clienteGetRequestDTO = ClienteGetRequestDTO.builder()
-                    .id(18L)
                     .codigoAcesso(123456)
                     .build();
-            //Arrange
+            Long id = 18L;
+
             //Act
-            String responseJSONString = driver.perform(get(URI_CLIENTE + "/cliente")
+            String responseJSONString = driver.perform(get(URI_CLIENTE + "/" + id)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clienteGetRequestDTO))
                     )

@@ -14,8 +14,8 @@ public class ClienteExcluirPadraoService implements ClienteExcluirService {
     ClienteRepository clienteRepository;
 
     @Override
-    public void excluir(ClienteRemoveRequestDTO clienteRemoveRequestDTO) {
-        Cliente cliente = clienteRepository.findById(clienteRemoveRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
+    public void excluir(Long id, ClienteRemoveRequestDTO clienteRemoveRequestDTO) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clienteRemoveRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }

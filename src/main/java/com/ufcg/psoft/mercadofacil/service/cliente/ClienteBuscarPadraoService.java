@@ -18,8 +18,8 @@ public class ClienteBuscarPadraoService implements ClienteBuscarService {
     ModelMapper modelMapper;
 
     @Override
-    public ClienteDTO get(ClienteGetRequestDTO clienteGetRequestDTO) {
-        Cliente cliente = clienteRepository.findById(clienteGetRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
+    public ClienteDTO get(Long id, ClienteGetRequestDTO clienteGetRequestDTO) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clienteGetRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }

@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 
 @FunctionalInterface
 public interface ClienteAlterarEnderecoService {
-    ClienteDTO alterarParcialmente(ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO);
+    ClienteDTO alterarParcialmente(Long id, ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO);
 }

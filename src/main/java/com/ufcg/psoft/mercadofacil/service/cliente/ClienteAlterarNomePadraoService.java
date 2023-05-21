@@ -20,8 +20,8 @@ public class ClienteAlterarNomePadraoService implements ClienteAlterarNomeServic
     ModelMapper modelMapper;
 
     @Override
-    public ClienteDTO alterarParcialmente(ClienteNomePatchRequestDTO clienteNomePatchRequestDTO) {
-        Cliente cliente = clienteRepository.findById(clienteNomePatchRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
+    public ClienteDTO alterarParcialmente(Long id, ClienteNomePatchRequestDTO clienteNomePatchRequestDTO) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clienteNomePatchRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();
         }

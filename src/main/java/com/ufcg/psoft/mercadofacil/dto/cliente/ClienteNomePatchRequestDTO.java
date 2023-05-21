@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClienteNomePatchRequestDTO {
-    @JsonProperty("id")
-    private Long id;
-
     @JsonProperty("nomeCompleto")
     @NotBlank(message = "Nome vazio invalido")
     private String nomeCompleto;

@@ -19,8 +19,8 @@ public class ClienteAlterarEnderecoPadraoService implements ClienteAlterarEndere
     ModelMapper modelMapper;
 
     @Override
-    public ClienteDTO alterarParcialmente(ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO) {
-        Cliente cliente = clienteRepository.findById(clienteEnderecoPatchRequestDTO.getId()).orElseThrow(ClienteNaoExisteException::new);
+    public ClienteDTO alterarParcialmente(Long id, ClienteEnderecoPatchRequestDTO clienteEnderecoPatchRequestDTO) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clienteEnderecoPatchRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();
         }

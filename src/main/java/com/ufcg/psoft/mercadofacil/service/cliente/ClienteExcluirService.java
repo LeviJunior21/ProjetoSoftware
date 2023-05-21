@@ -4,5 +4,5 @@ import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteRemoveRequestDTO;
 
 @FunctionalInterface
 public interface ClienteExcluirService {
-    void excluir(ClienteRemoveRequestDTO clienteRemoveRequestDTO);
+    void excluir(Long id, ClienteRemoveRequestDTO clienteRemoveRequestDTO);
 }
