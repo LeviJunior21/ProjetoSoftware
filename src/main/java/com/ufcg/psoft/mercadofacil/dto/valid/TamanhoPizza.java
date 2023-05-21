@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {TamanhoPizzaValidator.class})
-@Order(1)
+@Order(10)
 public @interface TamanhoPizza {
     String message() default "O tamanho deve ser MEDIO ou GRANDE";
     Class<?>[] groups() default {};

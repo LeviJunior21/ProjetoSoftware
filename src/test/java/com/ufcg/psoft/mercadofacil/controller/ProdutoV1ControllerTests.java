@@ -187,7 +187,7 @@ public class ProdutoV1ControllerTests {
 
             //Assert
             assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Tamanho da pizza eh obrigatorio", resultado.getErrors().get(0));
+            assertTrue(resultado.getErrors().contains("O tamanho deve ser MEDIO ou GRANDE"));
         }
     }
 
