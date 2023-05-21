@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
+import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaDTO;
+import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaGetRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.pizza.SaborPizzaPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
@@ -12,6 +16,7 @@ import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.EstabelecimentoRemoverEsperaService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -120,6 +126,189 @@ public class EstabelecimentoV1ControllerTests {
         // Assert
         assertEquals("Padaria", estabelecimentoResultante.getNome());
     }
+
+
+
+    @Nested
+    @DisplayName("Conjunto de casos de teste RESTApi para pizza")
+    class PizzaTests {
+        @Autowired
+        PizzaRepository pizzaRepository;
+        SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO;
+
+        @BeforeEach
+        void setup() {
+            saborPizzaPostPutRequestDTO = SaborPizzaPostPutRequestDTO.builder()
+                    .nome("Calabresa")
+                    .preco(2.00)
+                    .tamanho("Grande")
+                    .tipo("Salgada")
+                    .build();
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento criar uma pizza com dados validos")
+        void quandoEstabelecimentoCriaUmaPizza() throws Exception {
+            //Arrange
+            //Act
+            String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(saborPizzaPostPutRequestDTO)))
+                    .andExpect(status().isCreated()) // Codigo 201
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            PizzaDTO resultado = objectMapper.readValue(responseJsonString, PizzaDTO.PizzaDTOBuilder.class).build();
+
+            assertNotNull(resultado.getId());
+            assertEquals(resultado.getSabor().stream().findFirst().get().getNome(), saborPizzaPostPutRequestDTO.getNome());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento altera os valores de uma pizza")
+        void quandoEstabelecimentoAlteraUmaPizza() throws Exception {
+            //Arrange
+            Pizza pizza = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .disponibilidade("disponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza);
+            SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO1 = SaborPizzaPostPutRequestDTO.builder()
+                    .nome("Frango")
+                    .preco(4.00)
+                    .tamanho("Grande")
+                    .tipo("Salgada")
+                    .build();
+
+            //Act
+            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/atualizar_pizza/" + pizza.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(saborPizzaPostPutRequestDTO1)))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            PizzaDTO resultado = objectMapper.readValue(responseJsonString, PizzaDTO.PizzaDTOBuilder.class).build();
+
+            //Assert
+            assertEquals("Frango", resultado.getSabor().stream().findFirst().get().getNome());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento remove uma pizza")
+        void quandoEstabelecimentoExcluiUmaPizza() throws Exception {
+            //Arrange
+            Pizza pizza = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .disponibilidade("disponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza);
+            PizzaRemoveRequestDTO pizzaRemoveRequestDTO = PizzaRemoveRequestDTO.builder().id(pizza.getId()).build();
+
+            //Arrange
+            String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/remove_pizza")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(pizzaRemoveRequestDTO)))
+                    .andExpect(status().isNoContent()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            //Assert
+            assertTrue(responseJsonString.isBlank());
+            assertEquals(0, estabelecimento.getCardapio().size());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento buscar uma pizza")
+        void quandoEstabelecimentoBuscaPizza() throws Exception {
+            //Arrange
+            Pizza pizza = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .disponibilidade("disponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza);
+            SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO1 = SaborPizzaPostPutRequestDTO.builder()
+                    .nome("Frango")
+                    .preco(4.00)
+                    .tamanho("Grande")
+                    .tipo("Media")
+                    .build();
+            Pizza pizza1 = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO1, Produto.class)))
+                    .disponibilidade("disponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza1);
+            PizzaGetRequestDTO pizzaGetRequestDTO = PizzaGetRequestDTO.builder().id(pizza1.getId()).build();
+
+            //Arrange
+            String responseJsonString = driver.perform(get(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/cardapio")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(pizzaGetRequestDTO)))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            PizzaDTO resultado = objectMapper.readValue(responseJsonString, PizzaDTO.PizzaDTOBuilder.class).build();
+
+            //Assert
+            assertEquals(pizza1.getSabor(), resultado.getSabor());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento buscar por todas as pizza (cardapio)")
+        void quandoEstabelecimentoListaCardapio() throws Exception {
+            //Arrange
+            Pizza pizza = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .disponibilidade("disponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza);
+            SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO1 = SaborPizzaPostPutRequestDTO.builder()
+                    .nome("Frango")
+                    .preco(4.00)
+                    .tamanho("Grande")
+                    .tipo("Salgada")
+                    .build();
+            Pizza pizza1 = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO1, Produto.class)))
+                    .disponibilidade("indisponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza1);
+            SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO2 = SaborPizzaPostPutRequestDTO.builder()
+                    .nome("Chocolate")
+                    .preco(6.00)
+                    .tamanho("Media")
+                    .tipo("Doce")
+                    .build();
+            Pizza pizza2 = pizzaRepository.save(Pizza.builder()
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO2, Produto.class)))
+                    .disponibilidade("disponivel")
+                    .build());
+            estabelecimento.getCardapio().add(pizza2);
+
+            //Arrange
+            String responseJsonString = driver.perform(get(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista_cardapio")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            List<PizzaDTO> resultado = objectMapper.readValue(responseJsonString, new TypeReference<List<PizzaDTO>>() {});
+
+            //Assert
+            assertEquals(3, resultado.size());
+            assertEquals("indisponivel", resultado.get(resultado.size()-1).getDisponibilidade());
+        }
+
+
+    }
+
+
 
     @Nested
     @DisplayName("Conjunto de casos de verificação de pizza")
