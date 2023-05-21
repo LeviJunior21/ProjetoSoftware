@@ -1,6 +1,9 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
+import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaGetRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.pizza.SaborPizzaPostPutRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +41,8 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoAlterarParaIndisponivelPadraoService estabelecimentoAlterarParaIndisponivelService;
     @Autowired
     EstabelecimentoAlterarParaDisponivelPadraoService estabelecimentoAlterarParaDisponivelService;
+    @Autowired
+    EstabelecimentoPizzaService estabelecimentoPizzaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
@@ -143,5 +148,55 @@ public class EstabelecimentoV1Controller {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(estabelecimentoAlterarParaDisponivelService.alterarDisponibilidade(idPizza, id));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> salvarPizza(
+            @PathVariable Long id,
+            @RequestBody @Valid SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(estabelecimentoPizzaService.salvar(id, saborPizzaPostPutRequestDTO));
+    }
+
+    @PutMapping("/{id}/atualizar_pizza/{idPizza}")
+    public ResponseEntity<?> atualizarPizza(
+            @PathVariable Long id,
+            @PathVariable Long idPizza,
+            @RequestBody @Valid SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoPizzaService.alterar(id, idPizza, saborPizzaPostPutRequestDTO));
+    }
+
+    @DeleteMapping("/{id}/remove_pizza")
+    public ResponseEntity<?> removerPizza(
+            @PathVariable Long id,
+            @RequestBody @Valid PizzaRemoveRequestDTO pizzaRemoveRequestDTO
+    ) {
+        estabelecimentoPizzaService.excluir(id, pizzaRemoveRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @GetMapping("/{id}/cardapio")
+    public ResponseEntity<?> buscarUmaPizza(
+            @PathVariable Long id,
+            @RequestBody @Valid PizzaGetRequestDTO pizzaGetRequestDTO
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoPizzaService.get(id, pizzaGetRequestDTO));
+    }
+
+    @GetMapping("/{id}/lista_cardapio")
+    public ResponseEntity<?> listarCardapio(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estabelecimentoPizzaService.listar(id));
     }
 }
