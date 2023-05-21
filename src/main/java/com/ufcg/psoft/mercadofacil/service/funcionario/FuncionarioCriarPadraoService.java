@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.funcionario;
 
+import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioDTO;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
@@ -13,8 +14,10 @@ public class FuncionarioCriarPadraoService implements FuncionarioCriarService {
     ModelMapper modelMapper;
     @Autowired
     FuncionarioRepository funcionarioRepository;
-    public Funcionario salvar(FuncionarioPostPutRequestDTO funcionarioPostPutRequestDTO) {
+    public FuncionarioDTO salvar(FuncionarioPostPutRequestDTO funcionarioPostPutRequestDTO) {
         Funcionario funcionario = modelMapper.map(funcionarioPostPutRequestDTO, Funcionario.class);
-        return funcionarioRepository.save(funcionario);
+        Funcionario funcionario1 = funcionarioRepository.save(funcionario);
+        FuncionarioDTO funcionarioDTO = modelMapper.map(funcionario1, FuncionarioDTO.class);
+        return funcionarioDTO;
     }
 }

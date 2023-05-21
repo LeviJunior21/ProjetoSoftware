@@ -19,8 +19,8 @@ public class EstabelecimentoGetPadraoService implements EstabelecimentoGetServic
     ModelMapper modelMapper;
 
     @Override
-    public EstabelecimentoDTO get(EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoGetRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
+    public EstabelecimentoDTO get(Long id, EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
         if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoGetRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }

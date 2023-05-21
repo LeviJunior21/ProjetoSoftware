@@ -14,10 +14,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstabelecimentoNomePatchRequestDTO {
-    @JsonProperty("id")
-    @Id
-    private Long id;
-
     @JsonProperty("nome")
     @NotBlank(message = "Nome obrigatorio")
     private String nome;

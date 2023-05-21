@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 
 @FunctionalInterface
 public interface EstabelecimentoRemoverEsperaService {
-    EstabelecimentoDTO excluirEspera(EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO, Long idEntregador);
+    EstabelecimentoDTO excluirEspera(Long idEstabelecimento, Long idFuncionario, EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO);
 }

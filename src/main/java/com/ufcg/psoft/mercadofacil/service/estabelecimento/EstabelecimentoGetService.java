@@ -6,5 +6,5 @@ import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 
 @FunctionalInterface
 public interface EstabelecimentoGetService {
-    EstabelecimentoDTO get(EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO);
+    EstabelecimentoDTO get(Long id, EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO);
 }

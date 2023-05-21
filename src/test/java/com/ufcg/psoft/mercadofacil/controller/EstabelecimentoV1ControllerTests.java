@@ -249,11 +249,10 @@ public class EstabelecimentoV1ControllerTests {
         EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO = EstabelecimentoNomePatchRequestDTO.builder()
                 .nome("Padaria")
                 .codigoAcesso(123456)
-                .id(estabelecimento.getId())
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(patch("/v1/estabelecimentos" + "/alterar_nome")
+        String responseJsonString = driver.perform(patch(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/nome")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTO)))
                 .andExpect(status().isOk())
@@ -275,7 +274,7 @@ public class EstabelecimentoV1ControllerTests {
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(put("/v1/estabelecimentos/" + estabelecimento.getId() + "/atualizar")
+        String responseJsonString = driver.perform(put("/v1/estabelecimentos/" + estabelecimento.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
                 .andExpect(status().isBadRequest())
@@ -297,7 +296,7 @@ public class EstabelecimentoV1ControllerTests {
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(put("/v1/estabelecimentos/" + estabelecimento.getId() + "/atualizar")
+        String responseJsonString = driver.perform(put("/v1/estabelecimentos/" + estabelecimento.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
                 .andExpect(status().isBadRequest())
@@ -317,9 +316,10 @@ public class EstabelecimentoV1ControllerTests {
         EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO = EstabelecimentoNomePatchRequestDTO.builder()
                 .nome("")
                 .build();
+        Long id = 40L;
 
         // Act
-        String responseJsonString = driver.perform(patch("/v1/estabelecimentos" + "/alterar_nome")
+        String responseJsonString = driver.perform(patch(URI_ESTABELECIMENTOS + "/" + id + "/nome")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTO)))
                 .andExpect(status().isBadRequest())
@@ -362,12 +362,11 @@ public class EstabelecimentoV1ControllerTests {
     void quandoBuscamosUmEstabelecimentoVlidoPeloIdComCodigoInvalidoPeloCodigoAcesso() throws Exception {
         // Arrange
         EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO = EstabelecimentoGetRequestDTO.builder()
-                .id(estabelecimento.getId())
                 .codigoAcesso(124599)
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(get(URI_ESTABELECIMENTOS + "/estabelecimento")
+        String responseJsonString = driver.perform(get(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoGetRequestDTO)))
                 .andExpect(status().isBadRequest())
@@ -385,13 +384,12 @@ public class EstabelecimentoV1ControllerTests {
     void quandoTentamosAlterarNomeEstabelecimentoValidoPeloIdMasPeloCodigoAcessoInvalido() throws Exception {
         // Arrange
         EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTOO = EstabelecimentoNomePatchRequestDTO.builder()
-                .id(estabelecimento.getId())
                 .nome("Padaria")
                 .codigoAcesso(124599)
                 .build();
 
         // Act
-        String responseJsonString = driver.perform(patch(URI_ESTABELECIMENTOS + "/alterar_nome")
+        String responseJsonString = driver.perform(patch(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() +"/nome")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(estabelecimentoNomePatchRequestDTOO)))
                 .andExpect(status().isBadRequest())
@@ -445,7 +443,7 @@ public class EstabelecimentoV1ControllerTests {
                     .codigoAcesso(123456)
                     .build();
 
-            String responseJSONString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/atualizar")
+            String responseJSONString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(estabelecimentoPostPutRequestDTO)))
                     .andDo(print())
@@ -460,10 +458,9 @@ public class EstabelecimentoV1ControllerTests {
         void quandoExcluimosUmEstabelecimento() throws Exception {
             estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
                     .codigoAcesso(123456)
-                    .id(estabelecimento.getId())
                     .build();
             // Arrange
-            String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/estabelecimento")
+            String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
                     )
@@ -507,11 +504,10 @@ public class EstabelecimentoV1ControllerTests {
             // Arrange
             estabelecimentoGetRequestDTO = EstabelecimentoGetRequestDTO.builder()
                     .codigoAcesso(123458)
-                    .id(estabelecimento.getId())
                     .build();
 
             // Act
-            String responseJSONString = driver.perform(get(URI_ESTABELECIMENTOS + "/estabelecimento")
+            String responseJSONString = driver.perform(get(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(estabelecimento))
                     )
@@ -561,7 +557,7 @@ public class EstabelecimentoV1ControllerTests {
                         .codigoAcesso(123459)
                         .build();
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/solicitacao")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaRequestDTO))
                         )
@@ -585,7 +581,7 @@ public class EstabelecimentoV1ControllerTests {
                         .codigoAcesso(123457)
                         .build();
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/solicitar")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/solicitacao")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(funcionarioSolicitaEntradaRequestDTO))
                         )
@@ -610,7 +606,7 @@ public class EstabelecimentoV1ControllerTests {
                         .build();
 
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/aceitar")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/lista-espera/aprovacao")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO))
                         )
@@ -636,7 +632,7 @@ public class EstabelecimentoV1ControllerTests {
                 estabelecimento.getEspera().add(funcionario);
 
                 //Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/aceitar")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/lista-espera/aprovacao")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO))
                         )
@@ -662,7 +658,7 @@ public class EstabelecimentoV1ControllerTests {
                 estabelecimento.getEspera().add(funcionario);
 
                 // Act
-                String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/aceitar")
+                String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + funcionario.getId() + "/lista-espera/aprovacao")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoAceitarRequestDTO)))
                         .andExpect(status().isBadRequest())
@@ -721,7 +717,7 @@ public class EstabelecimentoV1ControllerTests {
                         .build();
                 // Arrange
                 // Act
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + funcionario10.getId() + "/remover_espera")
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento2.getId() + "/lista-espera/" + funcionario10.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
                         )
@@ -744,7 +740,7 @@ public class EstabelecimentoV1ControllerTests {
                         .build();
                 // Arrange
                 // Act
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + funcionario10.getId() + "/remover_espera")
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento2.getId() + "/lista-espera/" + funcionario10.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
                         )
@@ -768,7 +764,7 @@ public class EstabelecimentoV1ControllerTests {
                         .build();
                 // Arrange
                 // Act
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + funcionario10.getId() + "/remover_espera")
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/lista-espera/" + funcionario10.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
                         )
@@ -786,13 +782,12 @@ public class EstabelecimentoV1ControllerTests {
             @Transactional
             @DisplayName("Quando remove um entregador da lista de espera mas o codigo de acesso eh invalido")
             void quandoTentamosRejeitarEntregadorEsperaMasCodigoAcessoEhInvalido() throws Exception {
+                // Arrange
                 estabelecimentoRemoveRequestDTO = EstabelecimentoRemoveRequestDTO.builder()
-                        .id(estabelecimento2.getId())
                         .codigoAcesso(123457)
                         .build();
-                // Arrange
                 // Act
-                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/estabelecimento")
+                String responseJSONString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento2.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(estabelecimentoRemoveRequestDTO))
                         )

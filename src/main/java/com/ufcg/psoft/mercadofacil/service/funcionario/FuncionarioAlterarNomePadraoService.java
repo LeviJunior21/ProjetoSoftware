@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.funcionario;
 
+import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioDTO;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
@@ -16,12 +17,14 @@ public class FuncionarioAlterarNomePadraoService implements FuncionarioAlterarNo
     @Autowired
     FuncionarioRepository funcionarioRepository;
     @Override
-    public Funcionario alterarParcialmente(Long id, FuncionarioNomePatchRequestDTO funcionarioNomePatchRequestDTO) {
+    public FuncionarioDTO alterarParcialmente(Long id, FuncionarioNomePatchRequestDTO funcionarioNomePatchRequestDTO) {
         Funcionario funcionario = funcionarioRepository.findById(id).orElseThrow(FuncionarioNaoExisteException::new);
         if (!funcionario.getCodigoAcesso().equals(funcionarioNomePatchRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();
         }
         modelMapper.map(funcionarioNomePatchRequestDTO, funcionario);
-        return funcionarioRepository.save(funcionario);
+        Funcionario funcionario1 = funcionarioRepository.save(funcionario);
+        FuncionarioDTO funcionarioDTO = modelMapper.map(funcionario1, FuncionarioDTO.class);
+        return funcionarioDTO;
     }
 }

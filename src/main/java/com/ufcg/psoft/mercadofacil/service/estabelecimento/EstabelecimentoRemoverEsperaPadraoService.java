@@ -25,8 +25,8 @@ public class EstabelecimentoRemoverEsperaPadraoService implements Estabeleciment
     ModelMapper modelMapper;
 
     @Override
-    public EstabelecimentoDTO excluirEspera(EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO, Long idFuncionario) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoRemoveRequestDTO.getId()).orElseThrow(EstabelecimentoNaoExisteException::new);
+    public EstabelecimentoDTO excluirEspera(Long idEstabelecimento, Long idFuncionario, EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         Funcionario funcionario = funcionarioRepository.findById(idFuncionario).orElseThrow(FuncionarioNaoExisteException::new);
         if (estabelecimentoRemoveRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso())) {
             if(estabelecimento.getEspera().contains(funcionario)) {

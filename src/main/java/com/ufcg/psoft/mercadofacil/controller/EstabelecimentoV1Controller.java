@@ -40,16 +40,17 @@ public class EstabelecimentoV1Controller {
     @Autowired
     EstabelecimentoAlterarParaDisponivelPadraoService estabelecimentoAlterarParaDisponivelService;
 
-    @GetMapping("/estabelecimento")
+    @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
+            @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO
             ) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(estabelecimentoGetService.get(estabelecimentoGetRequestDTO));
+                    .body(estabelecimentoGetService.get(id, estabelecimentoGetRequestDTO));
     }
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<?> buscarTodosEstabelecimentos() {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -64,15 +65,16 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoCriarService.salvar(estabelecimentoPostPutRequestDTO));
     }
 
-    @PatchMapping("/alterar_nome")
+    @PatchMapping("/{id}/nome")
     public ResponseEntity<?> atualizarParcialmenteEstabelecimento(
+            @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoNomePatchRequestDTO estabelecimentoNomePatchRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarNomeService.alterarParcialmente(estabelecimentoNomePatchRequestDTO));
+                .body(estabelecimentoAlterarNomeService.alterarParcialmente(id, estabelecimentoNomePatchRequestDTO));
     }
 
-    @PutMapping("/{id}/atualizar")
+    @PutMapping("/{id}")
     public ResponseEntity<?> atualizarEstabelecimento(
             @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoPostPutRequestDTO estabelecimentoPostPutRequestDTO) {
@@ -81,27 +83,29 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoAlterarService.alterar(id, estabelecimentoPostPutRequestDTO));
     }
 
-    @DeleteMapping("/estabelecimento")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> excluirEstabelecimento(
+            @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO
             ) {
-        estabelecimentoExcluirService.excluir(estabelecimentoRemoveRequestDTO);
+        estabelecimentoExcluirService.excluir(id, estabelecimentoRemoveRequestDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");
     }
 
-    @DeleteMapping("/{id}/remover_espera")
+    @DeleteMapping("/{idEstabelecimento}/lista-espera/{idFuncionario}")
     public ResponseEntity<?> removerEspera(
-            @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO,
-            @PathVariable Long id
+            @PathVariable Long idEstabelecimento,
+            @PathVariable Long idFuncionario,
+            @RequestBody @Valid EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoRemoverEsperaService.excluirEspera(estabelecimentoRemoveRequestDTO, id));
+                .body(estabelecimentoRemoverEsperaService.excluirEspera(idEstabelecimento, idFuncionario, estabelecimentoRemoveRequestDTO));
     }
 
-    @PutMapping ("/{id}/solicitar")
+    @PostMapping ("/{id}/lista-espera/solicitacao")
     public ResponseEntity<?> solicitarPedido(
             @PathVariable Long id,
             @RequestBody @Valid FuncionarioSolicitaEntradaRequestDTO funcionarioSolicitaEntradaRequestDTO
@@ -111,7 +115,7 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoSolicitarPedidoService.solicitarPedido(id, funcionarioSolicitaEntradaRequestDTO));
     }
 
-    @PutMapping ("/{id}/aceitar")
+    @PostMapping ("/{id}/lista-espera/aprovacao")
     public ResponseEntity<?> aceitarPedido(
             @PathVariable Long id,
             @RequestBody @Valid EstabelecimentoAceitarRequestDTO estabelecimentoAceitarRequestDTO

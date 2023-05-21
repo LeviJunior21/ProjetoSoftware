@@ -18,8 +18,8 @@ public class EstabelecimentoExcluirPadraoService implements EstabelecimentoExclu
     ModelMapper modelMapper;
 
     @Override
-    public void excluir(EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(estabelecimentoRemoveRequestDTO.getId()).orElseThrow(ProdutoNaoExisteException::new);
+    public void excluir(Long id, EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
         if (!estabelecimentoRemoveRequestDTO.getCodigoAcesso().equals(estabelecimento.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }
