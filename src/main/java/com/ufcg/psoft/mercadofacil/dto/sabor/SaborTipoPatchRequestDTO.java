@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.dto.produto;
+package com.ufcg.psoft.mercadofacil.dto.sabor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProdutoNomePatchRequestDTO {
-    @JsonProperty("nome")
-    @NotBlank(message = "Nome eh obrigatorio")
-    private String nome;
+public class SaborTipoPatchRequestDTO {
+    @JsonProperty("tipo")
+    @NotBlank(message = "Tipo da pizza eh obrigatorio")
+    private String tipo;
 }

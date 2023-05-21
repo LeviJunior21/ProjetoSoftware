@@ -22,7 +22,7 @@ public class Pizza {
     private Long id;
     @JsonProperty("sabores")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Produto> sabor;
+    private Set<Sabor> sabor;
     @JsonProperty("disponibilidade")
     @Column(nullable = false)
     private String disponibilidade;

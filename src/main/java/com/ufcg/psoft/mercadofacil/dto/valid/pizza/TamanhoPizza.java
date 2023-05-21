@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.dto.valid;
+package com.ufcg.psoft.mercadofacil.dto.valid.pizza;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

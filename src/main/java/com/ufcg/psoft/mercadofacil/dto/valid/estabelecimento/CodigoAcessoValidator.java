@@ -1,5 +1,6 @@
-package com.ufcg.psoft.mercadofacil.dto.valid;
+package com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento;
 
+import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

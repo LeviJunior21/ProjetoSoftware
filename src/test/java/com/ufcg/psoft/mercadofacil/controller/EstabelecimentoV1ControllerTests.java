@@ -132,20 +132,20 @@ public class EstabelecimentoV1ControllerTests {
         Pizza pizza;
         Pizza pizza2;
         Cliente cliente;
-        Produto produto;
-        Produto produto1;
+        Sabor sabor;
+        Sabor sabor1;
         ClienteInteressado clienteInteressado;
 
         @BeforeEach
         void setup() {
-            produto1 = Produto.builder()
+            sabor1 = Sabor.builder()
                     .nome("Frango")
                     .preco(2.00)
                     .tipo("Salgada")
                     .tamanho("Grande")
                     .build();
 
-            produto = Produto.builder()
+            sabor = Sabor.builder()
                     .nome("Calabresa")
                     .preco(2.00)
                     .tipo("Salgada")
@@ -156,14 +156,14 @@ public class EstabelecimentoV1ControllerTests {
                     .disponibilidade("disponivel")
                     .sabor(new HashSet<>())
                     .build());
-            pizza.getSabor().add(produto);
+            pizza.getSabor().add(sabor);
             estabelecimento.getCardapio().add(pizza);
 
             pizza2 = pizzaRepository.save(Pizza.builder()
                     .disponibilidade("indisponivel")
                     .sabor(new HashSet<>())
                     .build());
-            pizza2.getSabor().add(produto1);
+            pizza2.getSabor().add(sabor1);
             estabelecimento.getCardapio().add(pizza2);
 
             cliente = clienteRepository.save(Cliente.builder()
@@ -173,7 +173,7 @@ public class EstabelecimentoV1ControllerTests {
             clienteInteressado = ClienteInteressado.builder()
                     .id(cliente.getId())
                     .nomeCompleto(cliente.getNomeCompleto())
-                    .saborDeInteresse(produto1.getNome())
+                    .saborDeInteresse(sabor1.getNome())
                     .build();
             estabelecimento.getInteressados().add(clienteInteressado);
         }

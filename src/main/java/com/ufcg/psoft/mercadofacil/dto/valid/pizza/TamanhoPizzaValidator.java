@@ -1,5 +1,6 @@
-package com.ufcg.psoft.mercadofacil.dto.valid;
+package com.ufcg.psoft.mercadofacil.dto.valid.pizza;
 
+import com.ufcg.psoft.mercadofacil.dto.valid.pizza.TamanhoPizza;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

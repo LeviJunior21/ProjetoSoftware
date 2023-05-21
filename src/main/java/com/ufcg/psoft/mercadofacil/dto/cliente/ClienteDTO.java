@@ -1,7 +1,7 @@
 package com.ufcg.psoft.mercadofacil.dto.cliente;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.model.Produto;
+import com.ufcg.psoft.mercadofacil.model.Sabor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +24,5 @@ public class ClienteDTO {
     private String enderecoPrincipal;
     @JsonProperty("carrinhos")
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Produto> carrinhos;
+    private List<Sabor> carrinhos;
 }

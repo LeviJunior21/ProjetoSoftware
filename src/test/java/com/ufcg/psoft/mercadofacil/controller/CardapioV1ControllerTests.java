@@ -1,32 +1,10 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
-import com.ufcg.psoft.mercadofacil.model.Funcionario;
-import com.ufcg.psoft.mercadofacil.model.Pizza;
-import com.ufcg.psoft.mercadofacil.model.Produto;
-import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
-import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.RequestEntity.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 /**
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -76,21 +54,21 @@ public class CardapioV1ControllerTests {
     @Nested
     @DisplayName("Teste de listagem cardapio")
     class TesteListarCardapio {
-        Produto pizza;
+        Sabor pizza;
         Estabelecimento estabelecimento;
-        Produto pizza2;
+        Sabor pizza2;
 
         @BeforeEach
         void setup() {
 
 
-            pizza = Produto.builder()
+            pizza = Sabor.builder()
                     .nome("calabresa")
                     .tipo("salgado")
                     .tamanho("media")
                     .preco(10.00)
                     .build();
-            pizza2 = Produto.builder()
+            pizza2 = Sabor.builder()
                     .nome("nutella")
                     .tipo("doce")
                     .tamanho("grande")
@@ -125,9 +103,9 @@ public class CardapioV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Set<Produto> pizzas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {
+            Set<Sabor> pizzas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Sabor>>() {
             });
-            Produto pizza = pizzas.stream().findFirst().orElse(Produto.builder().build());
+            Sabor pizza = pizzas.stream().findFirst().orElse(Sabor.builder().build());
 
             assertEquals(2, pizzas.size());
         }
@@ -144,9 +122,9 @@ public class CardapioV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Set<Produto> pizzasDoces = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {
+            Set<Sabor> pizzasDoces = objectMapper.readValue(responseJSONString, new TypeReference<Set<Sabor>>() {
             });
-            Produto pizzaRetorno = pizzasDoces.stream().findFirst().orElse(Produto.builder().build());
+            Sabor pizzaRetorno = pizzasDoces.stream().findFirst().orElse(Sabor.builder().build());
 
             assertEquals(1, pizzasDoces.size());
             assertAll(
@@ -171,9 +149,9 @@ public class CardapioV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Set<Produto> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {
+            Set<Sabor> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Sabor>>() {
             });
-            Produto pizzaRetorno = pizzasSalgadas.stream().findFirst().orElse(Produto.builder().build());
+            Sabor pizzaRetorno = pizzasSalgadas.stream().findFirst().orElse(Sabor.builder().build());
 
             assertEquals(1, pizzasSalgadas.size());
 
@@ -189,7 +167,7 @@ public class CardapioV1ControllerTests {
         @DisplayName("Lista pizza do tipo salgada e tamanho grande adicionada em cardapio estabelecimento")
         void verificaListagemPizzaSalgadaGrande() throws Exception {
             //Arrange
-            Produto pizzaSalgadaGrande = Produto.builder()
+            Sabor pizzaSalgadaGrande = Sabor.builder()
                     .nome("calabresa")
                     .tipo("salgado")
                     .tamanho("grande")
@@ -206,9 +184,9 @@ public class CardapioV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Set<Produto> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {
+            Set<Sabor> pizzasSalgadas = objectMapper.readValue(responseJSONString, new TypeReference<Set<Sabor>>() {
             });
-            Produto pizzaRetorno = pizzasSalgadas.stream().filter(produto -> ("salgado".equals(produto.getTipo()) && "grande".equals(produto.getTamanho()))).findFirst().orElse(Produto.builder().build());
+            Sabor pizzaRetorno = pizzasSalgadas.stream().filter(sabor -> ("salgado".equals(sabor.getTipo()) && "grande".equals(sabor.getTamanho()))).findFirst().orElse(Sabor.builder().build());
 
             assertEquals(2, pizzasSalgadas.size());
 
@@ -225,7 +203,7 @@ public class CardapioV1ControllerTests {
         @DisplayName("Lista pizza do tipo doce e tamanho medio adicionada em cardapio estabelecimento")
         void verificaListagemPizzasDocesTamanhoMedia() throws Exception {
             //Arrange
-            Produto pizzaDoceMedia = Produto.builder()
+            Sabor pizzaDoceMedia = Sabor.builder()
                     .nome("nutella")
                     .tipo("doce")
                     .tamanho("media")
@@ -242,11 +220,11 @@ public class CardapioV1ControllerTests {
                     .andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
 
-            Set<Produto> pizzasDoces = objectMapper.readValue(responseJSONString, new TypeReference<Set<Produto>>() {
+            Set<Sabor> pizzasDoces = objectMapper.readValue(responseJSONString, new TypeReference<Set<Sabor>>() {
             });
-            Produto pizzaRetorno = pizzasDoces.stream()
-                    .filter(produto -> ("doce".equals(produto.getTipo()) && "media".equals(produto.getTamanho())))
-                    .findFirst().orElse(Produto.builder().build());
+            Sabor pizzaRetorno = pizzasDoces.stream()
+                    .filter(sabor -> ("doce".equals(sabor.getTipo()) && "media".equals(sabor.getTamanho())))
+                    .findFirst().orElse(Sabor.builder().build());
 
             assertEquals(2, pizzasDoces.size());
 
