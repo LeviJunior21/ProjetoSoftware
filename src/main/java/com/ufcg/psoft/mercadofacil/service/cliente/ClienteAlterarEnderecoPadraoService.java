@@ -2,7 +2,6 @@ package com.ufcg.psoft.mercadofacil.service.cliente;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteEnderecoPatchRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;

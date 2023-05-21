@@ -5,5 +5,5 @@ import com.ufcg.psoft.mercadofacil.model.Funcionario;
 
 @FunctionalInterface
 public interface FuncionarioPedidoService {
-    public Estabelecimento pedido(Funcionario funcionario, Long idEstabelecimento);
+    Estabelecimento pedido(Funcionario funcionario, Long idEstabelecimento);
 }

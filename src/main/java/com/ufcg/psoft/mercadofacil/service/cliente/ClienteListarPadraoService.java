@@ -1,14 +1,11 @@
 package com.ufcg.psoft.mercadofacil.service.cliente;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
-import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

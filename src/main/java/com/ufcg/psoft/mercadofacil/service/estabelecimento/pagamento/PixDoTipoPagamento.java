@@ -11,3 +11,4 @@ public class PixDoTipoPagamento extends MetodoPagamento {
         return 0.05;
     }
 }
+

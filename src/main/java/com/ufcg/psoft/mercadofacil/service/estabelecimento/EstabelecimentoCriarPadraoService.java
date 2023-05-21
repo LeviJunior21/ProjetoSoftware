@@ -2,7 +2,6 @@ package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostPutRequestDTO;
-import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import org.modelmapper.ModelMapper;

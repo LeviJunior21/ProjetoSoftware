@@ -1,7 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.produto;
 
 import com.ufcg.psoft.mercadofacil.model.Produto;
-
 import java.util.List;
 
 @FunctionalInterface

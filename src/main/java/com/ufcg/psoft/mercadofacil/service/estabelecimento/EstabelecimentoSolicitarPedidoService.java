@@ -5,5 +5,5 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.FuncionarioSolicitaEntrad
 
 @FunctionalInterface
 public interface EstabelecimentoSolicitarPedidoService {
-    public EstabelecimentoDTO solicitarPedido(Long idEstabelecimento, FuncionarioSolicitaEntradaPostRequestDTO funcionarioSolicitaEntradaPostRequestDTO);
+    EstabelecimentoDTO solicitarPedido(Long idEstabelecimento, FuncionarioSolicitaEntradaPostRequestDTO funcionarioSolicitaEntradaPostRequestDTO);
 }

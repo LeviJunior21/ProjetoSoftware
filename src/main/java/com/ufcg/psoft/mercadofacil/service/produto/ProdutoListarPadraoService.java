@@ -3,10 +3,8 @@ package com.ufcg.psoft.mercadofacil.service.produto;
 import com.ufcg.psoft.mercadofacil.exception.ProdutoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.ProdutoRepository;
-import com.ufcg.psoft.mercadofacil.service.produto.ProdutoListarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

@@ -3,7 +3,6 @@ package com.ufcg.psoft.mercadofacil.service.funcionario;
 import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
-import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import org.modelmapper.ModelMapper;

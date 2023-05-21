@@ -4,7 +4,6 @@ import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteNomePatchRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
-import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import org.modelmapper.ModelMapper;
