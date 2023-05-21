@@ -103,6 +103,8 @@ public class ClienteV1ControllerTests {
 
             //Assert
             assertEquals(clienteNomePatchRequestDTO.getNomeCompleto(), cliente.getNomeCompleto());
+            assertEquals(cliente1.getEnderecoPrincipal(), cliente.getEnderecoPrincipal());
+            assertEquals(cliente1.getId(), cliente.getId());
         }
 
         @Test
@@ -122,6 +124,8 @@ public class ClienteV1ControllerTests {
 
             //Assert
             assertEquals(clienteEnderecoPatchRequestDTO.getEnderecoPrincipal(), cliente.getEnderecoPrincipal());
+            assertEquals(cliente1.getNomeCompleto(), cliente.getNomeCompleto());
+            assertEquals(cliente1.getId(), cliente.getId());
         }
 
         @Test
