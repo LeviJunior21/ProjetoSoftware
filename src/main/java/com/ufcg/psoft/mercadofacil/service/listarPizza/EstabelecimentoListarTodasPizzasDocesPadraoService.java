@@ -19,7 +19,6 @@ public class EstabelecimentoListarTodasPizzasDocesPadraoService implements Estab
     @Override
     public Set<Pizza> buscarTodasPizzasDoces(Long id) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
-
         return estabelecimento.getCardapio().stream().filter(pizza -> "doce".equals(pizza.getSabor().iterator().next().getTipo())).collect(Collectors.toSet());
     }
 }
