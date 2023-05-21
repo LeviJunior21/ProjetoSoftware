@@ -18,16 +18,4 @@ public abstract class MetodoPagamento {
     public Double pagamento() {
         return this.valor * (1 - this.getFatorDesconto());
     }
-
-    public Double pagamentoPix() {
-        return new PixDoTipoPagamento(this.valor).pagamento();
-    }
-
-    public Double pagamentoDebito() {
-        return new DebitoDoTipoPagamento(this.valor).pagamento();
-    }
-
-    public Double pagamentoCredito() {
-        return new CreditoDoTipoPagamento(this.valor).pagamento();
-    }
 }
