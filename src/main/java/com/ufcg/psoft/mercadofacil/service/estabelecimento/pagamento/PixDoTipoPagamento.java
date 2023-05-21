@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.service.pagamento;
+package com.ufcg.psoft.mercadofacil.service.estabelecimento.pagamento;
 
 public class PixDoTipoPagamento extends MetodoPagamento {
 

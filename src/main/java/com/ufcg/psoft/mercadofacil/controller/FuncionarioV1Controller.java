@@ -25,13 +25,10 @@ public class FuncionarioV1Controller {
     FuncionarioExcluirService funcionarioExcluirService;
     @Autowired
     FuncionarioAlterarNomeService funcionarioAlterarNomeService;
-
     @Autowired
     FuncionarioAlterarCorService funcionarioAlterarCorService;
-
     @Autowired
     FuncionarioAlterarPlacaService funcionarioAlterarPlacaService;
-
     @Autowired
     FuncionarioAlterarVeiculoService funcionarioAlterarVeiculoService;
 
@@ -105,9 +102,10 @@ public class FuncionarioV1Controller {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluirEntregador(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @RequestBody @Valid FuncionarioRemoveRequestDTO funcionarioRemoveRequestDTO
     ) {
-        funcionarioExcluirService.excluir(id);
+        funcionarioExcluirService.excluir(id, funcionarioRemoveRequestDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");

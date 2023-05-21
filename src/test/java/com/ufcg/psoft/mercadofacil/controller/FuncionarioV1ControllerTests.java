@@ -266,6 +266,7 @@ public class FuncionarioV1ControllerTests {
         final String URI_FUNCIONARIOS = "/v1/funcionarios";
         FuncionarioPostPutRequestDTO funcionarioPutRequestDTO;
         FuncionarioPostPutRequestDTO funcionarioPostRequestDTO;
+        FuncionarioRemoveRequestDTO funcionarioRemoveRequestDTO;
 
         @BeforeEach
         void setup() {
@@ -319,7 +320,7 @@ public class FuncionarioV1ControllerTests {
 
             // Assert
             assertAll(
-                    () -> assertEquals(3, resultado.size())
+                    () -> assertEquals(4, resultado.size())
             );
         }
 
@@ -409,20 +410,45 @@ public class FuncionarioV1ControllerTests {
         @DisplayName("Quando excluímos um funcionário salvo")
         void quandoExcluimosFuncionarioValido() throws Exception {
             // Arrange
-            // nenhuma necessidade além do setup()
+            funcionarioRemoveRequestDTO = FuncionarioRemoveRequestDTO.builder()
+                    .codigoAcesso(funcionario.getCodigoAcesso())
+                    .build();
 
             // Act
             String responseJsonString = driver.perform(delete(URI_FUNCIONARIOS + "/" + funcionario.getId())
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(funcionarioRemoveRequestDTO))
+                    )
                     .andExpect(status().isNoContent()) // Codigo 204
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
             // Assert
             assertTrue(responseJsonString.isBlank());
-
         }
 
-    }
 
+        @Test
+        @DisplayName("Quando tentamos excluir um funcionário salvo com código de acesso inválido")
+        void quandoExcluimosFuncionarioComCodigoAcessoInvalido() throws Exception {
+            // Arrange
+            funcionarioRemoveRequestDTO = FuncionarioRemoveRequestDTO.builder()
+                    .codigoAcesso(989898)
+                    .build();
+
+            // Act
+            String responseJsonString = driver.perform(delete(URI_FUNCIONARIOS + "/" + funcionario.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(funcionarioRemoveRequestDTO))
+                    )
+                    .andExpect(status().isBadRequest()) // Codigo 204
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+    }
 }

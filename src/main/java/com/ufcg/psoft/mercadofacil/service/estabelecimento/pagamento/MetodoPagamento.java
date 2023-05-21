@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.service.pagamento;
+package com.ufcg.psoft.mercadofacil.service.estabelecimento.pagamento;
 
 public abstract class MetodoPagamento {
     private Double valor;

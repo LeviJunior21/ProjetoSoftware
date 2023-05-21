@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.funcionario;
 
+import com.ufcg.psoft.mercadofacil.dto.funcionario.FuncionarioRemoveRequestDTO;
+import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.FuncionarioNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
@@ -17,8 +19,11 @@ public class FuncionarioExcluirPadraoService implements FuncionarioExcluirServic
     ModelMapper modelMapper;
 
     @Override
-    public void excluir(Long id) {
+    public void excluir(Long id, FuncionarioRemoveRequestDTO funcionarioRemoveRequestDTO) {
         Funcionario funcionario = funcionarioRepository.findById(id).orElseThrow(FuncionarioNaoExisteException::new);
+        if (!funcionario.getCodigoAcesso().equals(funcionarioRemoveRequestDTO.getCodigoAcesso())) {
+            throw new CodigoAcessoDiferenteException();
+        }
         funcionarioRepository.delete(funcionario);
     }
 }

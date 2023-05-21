@@ -1,6 +1,4 @@
-package com.ufcg.psoft.mercadofacil.service.pagamento;
-
-import org.springframework.stereotype.Service;
+package com.ufcg.psoft.mercadofacil.service.estabelecimento.pagamento;
 
 public class PagamentoService {
 

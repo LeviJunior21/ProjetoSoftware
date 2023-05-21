@@ -1,7 +1,7 @@
 package com.ufcg.psoft.mercadofacil.dto.cliente;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.dto.valid.estabelecimento.CodigoAcesso;
+import com.ufcg.psoft.mercadofacil.dto.valid.CodigoAcesso;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
