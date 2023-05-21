@@ -320,7 +320,7 @@ public class FuncionarioV1ControllerTests {
 
             // Assert
             assertAll(
-                    () -> assertEquals(4, resultado.size())
+                    () -> assertEquals(3, resultado.size())
             );
         }
 

@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.dto.produto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.dto.valid.TamanhoPizza;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +15,6 @@ import lombok.NoArgsConstructor;
 public class ProdutoTamanhoPatchRequestDTO {
     @JsonProperty("tamanho")
     @NotBlank(message = "Tamanho da pizza eh obrigatorio")
+    @TamanhoPizza
     private String tamanho;
 }

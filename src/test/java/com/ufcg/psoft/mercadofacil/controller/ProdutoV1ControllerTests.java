@@ -152,7 +152,7 @@ public class ProdutoV1ControllerTests {
         void quandoAlteramosTamanhodoProdutoValido() throws Exception{
             //Arrange
             ProdutoTamanhoPatchRequestDTO produtoTamanhoPatchRequestDTO = ProdutoTamanhoPatchRequestDTO.builder()
-                    .tamanho("grande")
+                    .tamanho("GRANDE")
                     .build();
             //Act
             String responseJsonString = driver.perform(patch("/v1/produtos/" + produto.getId() + "/tamanho")
