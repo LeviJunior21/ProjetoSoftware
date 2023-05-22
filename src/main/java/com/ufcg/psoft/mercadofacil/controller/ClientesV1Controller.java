@@ -2,6 +2,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.service.cliente.*;
+import com.ufcg.psoft.mercadofacil.service.estabelecimento.ClienteSolicitarPedidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,8 @@ public class ClientesV1Controller {
     ClienteBuscarService clienteBuscarService;
     @Autowired
     ClienteExcluirService clienteExcluirService;
+    @Autowired
+    ClienteSolicitarPedidoService clienteSolicitarPedidoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmCliente(
@@ -93,4 +96,15 @@ public class ClientesV1Controller {
                 .body("");
     }
 
+    @PostMapping("/{idCliente}/solicitar-pedido/{idEstabelecimento}")
+    public ResponseEntity<?> solicitarPedido (
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @RequestBody @Valid ClientePedidoRequestDTO clientePedidoRequestDTO
+    ) {
+        clienteSolicitarPedidoService.solicitar(idCliente, idEstabelecimento, clientePedidoRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
 }

@@ -20,9 +20,6 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @JsonProperty("codigoAcesso")
-    private Integer codigoAcesso;
-
     @JsonProperty("enderecoEntrega")
     private String enderecoEntrega;
 
