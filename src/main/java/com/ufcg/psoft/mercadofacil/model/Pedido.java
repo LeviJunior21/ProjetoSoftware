@@ -24,7 +24,7 @@ public class Pedido {
     private String enderecoEntrega;
 
     @JsonProperty("valorPedido")
-    private Long valorPedido;
+    private Double valorPedido;
 
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

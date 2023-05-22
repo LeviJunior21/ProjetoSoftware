@@ -102,9 +102,8 @@ public class ClientesV1Controller {
             @PathVariable Long idEstabelecimento,
             @RequestBody @Valid ClientePedidoRequestDTO clientePedidoRequestDTO
     ) {
-        clienteSolicitarPedidoService.solicitar(idCliente, idEstabelecimento, clientePedidoRequestDTO);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body("");
+                .status(HttpStatus.OK)
+                .body(clienteSolicitarPedidoService.solicitar(idCliente, idEstabelecimento, clientePedidoRequestDTO));
     }
 }

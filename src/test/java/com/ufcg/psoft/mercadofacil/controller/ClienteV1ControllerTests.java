@@ -4,17 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
-import com.ufcg.psoft.mercadofacil.model.Cliente;
-import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
-import com.ufcg.psoft.mercadofacil.model.Pedido;
-import com.ufcg.psoft.mercadofacil.model.Pizza;
+import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
+import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.service.estabelecimento.ClienteSolicitarPedidoService;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -563,16 +562,86 @@ public class ClienteV1ControllerTests {
     @DisplayName("Casos de teste de realização de pedidos")
     class CasosTesteRealizarPedidos {
 
+        @Autowired
+        EstabelecimentoRepository estabelecimentoRepository;
+
+
+        Sabor sabor;
+        Pizza pizza;
+        Pedido pedido;
+        Cliente clienteDez;
+        ClientePedidoRequestDTO clientePedidoRequestDTO;
+        Estabelecimento estabelecimento;
         @BeforeEach
         void setup() {
-            Pizza pizza = Pizza.builder().build();
-            cliente1.getCarrinho().getPizzas().add(pizza);
+            sabor = Sabor.builder()
+                    .nome("Calabreza")
+                    .preco(10.00)
+                    .tamanho("GRANDE")
+                    .tipo("Sei la")
+                    .build();
+
+            pizza = Pizza.builder()
+                    .sabor(new HashSet<Sabor>())
+                    .disponibilidade("disponivel")
+                    .build();
+            pizza.getSabor().add(sabor);
+
+            pedido = Pedido.builder()
+                    .valorPedido(10.00)
+                    .enderecoEntrega(cliente1.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedido.getPizzas().add(pizza);
+
+            clienteDez = Cliente.builder()
+                            .nomeCompleto("Levi de Lima Pereira Junior")
+                            .enderecoPrincipal("Rua de Queimadas")
+                            .codigoAcesso(123456)
+                            .carrinho(pedido)
+                            .build();
+
+            estabelecimento = Estabelecimento.builder()
+                    .nome("Pizzaria Dez")
+                    .codigoAcesso(101010)
+                    .entregadores(new HashSet<>())
+                    .espera(new HashSet<>())
+                    .cardapio(new HashSet<>())
+                    .interessados(new HashSet<>())
+                    .pedidos(new HashSet<Pedido>())
+                    .build();
+
+            clienteDez = clienteRepository.save(clienteDez);
+            estabelecimento = estabelecimentoRepository.save(estabelecimento);
+        }
+
+        @AfterEach
+        void tearDown() {
+            estabelecimentoRepository.deleteAll();
+            clienteRepository.deleteAll();
         }
 
         @Test
+        @Transactional
         @DisplayName("Quando o usuario faz um pedido ao estabelecimento")
-        void quandoUsuarioFazPedidoEstabelecimento() {
+        void quandoUsuarioFazPedidoEstabelecimento() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .build();
 
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
         }
     }
 }

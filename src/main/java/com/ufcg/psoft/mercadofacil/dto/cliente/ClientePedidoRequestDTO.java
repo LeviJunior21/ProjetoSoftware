@@ -26,6 +26,5 @@ public class ClientePedidoRequestDTO {
     @JsonProperty("carrinho")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @NotNull(message = "Carrinho null invalido")
-    @NotBlank(message = "Carrinho vazio invalido")
     private Pedido carrinho;
 }
