@@ -8,7 +8,7 @@ import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.PizzaNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pizza;
-import com.ufcg.psoft.mercadofacil.model.Produto;
+import com.ufcg.psoft.mercadofacil.model.Sabor;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
 import org.modelmapper.ModelMapper;
@@ -30,7 +30,7 @@ public class EstabelecimentoPizzaPadraoService implements EstabelecimentoPizzaSe
     @Override
     public PizzaDTO salvar(Long id, SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
-        Produto produto = modelMapper.map(saborPizzaPostPutRequestDTO, Produto.class);
+        Sabor produto = modelMapper.map(saborPizzaPostPutRequestDTO, Sabor.class);
         Pizza pizza = pizzaRepository.save(Pizza.builder().sabor(Set.of(produto)).disponibilidade("disponivel").build());
         estabelecimento.getCardapio().add(pizza);
         //estabelecimentoRepository.save(estabelecimento);
@@ -43,7 +43,7 @@ public class EstabelecimentoPizzaPadraoService implements EstabelecimentoPizzaSe
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pizza pizza = estabelecimento.getCardapio().stream()
                 .filter(elem -> elem.getId().equals(idPizza)).findFirst().orElseThrow(PizzaNaoExisteException::new);
-        Produto produto = modelMapper.map(saborPizzaPostPutRequestDTO, Produto.class);
+        Sabor produto = modelMapper.map(saborPizzaPostPutRequestDTO, Sabor.class);
         pizza.setSabor(Set.of(produto));
         //pizzaRepository.save(pizza);
         //estabelecimento.getCardapio().add(pizza);

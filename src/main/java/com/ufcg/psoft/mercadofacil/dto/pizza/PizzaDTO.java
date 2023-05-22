@@ -1,7 +1,7 @@
 package com.ufcg.psoft.mercadofacil.dto.pizza;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.model.Produto;
+import com.ufcg.psoft.mercadofacil.model.Sabor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class PizzaDTO {
     private Long id;
     @JsonProperty("sabores")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Produto> sabor;
+    private Set<Sabor> sabor;
     @JsonProperty("disponibilidade")
     @Column(nullable = false)
     private String disponibilidade;

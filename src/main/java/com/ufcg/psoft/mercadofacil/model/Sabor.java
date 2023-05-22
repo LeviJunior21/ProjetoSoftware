@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "produtos")
+@Table(name = "sabores")
 public class Sabor {
     @JsonProperty("id")
     @Id

@@ -30,7 +30,7 @@ public class SaborV1ControllerTests {
     MockMvc driver;
     @Autowired
     SaborRepository saborRepository;
-
+    final String URI_SABORES = "/v1/sabores";
     ObjectMapper objectMapper = new ObjectMapper();
 
     Sabor sabor;
@@ -41,6 +41,7 @@ public class SaborV1ControllerTests {
                 Sabor.builder()
                         .nome("portuguesa")
                         .preco(38.00)
+                        .tamanho("GRANDE")
                         .tipo("salgada")
                         .build()
         );
@@ -61,7 +62,7 @@ public class SaborV1ControllerTests {
                     .nome("Calabresa")
                     .build();
             //Act
-            String responseJsonString = driver.perform(patch("/v1/sabores/" + sabor.getId() + "/nome")
+            String responseJsonString = driver.perform(patch(URI_SABORES + "/" + sabor.getId() + "/nome")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(saborNomePatchRequestDTO)))
                     .andExpect(status().isOk())
@@ -196,7 +197,7 @@ public class SaborV1ControllerTests {
     @DisplayName("Conjunto de casos de verificação de campos obrigatórios")
     class ProdutoVerificacaoFluxosBasicosApiRest{
 
-        final String URI_SABORES = "/v1/sabores";
+
 
         SaborPostPutRequestDTO saborPutRequestDTO;
         SaborPostPutRequestDTO saborPostRequestDTO;
@@ -206,11 +207,13 @@ public class SaborV1ControllerTests {
             saborPostRequestDTO = SaborPostPutRequestDTO.builder()
                     .nome("portuguesa")
                     .preco(38.00)
+                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             saborPutRequestDTO = SaborPostPutRequestDTO.builder()
                     .nome("chocolate")
                     .preco(40.00)
+                    .tamanho("GRANDE")
                     .tipo("doce")
                     .build();
         }
@@ -222,16 +225,19 @@ public class SaborV1ControllerTests {
             Sabor sabor1 = Sabor.builder()
                     .nome("marguerita")
                     .preco(30.00)
+                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             Sabor sabor2 = Sabor.builder()
                     .nome("quatro queijos")
                     .preco(25.00)
+                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             Sabor sabor3 = Sabor.builder()
                     .nome("frango com catupiry")
                     .preco(40.00)
+                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             saborRepository.saveAll(Arrays.asList(sabor1, sabor2, sabor3));

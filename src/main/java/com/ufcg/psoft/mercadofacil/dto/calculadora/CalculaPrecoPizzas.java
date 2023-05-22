@@ -12,13 +12,13 @@ public class CalculaPrecoPizzas {
         for (Pizza pizza : pizzas) {
             double precoPizza = 0;
 
-            if (pizza.getTamanho() == TamanhoPizza.MEDIA) {
+            if (pizza.getSabor().iterator().next().getTamanho().equals("MEDIA")) {
 
                 if (pizza.getSabor().size() != 1) {
                     throw new IllegalArgumentException("Uma pizza media deve ter um sabor");
                 }
                 precoPizza = pizza.getSabor().iterator().next().getPreco();
-            } else if (pizza.getTamanho() == TamanhoPizza.GRANDE) {
+            } else if (pizza.getSabor().iterator().next().getTamanho().equals("GRANDE")) {
 
                 if (pizza.getSabor().size() < 1 || pizza.getSabor().size() > 2) {
                     throw new IllegalArgumentException("Uma pizza grande deve ter entre um ou dois sabores");

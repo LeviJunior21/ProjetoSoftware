@@ -42,6 +42,8 @@ public class EstabelecimentoV1ControllerTests {
     MockMvc driver;
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
+    @Autowired
+    FuncionarioRepository funcionarioRepository;
 
     Estabelecimento estabelecimento;
     Estabelecimento estabelecimento2;
@@ -79,6 +81,7 @@ public class EstabelecimentoV1ControllerTests {
     @AfterEach
     void tearDown() {
         estabelecimentoRepository.deleteAll();
+        funcionarioRepository.deleteAll();
     }
 
     @Test
@@ -171,7 +174,7 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEstabelecimentoAlteraUmaPizza() throws Exception {
             //Arrange
             Pizza pizza = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Sabor.class)))
                     .disponibilidade("disponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza);
@@ -202,7 +205,7 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEstabelecimentoExcluiUmaPizza() throws Exception {
             //Arrange
             Pizza pizza = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Sabor.class)))
                     .disponibilidade("disponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza);
@@ -227,7 +230,7 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEstabelecimentoBuscaPizza() throws Exception {
             //Arrange
             Pizza pizza = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Sabor.class)))
                     .disponibilidade("disponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza);
@@ -238,7 +241,7 @@ public class EstabelecimentoV1ControllerTests {
                     .tipo("Media")
                     .build();
             Pizza pizza1 = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO1, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO1, Sabor.class)))
                     .disponibilidade("disponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza1);
@@ -264,7 +267,7 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEstabelecimentoListaCardapio() throws Exception {
             //Arrange
             Pizza pizza = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO, Sabor.class)))
                     .disponibilidade("disponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza);
@@ -275,7 +278,7 @@ public class EstabelecimentoV1ControllerTests {
                     .tipo("Salgada")
                     .build();
             Pizza pizza1 = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO1, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO1, Sabor.class)))
                     .disponibilidade("indisponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza1);
@@ -286,7 +289,7 @@ public class EstabelecimentoV1ControllerTests {
                     .tipo("Doce")
                     .build();
             Pizza pizza2 = pizzaRepository.save(Pizza.builder()
-                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO2, Produto.class)))
+                    .sabor(Set.of(new ModelMapper().map(saborPizzaPostPutRequestDTO2, Sabor.class)))
                     .disponibilidade("disponivel")
                     .build());
             estabelecimento.getCardapio().add(pizza2);
@@ -722,9 +725,6 @@ public class EstabelecimentoV1ControllerTests {
     @DisplayName("Testes para aceitações dos pedidos no estabelecimento.")
     class TestePedidosAceitacoes {
 
-        @Autowired
-        FuncionarioRepository funcionarioRepository;
-
         Funcionario funcionario;
         EstabelecimentoAceitarPostRequestDTO estabelecimentoAceitarPostRequestDTO;
         FuncionarioSolicitaEntradaPostRequestDTO funcionarioSolicitaEntradaPostRequestDTO;
@@ -871,8 +871,6 @@ public class EstabelecimentoV1ControllerTests {
 
         @Autowired
         EstabelecimentoRemoverEsperaService estabelecimentoRemoverEsperaService;
-        @Autowired
-        FuncionarioRepository funcionarioRepository;
 
         Funcionario funcionario10;
         Estabelecimento estabelecimento2;
