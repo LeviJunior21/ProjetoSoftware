@@ -19,13 +19,17 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @JsonProperty("nomeCompleto")
     private String nomeCompleto;
+
     @JsonProperty("enderecoPrincipal")
     private String enderecoPrincipal;
-    @JsonProperty("carrinhos")
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Pedido> carrinhos;
+
+    @JsonProperty("carrinho")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Pedido carrinho;
+
     @JsonProperty("codigoAcesso")
     private Integer codigoAcesso;
 }

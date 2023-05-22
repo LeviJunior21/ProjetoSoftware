@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Pedido;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,14 +54,14 @@ public class ClienteV1ControllerTests {
                 .nomeCompleto("Levi de Lima Pereira Junior")
                 .enderecoPrincipal("Rua de Queimadas")
                 .codigoAcesso(123456)
-                .carrinhos(new ArrayList<>())
+                .carrinho(new Pedido())
                 .build()
         );
         cliente2 = clienteRepository.save(Cliente.builder()
                 .nomeCompleto("Lucas de Souza Pereira")
                 .enderecoPrincipal("Rua de Campina Grande")
                 .codigoAcesso(123458)
-                .carrinhos(new ArrayList<>())
+                .carrinho(new Pedido())
                 .build()
         );
 

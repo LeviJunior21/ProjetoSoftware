@@ -40,7 +40,12 @@ public class Estabelecimento {
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pizza> cardapio;
+
     @JsonProperty("interessados")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ClienteInteressado> interessados;
+
+    @JsonProperty("pedidosCliente")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Pedido> pedidos;
 }

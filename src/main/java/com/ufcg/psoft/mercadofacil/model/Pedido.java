@@ -19,13 +19,20 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @JsonProperty("codigoAcesso")
+    private Integer codigoAcesso;
+
     @JsonProperty("enderecoEntrega")
     private String enderecoEntrega;
+
     @JsonProperty("valorPedido")
     private Long valorPedido;
+
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pizza> pizzas;
+
     @JsonProperty("metodoPagamento")
     private String metodoPagamento;
 
