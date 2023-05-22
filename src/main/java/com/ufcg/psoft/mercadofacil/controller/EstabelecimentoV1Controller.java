@@ -199,4 +199,5 @@ public class EstabelecimentoV1Controller {
                 .status(HttpStatus.OK)
                 .body(estabelecimentoPizzaService.listar(id));
     }
+
 }

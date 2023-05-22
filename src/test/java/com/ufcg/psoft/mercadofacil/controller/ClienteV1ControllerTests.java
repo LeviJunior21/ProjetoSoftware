@@ -643,5 +643,84 @@ public class ClienteV1ControllerTests {
 
             assertEquals(1, estabelecimentoDTO.getPedidos().size());
         }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoMasCodigoAcessoEhDiferente() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(101038)
+                    .carrinho(pedido)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoMasOPedidoEhNull() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(101038)
+                    .carrinho(null)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Erros de validacao encontrados", resultado.getMessage());
+            assertEquals("Carrinho null invalido", resultado.getErrors().get(0));
+
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoMasNaoHaPedidos() throws Exception {
+            Pedido pedido2 = Pedido.builder()
+                    .valorPedido(10.00)
+                    .enderecoEntrega(cliente1.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .carrinho(pedido2)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Erros de validacao encontrados", resultado.getMessage());
+            assertEquals("Carrinho null invalido", resultado.getErrors().get(0));
+
+        }
     }
 }

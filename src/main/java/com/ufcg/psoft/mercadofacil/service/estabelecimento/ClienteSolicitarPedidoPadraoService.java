@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedidoService {
 
@@ -30,6 +32,9 @@ public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedi
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clientePedidoRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
+        }
+        else if (cliente.getCarrinho().getPizzas().size() == 0) {
+            throw new NoSuchElementException("Nao ha pizza");
         }
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         estabelecimento.getPedidos().add(clientePedidoRequestDTO.getCarrinho());
