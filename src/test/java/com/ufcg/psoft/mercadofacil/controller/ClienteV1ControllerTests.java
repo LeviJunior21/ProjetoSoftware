@@ -6,7 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
+import com.ufcg.psoft.mercadofacil.model.Pizza;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -554,6 +556,23 @@ public class ClienteV1ControllerTests {
             // Assert
             assertEquals("Levi de Lima Pereira Junior", cliente.getNomeCompleto());
             assertEquals(2, clientes.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("Casos de teste de realização de pedidos")
+    class CasosTesteRealizarPedidos {
+
+        @BeforeEach
+        void setup() {
+            Pizza pizza = Pizza.builder().build();
+            cliente1.getCarrinho().getPizzas().add(pizza);
+        }
+
+        @Test
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento")
+        void quandoUsuarioFazPedidoEstabelecimento() {
+
         }
     }
 }
