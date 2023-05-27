@@ -9,7 +9,6 @@ import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
-import com.ufcg.psoft.mercadofacil.service.estabelecimento.ClienteSolicitarPedidoService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -718,9 +714,60 @@ public class ClienteV1ControllerTests {
             CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
 
             // Assert
-            assertEquals("Erros de validacao encontrados", resultado.getMessage());
-            assertEquals("Carrinho null invalido", resultado.getErrors().get(0));
+            assertEquals("Nao ha pizza(s) enviada(s)", resultado.getMessage());
+        }
 
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o cliente não está cadastrado")
+        void quandoUsuarioFazPedidoEstabelecimentoMasClienteNaoExiste() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .build();
+            Long codigoInvalido = 1010L;
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + codigoInvalido + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("O cliente consultado nao existe!", resultado.getMessage());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoComSucesso() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Pedido pedidoDTO = estabelecimentoDTO.getPedidos().stream().findFirst().get();
+
+            // Assert
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+            assertAll(
+                    () -> assertEquals(10.00, pedidoDTO.getValorPedido()),
+                    () -> assertEquals("PIX", pedidoDTO.getMetodoPagamento()),
+                    () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
+            );
         }
     }
 }

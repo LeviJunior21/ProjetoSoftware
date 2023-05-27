@@ -1,14 +1,16 @@
-package com.ufcg.psoft.mercadofacil.service.estabelecimento;
+package com.ufcg.psoft.mercadofacil.service.cliente;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.PizzaNaoEncontradaException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.service.cliente.ClienteSolicitarPedidoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,8 +35,8 @@ public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedi
         if (!cliente.getCodigoAcesso().equals(clientePedidoRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }
-        else if (cliente.getCarrinho().getPizzas().size() == 0) {
-            throw new NoSuchElementException("Nao ha pizza");
+        else if (clientePedidoRequestDTO.getCarrinho().getPizzas().size() == 0) {
+            throw new PizzaNaoEncontradaException();
         }
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         estabelecimento.getPedidos().add(clientePedidoRequestDTO.getCarrinho());

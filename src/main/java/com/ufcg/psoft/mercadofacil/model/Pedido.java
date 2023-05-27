@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,7 +30,8 @@ public class Pedido {
 
     @JsonProperty("pizzas")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Pizza> pizzas;
+    @Builder.Default
+    private Set<Pizza> pizzas = new HashSet<>();
 
     @JsonProperty("metodoPagamento")
     private String metodoPagamento;

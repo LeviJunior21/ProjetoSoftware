@@ -2,7 +2,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.service.cliente.*;
-import com.ufcg.psoft.mercadofacil.service.estabelecimento.ClienteSolicitarPedidoService;
+import com.ufcg.psoft.mercadofacil.service.cliente.ClienteSolicitarPedidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

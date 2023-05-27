@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.service.estabelecimento;
+package com.ufcg.psoft.mercadofacil.service.cliente;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
