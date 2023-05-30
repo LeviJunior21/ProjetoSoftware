@@ -1,12 +1,13 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.notifica.ClienteListener;
+import com.ufcg.psoft.mercadofacil.notifica.NotificaEvent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 @Entity
 @Data
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "clientes")
-public class Cliente {
+public class Cliente implements ClienteListener {
     @JsonProperty("id")
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -32,4 +33,10 @@ public class Cliente {
 
     @JsonProperty("codigoAcesso")
     private Integer codigoAcesso;
+
+    @Override
+    public void notifica(NotificaEvent event) {
+        System.out.println(this.getNomeCompleto()
+                + ", seu sabor de interesse: " + event.getPizza().getSabor().iterator().next().getNome() + ", esta disponivel\n");
+    }
 }

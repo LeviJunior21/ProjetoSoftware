@@ -18,7 +18,7 @@ import java.util.Set;
 public class Pizza {
     @JsonProperty("id")
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonProperty("sabores")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

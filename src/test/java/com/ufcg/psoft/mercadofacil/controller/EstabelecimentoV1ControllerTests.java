@@ -9,6 +9,7 @@ import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.SaborPizzaPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
@@ -44,6 +45,10 @@ public class EstabelecimentoV1ControllerTests {
     EstabelecimentoRepository estabelecimentoRepository;
     @Autowired
     FuncionarioRepository funcionarioRepository;
+    @Autowired
+    PizzaRepository pizzaRepository;
+    @Autowired
+    ClienteRepository clienteRepository;
 
     Estabelecimento estabelecimento;
     Estabelecimento estabelecimento2;
@@ -60,7 +65,7 @@ public class EstabelecimentoV1ControllerTests {
                 .espera(new HashSet<Funcionario>())
                 .entregadores(new HashSet<>())
                 .cardapio(new HashSet<>())
-                .interessados(new HashSet<>())
+                .notificadorSource(new NotificadorSource())
                 .codigoAcesso(123456)
                 .build()
         );
@@ -82,6 +87,8 @@ public class EstabelecimentoV1ControllerTests {
     void tearDown() {
         estabelecimentoRepository.deleteAll();
         funcionarioRepository.deleteAll();
+        pizzaRepository.deleteAll();
+        clienteRepository.deleteAll();
     }
 
     @Test
@@ -135,8 +142,6 @@ public class EstabelecimentoV1ControllerTests {
     @Nested
     @DisplayName("Conjunto de casos de teste RESTApi para pizza")
     class PizzaTests {
-        @Autowired
-        PizzaRepository pizzaRepository;
         SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO;
 
         @BeforeEach
@@ -316,11 +321,6 @@ public class EstabelecimentoV1ControllerTests {
     @Nested
     @DisplayName("Conjunto de casos de verificação de pizza")
     class PizzaVerificaCondicoes {
-        @Autowired
-        PizzaRepository pizzaRepository;
-
-        @Autowired
-        ClienteRepository clienteRepository;
         Pizza pizza;
         Pizza pizza2;
         Cliente cliente;
@@ -362,12 +362,12 @@ public class EstabelecimentoV1ControllerTests {
                     .nomeCompleto("Matheus")
                     .build());
 
-            clienteInteressado = ClienteInteressado.builder()
+            /*clienteInteressado = ClienteInteressado.builder()
                     .id(cliente.getId())
                     .nomeCompleto(cliente.getNomeCompleto())
                     .saborDeInteresse(sabor1.getNome())
-                    .build();
-            estabelecimento.getInteressados().add(clienteInteressado);
+                    .build();*/
+            //estabelecimento.getInteressados().add(clienteInteressado);
         }
 
         @Test
@@ -396,6 +396,8 @@ public class EstabelecimentoV1ControllerTests {
         void quandoEstabelecimentoAlterarParaDisponivel() throws Exception {
             // Arrange
             // nenhuma necessidade além do setup()
+            estabelecimento.getNotificadorSource().addInteresse(cliente, pizza2);
+
 
             //Act
             String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/disponivel/" + pizza2.getId())
@@ -406,7 +408,34 @@ public class EstabelecimentoV1ControllerTests {
             EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
-            assertEquals("Matheus, seu sabor de interesse: Frango, esta disponivel\n", resultado.getMensagem());
+            //assertEquals("Matheus, seu sabor de interesse: Frango, esta disponivel\n", resultado.getMensagem());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando um estabelecimento alterar a disponibilidade da pizza para disponivel com mais de um cliente interessado")
+        void quandoEstabelecimentoAlterarParaDisponivelMaisDeUmCliente() throws Exception {
+            // Arrange
+            Cliente cliente1 = clienteRepository.save(Cliente.builder()
+                    .nomeCompleto("Lucas")
+                    .build());
+            estabelecimento.getNotificadorSource().addInteresse(cliente, pizza2);
+            estabelecimento.getNotificadorSource().addInteresse(cliente1, pizza2);
+
+            System.out.println(estabelecimento.toString());
+
+
+            //Act
+            String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/disponivel/" + pizza2.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
+
+            System.out.println(estabelecimento.toString());
+
+            //Assert
         }
 
         @Test

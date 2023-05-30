@@ -7,6 +7,7 @@ import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import jakarta.transaction.Transactional;
@@ -604,7 +605,7 @@ public class ClienteV1ControllerTests {
                     .entregadores(new HashSet<>())
                     .espera(new HashSet<>())
                     .cardapio(new HashSet<>())
-                    .interessados(new HashSet<>())
+                    .notificadorSource(new NotificadorSource())
                     .pedidos(new HashSet<Pedido>())
                     .build();
 

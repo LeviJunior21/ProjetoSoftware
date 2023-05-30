@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,11 +42,15 @@ public class Estabelecimento {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pizza> cardapio;
 
-    @JsonProperty("interessados")
+    /*@JsonProperty("interessados")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<ClienteInteressado> interessados;
+    private Set<ClienteInteressado> interessados;*/
 
     @JsonProperty("pedidosCliente")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pedido> pedidos;
+
+    @JsonProperty("interessados")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private NotificadorSource notificadorSource;
 }
