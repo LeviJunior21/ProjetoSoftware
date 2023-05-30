@@ -16,7 +16,6 @@ Porém, em 2023, simplesmente não é viável voltar ao modo de trabalho “pré
 - Eu, enquanto cliente, quero utilizar o sistema para fazer pedidos de pizza a um  estabelecimento. Mais detalhadamente, deve ser possível criar, ler, editar e remover pedidos.
 - Eu, enquanto cliente, quero demonstrar interesse em sabores de pizza que não estão disponíveis no momento.
 - Eu, enquanto estabelecimento, quero disponibilizar diferentes meios de pagamento para os pedidos, tal que cada meio de pagamento também gere descontos distintos.
-- 
 ## Estrutura básica
 
 - Um projeto: PitsA;
