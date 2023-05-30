@@ -19,9 +19,6 @@ public class SaborPostPutRequestDTO {
     @JsonProperty("preco")
     @Positive(message = "Preço deve ser maior ou igual a zero")
     private Double preco;
-    @JsonProperty("tamanho")
-    @NotBlank(message = "Tamanho da pizza eh obrigatorio")
-    private String tamanho;
     @JsonProperty("tipo")
     @NotBlank(message = "Tipo da pizza eh obrigatorio")
     private String tipo;

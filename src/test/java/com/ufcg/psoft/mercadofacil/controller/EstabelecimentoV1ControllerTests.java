@@ -161,6 +161,36 @@ public class EstabelecimentoV1ControllerTests {
 
         @Test
         @Transactional
+        @DisplayName("Quando criar com a quantidade de sabores inválida")
+        void quandoEstabelecimentoCriaUmaPizzaInvalida() throws Exception {
+            //Arrange
+            pizzaPostPutRequestDTO.getSabor().add(Sabor.builder()
+                    .nomeSabor("Queijo3")
+                    .tipo("Doce")
+                    .preco(2.00)
+                    .build());
+            pizzaPostPutRequestDTO.getSabor().add(Sabor.builder()
+                    .nomeSabor("Queijo4")
+                    .tipo("Doce")
+                    .preco(2.00)
+                    .build());
+            //Act
+            String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(pizzaPostPutRequestDTO)))
+                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+
+            CustomErrorType resultado = objectMapper.readValue(responseJsonString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("A quantidade de pizzas nao condiz com o tamanho", resultado.getMessage());
+        }
+
+        @Test
+        @Transactional
         @DisplayName("Quando um estabelecimento criar uma pizza com dados validos")
         void quandoEstabelecimentoCriaUmaPizza() throws Exception {
             //Arrange
@@ -174,8 +204,8 @@ public class EstabelecimentoV1ControllerTests {
 
             PizzaDTO resultado = objectMapper.readValue(responseJsonString, PizzaDTO.PizzaDTOBuilder.class).build();
 
-            //assertNotNull(resultado.getId());
-            //assertEquals(resultado.getSabor().stream().findFirst().get().getNomeSabor(), pizzaPostPutRequestDTO.getNomePizza());
+            assertNotNull(resultado.getId());
+            assertEquals(resultado.getSabor().stream().findFirst().get().getNomeSabor(), pizzaPostPutRequestDTO.getSabor().stream().findFirst().get().getNomeSabor());
         }
 
         @Test

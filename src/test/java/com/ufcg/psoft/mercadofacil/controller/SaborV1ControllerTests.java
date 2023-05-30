@@ -170,7 +170,7 @@ public class SaborV1ControllerTests {
         }
 
         @Test
-        @DisplayName("Quando alteramos o tipo do produto com dados inválidos (tamanho em branco)")
+        @DisplayName("Quando alteramos o tipo do produto com dados inválidos ")
         void quandoAlteramosTipodoSaborInvalido() throws Exception{
             //Arrange
             SaborTipoPatchRequestDTO saborTipoPatchRequestDTO = SaborTipoPatchRequestDTO.builder()
@@ -206,13 +206,11 @@ public class SaborV1ControllerTests {
             saborPostRequestDTO = SaborPostPutRequestDTO.builder()
                     .nome("portuguesa")
                     .preco(38.00)
-                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             saborPutRequestDTO = SaborPostPutRequestDTO.builder()
                     .nome("chocolate")
                     .preco(40.00)
-                    .tamanho("GRANDE")
                     .tipo("doce")
                     .build();
         }

@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.dto.pizza;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.dto.valid.pizza.TamanhoPizza;
 import com.ufcg.psoft.mercadofacil.model.Sabor;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -27,6 +28,7 @@ public class PizzaPostPutRequestDTO {
     private String nomePizza;
     @JsonProperty("tamanho")
     @NotBlank(message = "Tamanho da pizza eh obrigatorio")
+    @TamanhoPizza
     private String tamanho;
     @JsonProperty("sabores")
     private Set<Sabor> sabor;

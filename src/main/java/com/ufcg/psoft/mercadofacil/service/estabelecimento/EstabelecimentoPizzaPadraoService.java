@@ -7,11 +7,13 @@ import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.PizzaNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.QuantidadeDeSaboresInvalidaException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pizza;
 import com.ufcg.psoft.mercadofacil.model.Sabor;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
+import jakarta.validation.ConstraintValidatorContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,16 +32,23 @@ public class EstabelecimentoPizzaPadraoService implements EstabelecimentoPizzaSe
 
     @Override
     public PizzaDTO salvar(Long id, PizzaPostPutRequestDTO pizzaPostPutRequestDTO) {
+        if (!isValid(pizzaPostPutRequestDTO)) {
+           throw new QuantidadeDeSaboresInvalidaException();
+        }
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pizza pizza = modelMapper.map(pizzaPostPutRequestDTO, Pizza.class);
         pizzaRepository.save(pizza);
         estabelecimento.getCardapio().add(pizza);
         PizzaDTO pizzaDto = modelMapper.map(pizza, PizzaDTO.class);
         return pizzaDto;
+
     }
 
     @Override
     public PizzaDTO alterar(Long id, Long idPizza, PizzaPostPutRequestDTO pizzaPostPutRequestDTO) {
+        if (!isValid(pizzaPostPutRequestDTO)) {
+            throw new QuantidadeDeSaboresInvalidaException();
+        }
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pizza pizza = estabelecimento.getCardapio().stream()
                 .filter(elem -> elem.getId().equals(idPizza)).findFirst().orElseThrow(PizzaNaoExisteException::new);
@@ -57,16 +66,6 @@ public class EstabelecimentoPizzaPadraoService implements EstabelecimentoPizzaSe
         estabelecimento.getCardapio().remove(pizza);
     }
 
-    /**
-    @Override
-    public PizzaDTO get(Long id, PizzaGetRequestDTO pizzaGetRequestDTO) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
-        Pizza pizza = estabelecimento.getCardapio().stream()
-                .filter(elem -> elem.getId().equals(pizzaGetRequestDTO.getId())).findFirst().orElseThrow(PizzaNaoExisteException::new);
-        PizzaDTO pizzaDTO = modelMapper.map(pizza, PizzaDTO.class);
-        return pizzaDTO;
-    }
-    **/
 
     @Override
     public PizzaDTO get(Long id, PizzaGetRequestDTO pizzaGetRequestDTO) {
@@ -84,5 +83,16 @@ public class EstabelecimentoPizzaPadraoService implements EstabelecimentoPizzaSe
         List<Pizza> cardapio = new ArrayList<>(estabelecimento.getCardapio());
         cardapio.sort(Comparator.comparing(Pizza::getDisponibilidade));
         return cardapio.stream().map(pizza -> modelMapper.map(pizza, PizzaDTO.class)).collect(Collectors.toList());
+    }
+
+    private boolean isValid(PizzaPostPutRequestDTO pizzaPostPutRequestDTO) {
+        int quantSabores = pizzaPostPutRequestDTO.getSabor().size();
+        if(pizzaPostPutRequestDTO.getTamanho().equals("MEDIO") && quantSabores > 1){
+            return false;
+        }
+        if(pizzaPostPutRequestDTO.getTamanho().equals("GRANDE") && quantSabores > 2){
+            return false;
+        }
+        return true;
     }
 }
