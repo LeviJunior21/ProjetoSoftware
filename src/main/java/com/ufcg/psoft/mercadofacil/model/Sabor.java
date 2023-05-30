@@ -18,15 +18,12 @@ public class Sabor {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @JsonProperty("nome")
+    @JsonProperty("nomeSabor")
     @Column(nullable = false)
-    private String nome;
+    private String nomeSabor;
     @JsonProperty("preco")
     @Column(nullable = false)
     private Double preco;
-    @JsonProperty("tamanho")
-    @Column(nullable = false)
-    private String tamanho;
     @JsonProperty("tipo")
     @Column(nullable = false)
     private String tipo;

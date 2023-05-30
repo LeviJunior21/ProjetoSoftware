@@ -3,7 +3,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.*;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.pizza.SaborPizzaPostPutRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaPostPutRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -153,21 +153,21 @@ public class EstabelecimentoV1Controller {
     @PostMapping("/{id}")
     public ResponseEntity<?> salvarPizza(
             @PathVariable Long id,
-            @RequestBody @Valid SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO) {
+            @RequestBody @Valid PizzaPostPutRequestDTO pizzaPostPutRequestDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(estabelecimentoPizzaService.salvar(id, saborPizzaPostPutRequestDTO));
+                .body(estabelecimentoPizzaService.salvar(id, pizzaPostPutRequestDTO));
     }
 
     @PutMapping("/{id}/atualizar_pizza/{idPizza}")
     public ResponseEntity<?> atualizarPizza(
             @PathVariable Long id,
             @PathVariable Long idPizza,
-            @RequestBody @Valid SaborPizzaPostPutRequestDTO saborPizzaPostPutRequestDTO
+            @RequestBody @Valid PizzaPostPutRequestDTO pizzaPostPutRequestDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoPizzaService.alterar(id, idPizza, saborPizzaPostPutRequestDTO));
+                .body(estabelecimentoPizzaService.alterar(id, idPizza, pizzaPostPutRequestDTO));
     }
 
     @DeleteMapping("/{id}/remove_pizza")

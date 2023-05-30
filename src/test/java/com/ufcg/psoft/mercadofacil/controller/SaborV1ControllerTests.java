@@ -39,9 +39,8 @@ public class SaborV1ControllerTests {
         objectMapper.registerModule(new JavaTimeModule());
         sabor = saborRepository.save(
                 Sabor.builder()
-                        .nome("portuguesa")
+                        .nomeSabor("portuguesa")
                         .preco(38.00)
-                        .tamanho("GRANDE")
                         .tipo("salgada")
                         .build()
         );
@@ -72,7 +71,7 @@ public class SaborV1ControllerTests {
             Sabor resultado = objectMapper.readValue(responseJsonString, Sabor.SaborBuilder.class).build();
 
             //Assert
-            assertEquals(saborNomePatchRequestDTO.getNome(), resultado.getNome());
+            assertEquals(saborNomePatchRequestDTO.getNome(), resultado.getNomeSabor());
         }
 
         @Test
@@ -223,21 +222,18 @@ public class SaborV1ControllerTests {
         void quandoBuscamosTodosOsSaboresSalvos() throws Exception{
             //Arrange
             Sabor sabor1 = Sabor.builder()
-                    .nome("marguerita")
+                    .nomeSabor("marguerita")
                     .preco(30.00)
-                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             Sabor sabor2 = Sabor.builder()
-                    .nome("quatro queijos")
+                    .nomeSabor("quatro queijos")
                     .preco(25.00)
-                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             Sabor sabor3 = Sabor.builder()
-                    .nome("frango com catupiry")
+                    .nomeSabor("frango com catupiry")
                     .preco(40.00)
-                    .tamanho("GRANDE")
                     .tipo("salgada")
                     .build();
             saborRepository.saveAll(Arrays.asList(sabor1, sabor2, sabor3));
@@ -277,7 +273,7 @@ public class SaborV1ControllerTests {
             // Assert
             assertAll(
                     () -> assertEquals(sabor.getId().longValue(), resultado.getId().longValue()),
-                    () -> assertEquals(sabor.getNome(), resultado.getNome()),
+                    () -> assertEquals(sabor.getNomeSabor(), resultado.getNomeSabor()),
                     () -> assertEquals(sabor.getPreco(), resultado.getPreco()),
                     () -> assertEquals(sabor.getTipo(), resultado.getTipo())
             );
@@ -302,7 +298,7 @@ public class SaborV1ControllerTests {
             // Assert
             assertAll(
                     () -> assertNotNull(resultado.getId()),
-                    () -> assertEquals(saborPostRequestDTO.getNome(), resultado.getNome()),
+                    () -> assertEquals(saborPostRequestDTO.getNome(), resultado.getNomeSabor()),
                     () -> assertEquals(saborPostRequestDTO.getPreco(), resultado.getPreco()),
                     () -> assertEquals(saborPostRequestDTO.getTipo(), resultado.getTipo())
             );
@@ -328,7 +324,7 @@ public class SaborV1ControllerTests {
 
             // Assert
             assertAll(
-                    () -> assertEquals(saborPutRequestDTO.getNome(), resultado.getNome()),
+                    () -> assertEquals(saborPutRequestDTO.getNome(), resultado.getNomeSabor()),
                     () -> assertEquals(saborPutRequestDTO.getPreco(), resultado.getPreco()),
                     () -> assertEquals(saborPutRequestDTO.getTipo(), resultado.getTipo())
             );

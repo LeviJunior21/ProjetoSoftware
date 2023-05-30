@@ -77,7 +77,6 @@ public class ClienteV1ControllerTests {
                 .codigoAcesso(123456)
                 .build();
     }
-
     @Nested
     @DisplayName("Casos de testes fazendo atualizações usando Data Transfer Object - DTO")
     class casosDeAlteracaoDTO {
@@ -572,15 +571,16 @@ public class ClienteV1ControllerTests {
         @BeforeEach
         void setup() {
             sabor = Sabor.builder()
-                    .nome("Calabreza")
+                    .nomeSabor("Calabreza")
                     .preco(10.00)
-                    .tamanho("GRANDE")
                     .tipo("Sei la")
                     .build();
 
             pizza = Pizza.builder()
+                    .nomePizza("Pizza Italiana")
                     .sabor(new HashSet<Sabor>())
                     .disponibilidade("disponivel")
+                    .tamanho("GRANDE")
                     .build();
             pizza.getSabor().add(sabor);
 
