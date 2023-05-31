@@ -22,9 +22,12 @@ public class ClientePedidoRequestDTO {
     @JsonProperty("codigoAcesso")
     @CodigoAcesso
     private Integer codigoAcesso;
-
+    @JsonProperty("endereco")
+    private String endereco;
     @JsonProperty("carrinho")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @NotNull(message = "Carrinho null invalido")
     private Pedido carrinho;
+    @JsonProperty("metodoPagamento")
+    private String metodoPagamento;
 }

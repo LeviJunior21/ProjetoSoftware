@@ -36,6 +36,8 @@ public class ClienteV1ControllerTests {
     MockMvc driver;
     @Autowired
     ClienteRepository clienteRepository;
+    @Autowired
+    EstabelecimentoRepository estabelecimentoRepository;
 
     Cliente cliente1;
     Cliente cliente2;
@@ -559,8 +561,7 @@ public class ClienteV1ControllerTests {
     @DisplayName("Casos de teste de realização de pedidos")
     class CasosTesteRealizarPedidos {
 
-        @Autowired
-        EstabelecimentoRepository estabelecimentoRepository;
+
 
 
         Sabor sabor;
@@ -618,6 +619,7 @@ public class ClienteV1ControllerTests {
         void tearDown() {
             estabelecimentoRepository.deleteAll();
             clienteRepository.deleteAll();
+
         }
 
         @Test
@@ -625,11 +627,12 @@ public class ClienteV1ControllerTests {
         @DisplayName("Quando o usuario faz um pedido ao estabelecimento")
         void quandoUsuarioFazPedidoEstabelecimento() throws Exception {
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
-                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
                     .build();
 
-            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
                     )
@@ -651,7 +654,7 @@ public class ClienteV1ControllerTests {
                     .carrinho(pedido)
                     .build();
 
-            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
                     )
@@ -745,14 +748,15 @@ public class ClienteV1ControllerTests {
 
         @Test
         @Transactional
-        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
-        void quandoUsuarioFazPedidoEstabelecimentoComSucesso() throws Exception {
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento PIX")
+        void quandoUsuarioFazPedidoEstabelecimentoUsandoPIX() throws Exception {
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
-                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
                     .build();
 
-            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
                     )
@@ -766,11 +770,96 @@ public class ClienteV1ControllerTests {
             // Assert
             assertEquals(1, estabelecimentoDTO.getPedidos().size());
             assertAll(
-                    () -> assertEquals(10.00, pedidoDTO.getValorPedido()),
+                    () -> assertEquals(9.5, pedidoDTO.getValorPedido()),
                     () -> assertEquals("PIX", pedidoDTO.getMetodoPagamento()),
                     () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
             );
         }
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento CREDITO")
+        void quandoUsuarioFazPedidoEstabelecimentoUsandoCredito() throws Exception {
+            clienteDez.getCarrinho().setMetodoPagamento("CREDITO");
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Pedido pedidoDTO = estabelecimentoDTO.getPedidos().stream().findFirst().get();
+
+            // Assert
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+            assertAll(
+                    () -> assertEquals(10.0, pedidoDTO.getValorPedido()),
+                    () -> assertEquals("CREDITO", pedidoDTO.getMetodoPagamento()),
+                    () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
+            );
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento DEBITO")
+        void quandoUsuarioFazPedidoEstabelecimentoUsandoDebito() throws Exception {
+            clienteDez.getCarrinho().setMetodoPagamento("DEBITO");
+            clienteDez.getCarrinho().setEnderecoEntrega("Rua de Campina");
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .endereco("Rua de Campina")
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Pedido pedidoDTO = estabelecimentoDTO.getPedidos().stream().findFirst().get();
+
+            // Assert
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+            assertAll(
+                    () -> assertEquals(9.75, pedidoDTO.getValorPedido()),
+                    () -> assertEquals("DEBITO", pedidoDTO.getMetodoPagamento()),
+                    () -> assertEquals("Rua de Campina", pedidoDTO.getEnderecoEntrega())
+            );
+        }
+        @Test
+        @Transactional
+        @DisplayName("Quando cliente tenta realizar um pedido mas o metodo de pagamento eh invalido")
+        void quandoMetodoDePagamentoEhInvalido()throws Exception{
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento("PI")
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+            assertEquals("Metodo de pagamento invalido", resultado.getMessage());
+        }
+
     }
 
     @Nested
