@@ -35,5 +35,4 @@ public class Pedido {
 
     @JsonProperty("metodoPagamento")
     private String metodoPagamento;
-
 }

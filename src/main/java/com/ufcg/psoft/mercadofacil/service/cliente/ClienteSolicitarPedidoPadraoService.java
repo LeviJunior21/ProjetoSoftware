@@ -8,7 +8,6 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
-import com.ufcg.psoft.mercadofacil.service.cliente.ClienteSolicitarPedidoService;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.pagamento.PagamentoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +40,9 @@ public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedi
             throw new PizzaNaoEncontradaException();
         }
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
-        if(clientePedidoRequestDTO == null || clientePedidoRequestDTO.equals("")){
+        if(clientePedidoRequestDTO.getEndereco() == null || clientePedidoRequestDTO.getEndereco().equals("")){
             clientePedidoRequestDTO.setEndereco(cliente.getEnderecoPrincipal());
+           clientePedidoRequestDTO.getCarrinho().setEnderecoEntrega(cliente.getEnderecoPrincipal());
         }
         Double valorTotal = calculadora.calculaPrecoPizzas(clientePedidoRequestDTO.getCarrinho().getPizzas());
         if(clientePedidoRequestDTO.getMetodoPagamento().equals("PIX")){

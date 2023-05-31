@@ -810,10 +810,12 @@ public class ClienteV1ControllerTests {
         @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento DEBITO")
         void quandoUsuarioFazPedidoEstabelecimentoUsandoDebito() throws Exception {
             clienteDez.getCarrinho().setMetodoPagamento("DEBITO");
+            clienteDez.getCarrinho().setEnderecoEntrega("Rua de Campina");
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
                     .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
                     .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .endereco("Rua de Campina")
                     .build();
 
             String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
@@ -832,7 +834,7 @@ public class ClienteV1ControllerTests {
             assertAll(
                     () -> assertEquals(9.75, pedidoDTO.getValorPedido()),
                     () -> assertEquals("DEBITO", pedidoDTO.getMetodoPagamento()),
-                    () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
+                    () -> assertEquals("Rua de Campina", pedidoDTO.getEnderecoEntrega())
             );
         }
         @Test
