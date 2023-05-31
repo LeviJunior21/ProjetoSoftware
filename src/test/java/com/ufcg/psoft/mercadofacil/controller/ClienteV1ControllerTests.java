@@ -4,25 +4,25 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
-import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
+import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +36,8 @@ public class ClienteV1ControllerTests {
     MockMvc driver;
     @Autowired
     ClienteRepository clienteRepository;
+    @Autowired
+    EstabelecimentoRepository estabelecimentoRepository;
 
     Cliente cliente1;
     Cliente cliente2;
@@ -53,14 +55,14 @@ public class ClienteV1ControllerTests {
                 .nomeCompleto("Levi de Lima Pereira Junior")
                 .enderecoPrincipal("Rua de Queimadas")
                 .codigoAcesso(123456)
-                .carrinhos(new ArrayList<>())
+                .carrinho(new Pedido())
                 .build()
         );
         cliente2 = clienteRepository.save(Cliente.builder()
                 .nomeCompleto("Lucas de Souza Pereira")
                 .enderecoPrincipal("Rua de Campina Grande")
                 .codigoAcesso(123458)
-                .carrinhos(new ArrayList<>())
+                .carrinho(new Pedido())
                 .build()
         );
 
@@ -78,7 +80,6 @@ public class ClienteV1ControllerTests {
                 .codigoAcesso(123456)
                 .build();
     }
-
     @Nested
     @DisplayName("Casos de testes fazendo atualizações usando Data Transfer Object - DTO")
     class casosDeAlteracaoDTO {
@@ -553,6 +554,388 @@ public class ClienteV1ControllerTests {
             // Assert
             assertEquals("Levi de Lima Pereira Junior", cliente.getNomeCompleto());
             assertEquals(2, clientes.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("Casos de teste de realização de pedidos")
+    class CasosTesteRealizarPedidos {
+
+
+
+
+        Sabor sabor;
+        Pizza pizza;
+        Pedido pedido;
+        Cliente clienteDez;
+        ClientePedidoRequestDTO clientePedidoRequestDTO;
+        Estabelecimento estabelecimento;
+        @BeforeEach
+        void setup() {
+            sabor = Sabor.builder()
+                    .nomeSabor("Calabreza")
+                    .preco(10.00)
+                    .tipo("Sei la")
+                    .build();
+
+            pizza = Pizza.builder()
+                    .nomePizza("Pizza Italiana")
+                    .sabor(new HashSet<Sabor>())
+                    .disponibilidade("disponivel")
+                    .tamanho("GRANDE")
+                    .build();
+            pizza.getSabor().add(sabor);
+
+            pedido = Pedido.builder()
+                    .valorPedido(10.00)
+                    .enderecoEntrega(cliente1.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedido.getPizzas().add(pizza);
+
+            clienteDez = Cliente.builder()
+                            .nomeCompleto("Levi de Lima Pereira Junior")
+                            .enderecoPrincipal("Rua de Queimadas")
+                            .codigoAcesso(123456)
+                            .carrinho(pedido)
+                            .build();
+
+            estabelecimento = Estabelecimento.builder()
+                    .nome("Pizzaria Dez")
+                    .codigoAcesso(101010)
+                    .entregadores(new HashSet<>())
+                    .espera(new HashSet<>())
+                    .cardapio(new HashSet<>())
+                    .notificadorSource(new NotificadorSource())
+                    .pedidos(new HashSet<Pedido>())
+                    .build();
+
+            clienteDez = clienteRepository.save(clienteDez);
+            estabelecimento = estabelecimentoRepository.save(estabelecimento);
+        }
+
+        @AfterEach
+        void tearDown() {
+            estabelecimentoRepository.deleteAll();
+            clienteRepository.deleteAll();
+
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento")
+        void quandoUsuarioFazPedidoEstabelecimento() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoMasCodigoAcessoEhDiferente() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(101038)
+                    .carrinho(pedido)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("O codigo de acesso eh diferente!", resultado.getMessage());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoMasOPedidoEhNull() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(101038)
+                    .carrinho(null)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Erros de validacao encontrados", resultado.getMessage());
+            assertEquals("Carrinho null invalido", resultado.getErrors().get(0));
+
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o código de acesso é diferente")
+        void quandoUsuarioFazPedidoEstabelecimentoMasNaoHaPedidos() throws Exception {
+            Pedido pedido2 = Pedido.builder()
+                    .valorPedido(10.00)
+                    .enderecoEntrega(cliente1.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .carrinho(pedido2)
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + cliente1.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Nao ha pizza(s) enviada(s)", resultado.getMessage());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento mas o cliente não está cadastrado")
+        void quandoUsuarioFazPedidoEstabelecimentoMasClienteNaoExiste() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(cliente1.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .build();
+            Long codigoInvalido = 1010L;
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + codigoInvalido + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("O cliente consultado nao existe!", resultado.getMessage());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento PIX")
+        void quandoUsuarioFazPedidoEstabelecimentoUsandoPIX() throws Exception {
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Pedido pedidoDTO = estabelecimentoDTO.getPedidos().stream().findFirst().get();
+
+            // Assert
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+            assertAll(
+                    () -> assertEquals(9.5, pedidoDTO.getValorPedido()),
+                    () -> assertEquals("PIX", pedidoDTO.getMetodoPagamento()),
+                    () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
+            );
+        }
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento CREDITO")
+        void quandoUsuarioFazPedidoEstabelecimentoUsandoCredito() throws Exception {
+            clienteDez.getCarrinho().setMetodoPagamento("CREDITO");
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Pedido pedidoDTO = estabelecimentoDTO.getPedidos().stream().findFirst().get();
+
+            // Assert
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+            assertAll(
+                    () -> assertEquals(10.0, pedidoDTO.getValorPedido()),
+                    () -> assertEquals("CREDITO", pedidoDTO.getMetodoPagamento()),
+                    () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
+            );
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento DEBITO")
+        void quandoUsuarioFazPedidoEstabelecimentoUsandoDebito() throws Exception {
+            clienteDez.getCarrinho().setMetodoPagamento("DEBITO");
+            clienteDez.getCarrinho().setEnderecoEntrega("Rua de Campina");
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .endereco("Rua de Campina")
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Pedido pedidoDTO = estabelecimentoDTO.getPedidos().stream().findFirst().get();
+
+            // Assert
+            assertEquals(1, estabelecimentoDTO.getPedidos().size());
+            assertAll(
+                    () -> assertEquals(9.75, pedidoDTO.getValorPedido()),
+                    () -> assertEquals("DEBITO", pedidoDTO.getMetodoPagamento()),
+                    () -> assertEquals("Rua de Campina", pedidoDTO.getEnderecoEntrega())
+            );
+        }
+        @Test
+        @Transactional
+        @DisplayName("Quando cliente tenta realizar um pedido mas o metodo de pagamento eh invalido")
+        void quandoMetodoDePagamentoEhInvalido()throws Exception{
+            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
+                    .codigoAcesso(clienteDez.getCodigoAcesso())
+                    .carrinho(pedido)
+                    .metodoPagamento("PI")
+                    .build();
+
+            String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoRequestDTO))
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+            assertEquals("Metodo de pagamento invalido", resultado.getMessage());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Casos de teste para demonstracao de interesse do Cliente")
+    class ClienteInteresseTestes {
+        @Autowired
+        EstabelecimentoRepository estabelecimentoRepository;
+        @Autowired
+        PizzaRepository pizzaRepository;
+        Estabelecimento estabelecimento;
+        Sabor sabor;
+        Pizza pizza;
+
+        @BeforeEach
+        void setup() {
+            estabelecimento = Estabelecimento.builder()
+                    .nome("Sorveteria")
+                    .espera(new HashSet<Funcionario>())
+                    .entregadores(new HashSet<>())
+                    .cardapio(new HashSet<>())
+                    .notificadorSource(new NotificadorSource())
+                    .codigoAcesso(123456)
+                    .build();
+            estabelecimentoRepository.save(estabelecimento);
+            sabor = Sabor.builder()
+                    .nomeSabor("Calabresa")
+                    .preco(2.00)
+                    .tipo("Salgada")
+                    .build();
+            pizza = Pizza.builder()
+                    .nomePizza("Pizza Braba")
+                    .tamanho("MEDIO")
+                    .disponibilidade("indisponivel")
+                    .sabor(new HashSet<>())
+                    .build();
+            pizza.getSabor().add(sabor);
+            pizzaRepository.save(pizza);
+            estabelecimento.getCardapio().add(pizza);
+        }
+
+        @AfterEach
+        void tearDown() {
+            clienteRepository.deleteAll();
+            estabelecimentoRepository.deleteAll();
+            pizzaRepository.deleteAll();
+        }
+
+        @Test
+        @DisplayName("Quando um cliente se interessar por uma pizza")
+        void quandoClienteSeInteressa() throws Exception {
+            // Arrange
+
+            //Act
+            String responseJsonString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/interessar_pizza/" + estabelecimento.getId() + "/" + pizza.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            //Assert
+        }
+
+        @Test
+        @DisplayName("Quando um cliente se desinteressar de uma pizza")
+        void quandoClienteSeDesinteressa() throws Exception {
+            // Arrange
+            estabelecimento.getNotificadorSource().addInteresse(cliente1, pizza);
+
+            //Act
+            String responseJsonString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/desinteressar_pizza/" + estabelecimento.getId() + "/" + pizza.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            //Assert
         }
     }
 }

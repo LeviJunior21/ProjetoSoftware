@@ -2,6 +2,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.service.cliente.*;
+import com.ufcg.psoft.mercadofacil.service.cliente.ClienteSolicitarPedidoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,10 @@ public class ClientesV1Controller {
     ClienteBuscarService clienteBuscarService;
     @Autowired
     ClienteExcluirService clienteExcluirService;
+    @Autowired
+    ClienteSolicitarPedidoService clienteSolicitarPedidoService;
+    @Autowired
+    ClienteInteressePizzaService clienteInteressePizzaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmCliente(
@@ -93,4 +98,38 @@ public class ClientesV1Controller {
                 .body("");
     }
 
+    @PostMapping("/{idCliente}/solicitar-pedido/{idEstabelecimento}")
+    public ResponseEntity<?> solicitarPedido (
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @RequestBody @Valid ClientePedidoRequestDTO clientePedidoRequestDTO
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteSolicitarPedidoService.solicitar(idCliente, idEstabelecimento, clientePedidoRequestDTO));
+    }
+
+    @PatchMapping("/{idCliente}/interessar_pizza/{idEstabelecimento}/{idPizza}")
+    public ResponseEntity<?> interessarPizza(
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @PathVariable Long idPizza
+    ) {
+        clienteInteressePizzaService.interessar(idCliente, idEstabelecimento, idPizza);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("");
+    }
+
+    @PatchMapping("/{idCliente}/desinteressar_pizza/{idEstabelecimento}/{idPizza}")
+    public ResponseEntity<?> desinteressarPizza(
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @PathVariable Long idPizza
+    ) {
+        clienteInteressePizzaService.desinteressar(idCliente, idEstabelecimento, idPizza);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("");
+    }
 }

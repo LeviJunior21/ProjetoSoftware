@@ -1,6 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service.funcionario;
 
-import com.ufcg.psoft.mercadofacil.exception.ProdutoNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.SaborNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Funcionario;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class FuncionarioListarPadraoService implements FuncionarioListarService 
     @Override
     public List<Funcionario> listar(Long id) {
         if(id!=null && id > 0) {
-            funcionarioRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
+            funcionarioRepository.findById(id).orElseThrow(SaborNaoExisteException::new);
         }
         return funcionarioRepository.findAll();
     }

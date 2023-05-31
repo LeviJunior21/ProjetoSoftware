@@ -18,11 +18,18 @@ import java.util.Set;
 public class Pizza {
     @JsonProperty("id")
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonProperty("nomePizza")
+    @Column(nullable = false)
+    private String nomePizza;
+    @JsonProperty("tamanho")
+    @Column(nullable = false)
+    private String tamanho;
     @JsonProperty("sabores")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Produto> sabor;
+    private Set<Sabor> sabor;
     @JsonProperty("disponibilidade")
     @Column(nullable = false)
     private String disponibilidade;

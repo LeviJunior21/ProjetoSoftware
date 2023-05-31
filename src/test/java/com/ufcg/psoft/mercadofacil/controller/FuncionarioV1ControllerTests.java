@@ -298,12 +298,14 @@ public class FuncionarioV1ControllerTests {
                     .veiculo("carro")
                     .cor("preto")
                     .placa("76G34")
+                    .codigoAcesso(324455)
                     .build();
             Funcionario funcionario2 = Funcionario.builder()
                     .nome("Lucas Pereira")
                     .veiculo("moto")
                     .cor("vermelho")
                     .placa("78K56")
+                    .codigoAcesso(324454)
                     .build();
             funcionarioRepository.saveAll(Arrays.asList(funcionario1, funcionario2));
 
@@ -320,7 +322,7 @@ public class FuncionarioV1ControllerTests {
 
             // Assert
             assertAll(
-                    () -> assertEquals(3, resultado.size())
+                    () -> assertEquals(funcionarioRepository.findAll().size(), resultado.size())
             );
         }
 

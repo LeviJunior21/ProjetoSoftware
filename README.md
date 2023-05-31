@@ -46,7 +46,8 @@ Código base gerado via [start.sprint.io](https://start.spring.io/#!type=maven-p
 
 <code>> mvn clean test </code>
 
-
+# Modelagem
+[Clique aqui para abrir modelagem - Lucid Chart](https://lucid.app/lucidchart/1b9761ca-5d80-49de-b24e-306098dd4bb5/edit?viewport_loc=2515%2C-264%2C12320%2C5398%2CcpC2P~Ovhr8B&invitationId=inv_aa61c7f1-578a-4d9b-8700-51d63a1706e7)
 
 ## Contato e Dúvidas
 
