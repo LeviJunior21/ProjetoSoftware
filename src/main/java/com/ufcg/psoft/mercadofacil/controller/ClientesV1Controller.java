@@ -120,4 +120,16 @@ public class ClientesV1Controller {
                 .status(HttpStatus.OK)
                 .body("");
     }
+
+    @PatchMapping("/{idCliente}/desinteressar_pizza/{idEstabelecimento}/{idPizza}")
+    public ResponseEntity<?> desinteressarPizza(
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @PathVariable Long idPizza
+    ) {
+        clienteInteressePizzaService.desinteressar(idCliente, idEstabelecimento, idPizza);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("");
+    }
 }

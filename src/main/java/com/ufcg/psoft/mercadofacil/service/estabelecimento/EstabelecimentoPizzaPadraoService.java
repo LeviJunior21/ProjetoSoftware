@@ -1,6 +1,5 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
@@ -10,10 +9,8 @@ import com.ufcg.psoft.mercadofacil.exception.PizzaNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.QuantidadeDeSaboresInvalidaException;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pizza;
-import com.ufcg.psoft.mercadofacil.model.Sabor;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
-import jakarta.validation.ConstraintValidatorContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +76,6 @@ public class EstabelecimentoPizzaPadraoService implements EstabelecimentoPizzaSe
     @Override
     public List<PizzaDTO> listar(Long id) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(id).orElseThrow(EstabelecimentoNaoExisteException::new);
-        //List<Pizza> cardapio = (List<Pizza>) estabelecimento.getCardapio();
         List<Pizza> cardapio = new ArrayList<>(estabelecimento.getCardapio());
         cardapio.sort(Comparator.comparing(Pizza::getDisponibilidade));
         return cardapio.stream().map(pizza -> modelMapper.map(pizza, PizzaDTO.class)).collect(Collectors.toList());

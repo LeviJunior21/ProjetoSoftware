@@ -912,8 +912,6 @@ public class ClienteV1ControllerTests {
         void quandoClienteSeInteressa() throws Exception {
             // Arrange
 
-            System.out.println(estabelecimento.getNotificadorSource().toString());
-
             //Act
             String responseJsonString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/interessar_pizza/" + estabelecimento.getId() + "/" + pizza.getId())
                             .contentType(MediaType.APPLICATION_JSON))
@@ -921,7 +919,21 @@ public class ClienteV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            System.out.println(estabelecimento.getNotificadorSource().toString());
+            //Assert
+        }
+
+        @Test
+        @DisplayName("Quando um cliente se desinteressar de uma pizza")
+        void quandoClienteSeDesinteressa() throws Exception {
+            // Arrange
+            estabelecimento.getNotificadorSource().addInteresse(cliente1, pizza);
+
+            //Act
+            String responseJsonString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/desinteressar_pizza/" + estabelecimento.getId() + "/" + pizza.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
 
             //Assert
         }

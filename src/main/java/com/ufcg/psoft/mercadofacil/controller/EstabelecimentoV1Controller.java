@@ -135,9 +135,10 @@ public class EstabelecimentoV1Controller {
             @PathVariable Long id,
             @PathVariable Long idPizza
     ) {
+        estabelecimentoAlterarParaIndisponivelService.alterarDisponibilidade(idPizza, id);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarParaIndisponivelService.alterarDisponibilidade(idPizza, id));
+                .body("");
     }
 
     @PutMapping ("/{id}/disponivel/{idPizza}")
@@ -145,9 +146,10 @@ public class EstabelecimentoV1Controller {
             @PathVariable Long id,
             @PathVariable Long idPizza
     ) {
+        estabelecimentoAlterarParaDisponivelService.alterarDisponibilidade(idPizza, id);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(estabelecimentoAlterarParaDisponivelService.alterarDisponibilidade(idPizza, id));
+                .body("");
     }
 
     @PostMapping("/{id}")

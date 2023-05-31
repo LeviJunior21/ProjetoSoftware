@@ -37,6 +37,6 @@ public class Cliente implements ClienteListener {
     @Override
     public void notifica(NotificaEvent event) {
         System.out.println(this.getNomeCompleto()
-                + ", seu sabor de interesse: " + event.getPizza().getSabor().iterator().next().getNomeSabor() + ", esta disponivel\n");
+                + ", sua pizza de interesse: " + event.getPizza().getNomePizza() + ", esta disponivel\n");
     }
 }

@@ -14,19 +14,16 @@ public class EstabelecimentoAlterarParaIndisponivelPadraoService implements Esta
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     @Override
-    public EstabelecimentoMensagemGetDTO alterarDisponibilidade(Long idPizza, Long idEstabelecimento) {
+    public void alterarDisponibilidade(Long idPizza, Long idEstabelecimento) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pizza pizza = estabelecimento.getCardapio().stream()
                 .filter(elem -> elem.getId().equals(idPizza)).findFirst().orElseThrow(PizzaNaoExisteException::new);
         EstabelecimentoMensagemGetDTO estabelecimentoMensagemGetDTO = new EstabelecimentoMensagemGetDTO();
         estabelecimentoMensagemGetDTO.setMensagem("");
-        if (pizza.getDisponibilidade().equals("indisponivel")) {
+        if (!pizza.getDisponibilidade().equals("indisponivel")) {
+            pizza.setDisponibilidade("indisponivel");
+            estabelecimento.getCardapio().add(pizza);
             estabelecimentoRepository.save(estabelecimento);
-            return estabelecimentoMensagemGetDTO;
         }
-        pizza.setDisponibilidade("indisponivel");
-        estabelecimento.getCardapio().add(pizza);
-        estabelecimentoRepository.save(estabelecimento);
-        return estabelecimentoMensagemGetDTO;
     }
 }

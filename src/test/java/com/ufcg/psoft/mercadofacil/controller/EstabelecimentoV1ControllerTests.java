@@ -390,7 +390,6 @@ public class EstabelecimentoV1ControllerTests {
         Cliente cliente;
         Sabor sabor;
         Sabor sabor1;
-        ClienteInteressado clienteInteressado;
 
         @BeforeEach
         void setup() {
@@ -427,13 +426,6 @@ public class EstabelecimentoV1ControllerTests {
             cliente = clienteRepository.save(Cliente.builder()
                     .nomeCompleto("Matheus")
                     .build());
-
-            /*clienteInteressado = ClienteInteressado.builder()
-                    .id(cliente.getId())
-                    .nomeCompleto(cliente.getNomeCompleto())
-                    .saborDeInteresse(sabor1.getNome())
-                    .build();*/
-            //estabelecimento.getInteressados().add(clienteInteressado);
         }
 
         @Test
@@ -450,10 +442,7 @@ public class EstabelecimentoV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
-
             //Assert
-            assertEquals("", resultado.getMensagem());
         }
 
         @Test
@@ -464,17 +453,14 @@ public class EstabelecimentoV1ControllerTests {
             // nenhuma necessidade além do setup()
             estabelecimento.getNotificadorSource().addInteresse(cliente, pizza2);
 
-
             //Act
             String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/disponivel/" + pizza2.getId())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
-            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
-            //assertEquals("Matheus, seu sabor de interesse: Frango, esta disponivel\n", resultado.getMensagem());
         }
 
         @Test
@@ -498,8 +484,6 @@ public class EstabelecimentoV1ControllerTests {
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
-            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString,
-                    EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
         }
@@ -518,11 +502,7 @@ public class EstabelecimentoV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
-
             //Assert
-            //assertNull(resultado.getMensagem());
-            assertEquals("", resultado.getMensagem());
         }
 
         @Test
@@ -539,11 +519,7 @@ public class EstabelecimentoV1ControllerTests {
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
-            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
-
             //Assert
-            //assertNull(resultado.getMensagem());
-            assertEquals("", resultado.getMensagem());
         }
     }
 
