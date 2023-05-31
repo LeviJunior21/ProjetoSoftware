@@ -10,6 +10,7 @@ import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -769,6 +770,71 @@ public class ClienteV1ControllerTests {
                     () -> assertEquals("PIX", pedidoDTO.getMetodoPagamento()),
                     () -> assertEquals("Rua de Queimadas", pedidoDTO.getEnderecoEntrega())
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("Casos de teste para demonstracao de interesse do Cliente")
+    class ClienteInteresseTestes {
+        @Autowired
+        EstabelecimentoRepository estabelecimentoRepository;
+        @Autowired
+        PizzaRepository pizzaRepository;
+        Estabelecimento estabelecimento;
+        Sabor sabor;
+        Pizza pizza;
+
+        @BeforeEach
+        void setup() {
+            estabelecimento = Estabelecimento.builder()
+                    .nome("Sorveteria")
+                    .espera(new HashSet<Funcionario>())
+                    .entregadores(new HashSet<>())
+                    .cardapio(new HashSet<>())
+                    .notificadorSource(new NotificadorSource())
+                    .codigoAcesso(123456)
+                    .build();
+            estabelecimentoRepository.save(estabelecimento);
+            sabor = Sabor.builder()
+                    .nomeSabor("Calabresa")
+                    .preco(2.00)
+                    .tipo("Salgada")
+                    .build();
+            pizza = Pizza.builder()
+                    .nomePizza("Pizza Braba")
+                    .tamanho("MEDIO")
+                    .disponibilidade("indisponivel")
+                    .sabor(new HashSet<>())
+                    .build();
+            pizza.getSabor().add(sabor);
+            pizzaRepository.save(pizza);
+            estabelecimento.getCardapio().add(pizza);
+        }
+
+        @AfterEach
+        void tearDown() {
+            clienteRepository.deleteAll();
+            estabelecimentoRepository.deleteAll();
+            pizzaRepository.deleteAll();
+        }
+
+        @Test
+        @DisplayName("Quando um cliente se interessar por uma pizza")
+        void quandoClienteSeInteressa() throws Exception {
+            // Arrange
+
+            System.out.println(estabelecimento.getNotificadorSource().toString());
+
+            //Act
+            String responseJsonString = driver.perform(patch(URI_CLIENTE + "/" + cliente1.getId() + "/interessar_pizza/" + estabelecimento.getId() + "/" + pizza.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk()) // Codigo 200
+                    .andDo(print())
+                    .andReturn().getResponse().getContentAsString();
+
+            System.out.println(estabelecimento.getNotificadorSource().toString());
+
+            //Assert
         }
     }
 }

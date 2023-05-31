@@ -161,7 +161,7 @@ public class EstabelecimentoV1ControllerTests {
 
         @Test
         @Transactional
-        @DisplayName("Quando criar com a quantidade de sabores inválida")
+        @DisplayName("Quando criar com a quantidade de sabores invalida")
         void quandoEstabelecimentoCriaUmaPizzaInvalida() throws Exception {
             //Arrange
             pizzaPostPutRequestDTO.getSabor().add(Sabor.builder()
@@ -178,7 +178,7 @@ public class EstabelecimentoV1ControllerTests {
             String responseJsonString = driver.perform(post(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(pizzaPostPutRequestDTO)))
-                    .andExpect(status().isBadRequest()) // Codigo 201
+                    .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -272,7 +272,7 @@ public class EstabelecimentoV1ControllerTests {
             String responseJsonString = driver.perform(delete(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/remove_pizza")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(pizzaRemoveRequestDTO)))
-                    .andExpect(status().isNoContent()) // Codigo 200
+                    .andExpect(status().isNoContent())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
 
@@ -326,7 +326,7 @@ public class EstabelecimentoV1ControllerTests {
 
         @Test
         @Transactional
-        @DisplayName("Quando um estabelecimento buscar por todas as pizza (cardapio)")
+        @DisplayName("Quando um estabelecimento buscar por todas as pizzas (cardapio)")
         void quandoEstabelecimentoListaCardapio() throws Exception {
             //Arrange
             Pizza pizza = pizzaRepository.save(Pizza.builder()
@@ -485,11 +485,12 @@ public class EstabelecimentoV1ControllerTests {
             Cliente cliente1 = clienteRepository.save(Cliente.builder()
                     .nomeCompleto("Lucas")
                     .build());
+            Cliente cliente2 = clienteRepository.save(Cliente.builder()
+                    .nomeCompleto("Levi")
+                    .build());
             estabelecimento.getNotificadorSource().addInteresse(cliente, pizza2);
             estabelecimento.getNotificadorSource().addInteresse(cliente1, pizza2);
-
-            System.out.println(estabelecimento.toString());
-
+            estabelecimento.getNotificadorSource().addInteresse(cliente2, pizza);
 
             //Act
             String responseJsonString = driver.perform(put(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId() + "/disponivel/" + pizza2.getId())
@@ -497,9 +498,8 @@ public class EstabelecimentoV1ControllerTests {
                     .andExpect(status().isOk()) // Codigo 200
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
-            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString, EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
-
-            System.out.println(estabelecimento.toString());
+            EstabelecimentoMensagemGetDTO resultado = objectMapper.readValue(responseJsonString,
+                    EstabelecimentoMensagemGetDTO.EstabelecimentoMensagemGetDTOBuilder.class).build();
 
             //Assert
         }

@@ -42,6 +42,10 @@ public class NotificadorSource {
                 entry.getKey().notifica(event);
             }
         }
+    }
 
+    @Override
+    public String toString() {
+        return clienteListeners.toString();
     }
 }
