@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ufcg.psoft.mercadofacil.estados.CriandoPedido;
 import com.ufcg.psoft.mercadofacil.estados.PedidoRecebido;
@@ -14,6 +15,8 @@ public abstract class PedidoConcrect {
 
     @JsonProperty("idEstabelecimento")
     private Long idEstabelecimento;
+
+    @JsonIgnore
     private PedidoState pedidoStateNext = new CriandoPedido();
 
     public void next() {
