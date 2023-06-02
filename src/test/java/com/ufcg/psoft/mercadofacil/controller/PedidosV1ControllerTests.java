@@ -1,6 +1,6 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
-import com.ufcg.psoft.mercadofacil.estados.PedidoRecebido;
+import com.ufcg.psoft.mercadofacil.estados.*;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
 import com.ufcg.psoft.mercadofacil.model.Pizza;
@@ -22,7 +22,7 @@ import java.util.HashSet;
 @DisplayName("Casos para cliente fazer o pedido")
 public class PedidosV1ControllerTests {
     @Nested
-    @DisplayName("Casos de testes da interface quando o cliente faz o pedido: Mudando o estado")
+    @DisplayName("Casos de testes unitários da interface quando o cliente faz o pedido: Mudando o estado")
     class casosDeAlteracaoDTO {
         Pedido pedido;
         Cliente cliente;
@@ -62,10 +62,54 @@ public class PedidosV1ControllerTests {
         }
 
         @Test
-        @DisplayName("Quando o usuario muda de estado.")
-        void quandoUsuarioFazPedidoEstabelecimento() throws Exception {
+        @DisplayName("Quando o usuario está fazendo o pedido mas que ainda não enviou ao estabelecimento.")
+        void quandoUsuarioFazPedidoMasNaoEnviaAoEstabelecimento() throws Exception {
+            assertEquals(CriandoPedido.class, pedido.getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando o usuario muda de estado para pedido recebido.")
+        void quandoAlteramosEstadoCriandoPedidoParaPedidoRecebido() throws Exception {
             pedido.next();
             assertEquals(PedidoRecebido.class, pedido.getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando o usuario está fazendo o pedido mas que ainda não enviou ao estabelecimento.")
+        void quandoAlteramosEstadoPedidoRecebidoParaPedidoEmPreparo() throws Exception {
+            pedido.next();
+            pedido.next();
+            assertEquals(PedidoEmPreparo.class, pedido.getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando o usuario muda de estado.")
+        void quandoAlteramosEstadoPedidoEmPreparoParaPedidoPronto() throws Exception {
+            pedido.next();
+            pedido.next();
+            pedido.next();
+            assertEquals(PedidoPronto.class, pedido.getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando o usuario está fazendo o pedido mas que ainda não enviou ao estabelecimento.")
+        void quandoAlteramosEstadoPedidoProntoParaPedidoEmRota() throws Exception {
+            pedido.next();
+            pedido.next();
+            pedido.next();
+            pedido.next();
+            assertEquals(PedidoEmRota.class, pedido.getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando o usuario muda de estado.")
+        void quandoAlteramosEstadoPedidoEmRotaParaPedidoEntregue() throws Exception {
+            pedido.next();
+            pedido.next();
+            pedido.next();
+            pedido.next();
+            pedido.next();
+            assertEquals(PedidoEntregue.class, pedido.getPedidoStateNext().getClass());
         }
     }
 }
