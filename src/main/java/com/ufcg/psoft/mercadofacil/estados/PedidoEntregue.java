@@ -6,6 +6,7 @@ public class PedidoEntregue implements PedidoState{
 
     @Override
     public void next(Pedido pedido, PedidoState state) {
+        // Não tem implementação para esse método nesse estado.
     }
 
     @Override

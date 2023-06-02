@@ -3,12 +3,10 @@ package com.ufcg.psoft.mercadofacil.estados;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
 
 public class PedidoPronto implements PedidoState{
-    private PedidoState pedidoStateNext;
 
     @Override
     public void next(Pedido pedido, PedidoState state) {
-        this.pedidoStateNext = new PedidoEmPreparo();
-        //pedido.setStatePedido(this.pedidoStateNext);
+        pedido.setStatePedido(new PedidoEmRota());
     }
 
     @Override
