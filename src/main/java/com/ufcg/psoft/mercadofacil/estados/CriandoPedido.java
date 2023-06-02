@@ -6,6 +6,7 @@ public class CriandoPedido implements PedidoState {
 
     @Override
     public void next(Pedido pedido, PedidoState state) {
+        
         pedido.setStatePedido(new PedidoRecebido(this));
     }
 

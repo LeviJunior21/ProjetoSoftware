@@ -16,7 +16,7 @@ public class PedidoRecebido implements PedidoState{
 
     @Override
     public void previous(Pedido pedido) {
-        // pedido.setStatePedido(getPedidoStatePrev);
+        pedido.setStatePedido(getPedidoStatePrev);
     }
 
     @Override

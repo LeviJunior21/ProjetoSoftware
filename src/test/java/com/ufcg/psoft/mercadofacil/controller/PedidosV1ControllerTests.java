@@ -111,5 +111,13 @@ public class PedidosV1ControllerTests {
             pedido.next();
             assertEquals(PedidoEntregue.class, pedido.getPedidoStateNext().getClass());
         }
+
+        @Test
+        @DisplayName("Quando o usuario muda de estado.")
+        void quandoAlteramosEstadoPedidoRecebidoParacriandoPedido() throws Exception {
+            pedido.next();
+            pedido.cancelarPedido();
+            assertEquals(CriandoPedido.class, pedido.getPedidoStateNext().getClass());
+        }
     }
 }
