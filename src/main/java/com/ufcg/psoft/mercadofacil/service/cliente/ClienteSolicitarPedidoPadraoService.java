@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.service.cliente;
 import com.ufcg.psoft.mercadofacil.dto.calculadora.CalculaPrecoPizzas;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
+import com.ufcg.psoft.mercadofacil.estados.PedidoEmPreparo;
 import com.ufcg.psoft.mercadofacil.exception.*;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
@@ -58,6 +59,7 @@ public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedi
             throw new MetodoPagamentoException();
         }
         clientePedidoRequestDTO.getCarrinho().setValorPedido(valorTotal);
+        clientePedidoRequestDTO.getCarrinho().next();
         estabelecimento.getPedidos().add(clientePedidoRequestDTO.getCarrinho());
         Estabelecimento estabelecimento1 = estabelecimentoRepository.save(estabelecimento);
         EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento1, EstabelecimentoDTO.class);
