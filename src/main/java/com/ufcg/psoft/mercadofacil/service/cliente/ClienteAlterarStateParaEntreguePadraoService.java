@@ -22,7 +22,7 @@ public class ClienteAlterarStateParaEntreguePadraoService implements ClienteAlte
     @Autowired
     ModelMapper modelMapper;
     @Override
-    public EstabelecimentoDTO alterarPedido(Long idCliente, Long idEstabelecimento, ClientePedidoPatchRequestDTO clientePedidoPatchRequestDTO) {
+    public EstabelecimentoDTO alterarPedidoState(Long idCliente, Long idEstabelecimento, ClientePedidoPatchRequestDTO clientePedidoPatchRequestDTO) {
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(ClienteNaoExisteException::new);
         if (!cliente.getCodigoAcesso().equals(clientePedidoPatchRequestDTO.getCodigoAcesso()))  {
             throw new CodigoAcessoDiferenteException();

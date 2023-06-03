@@ -5,5 +5,5 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 
 public interface ClienteAlterarStateParaEntregueService {
 
-    public EstabelecimentoDTO alterarPedido(Long idCliente, Long idEstabelecimento, ClientePedidoPatchRequestDTO clientePedidoPatchRequestDTO);
+    public EstabelecimentoDTO alterarPedidoState(Long idCliente, Long idEstabelecimento, ClientePedidoPatchRequestDTO clientePedidoPatchRequestDTO);
 }
