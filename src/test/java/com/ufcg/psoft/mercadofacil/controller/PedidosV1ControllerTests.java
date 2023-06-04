@@ -259,8 +259,8 @@ public class PedidosV1ControllerTests {
         }
 
         @Test
-        @DisplayName("Quando enviamos um pedido ao estabelecimento")
-        void quandoEnviamosUmPedidoAoEstabelecimento() throws Exception {
+        @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
+        void quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstado() throws Exception {
             // Arrange
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
                     .metodoPagamento("PIX")

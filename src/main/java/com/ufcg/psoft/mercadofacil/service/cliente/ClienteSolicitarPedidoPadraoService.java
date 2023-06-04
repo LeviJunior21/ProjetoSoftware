@@ -7,6 +7,7 @@ import com.ufcg.psoft.mercadofacil.estados.PedidoEmPreparo;
 import com.ufcg.psoft.mercadofacil.exception.*;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
+import com.ufcg.psoft.mercadofacil.model.Pedido;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.service.estabelecimento.pagamento.PagamentoService;
@@ -60,7 +61,8 @@ public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedi
         }
         clientePedidoRequestDTO.getCarrinho().setValorPedido(valorTotal);
         clientePedidoRequestDTO.getCarrinho().next();
-        estabelecimento.getPedidos().add(clientePedidoRequestDTO.getCarrinho());
+        Pedido pedido = (Pedido) clientePedidoRequestDTO.getCarrinho();
+        estabelecimento.getPedidos().add(pedido);
         Estabelecimento estabelecimento1 = estabelecimentoRepository.save(estabelecimento);
         EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento1, EstabelecimentoDTO.class);
         return estabelecimentoDTO;
