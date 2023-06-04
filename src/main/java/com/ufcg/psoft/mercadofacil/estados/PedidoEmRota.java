@@ -17,6 +17,7 @@ public class PedidoEmRota implements PedidoState{
     EstabelecimentoRepository estabelecimentoRepository;
     @Override
     public void next(Pedido pedido, PedidoState state) {
+
         pedido.setStatePedido(new PedidoEntregue());
     }
 
@@ -38,9 +39,11 @@ public class PedidoEmRota implements PedidoState{
         for (Entregador entregador: estabelecimento.getEntregadores()) {
             if (entregador.isEntregando() == false) {
                 entregador1 = entregador;
+                entregador.setEntregando(true);
             }
         }
         PedidoSource pedidoSource = new PedidoSource();
+        pedidoSource.addPedidoDoClienteEmRota(cliente);
         pedidoSource.notificaEmRota(entregador1);
     }
 }

@@ -31,7 +31,7 @@ public class Cliente implements ClienteListener, PedidoListener {
 
     @JsonProperty("carrinho")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Pedido carrinho;
+    private Pedido pedido;
 
     @JsonProperty("codigoAcesso")
     private Integer codigoAcesso;

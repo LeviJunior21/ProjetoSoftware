@@ -60,7 +60,7 @@ public class PedidosV1ControllerTests {
                     .nomeCompleto("Levi de Lima Pereira Junior")
                     .enderecoPrincipal("Rua de Queimadas")
                     .codigoAcesso(123456)
-                    .carrinho(pedido)
+                    .pedido(pedido)
                     .build();
 
             pedido = Pedido.builder()
@@ -228,7 +228,7 @@ public class PedidosV1ControllerTests {
                     .nomeCompleto("Levi de Lima Pereira Junior")
                     .enderecoPrincipal("Rua de Queimadas")
                     .codigoAcesso(123456)
-                    .carrinho(pedido)
+                    .pedido(pedido)
                     .build();
 
             pedido = Pedido.builder()
@@ -277,7 +277,6 @@ public class PedidosV1ControllerTests {
 
             // Act
             EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
-
             // Assert
             assertEquals(PedidoRecebido.class, estabelecimentoDTO.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
