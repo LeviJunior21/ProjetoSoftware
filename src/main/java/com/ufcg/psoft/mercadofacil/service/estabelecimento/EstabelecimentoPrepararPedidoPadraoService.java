@@ -34,10 +34,6 @@ public class EstabelecimentoPrepararPedidoPadraoService implements Estabelecimen
             throw new PedidoUpdateException();
         }
         pedidoEncontrado.next();
-        if (pedidoEncontrado.getPedidoStateNext().getClass().equals(PedidoEmPreparo.class)) {
-            Cliente cliente = clienteRepository.findById(pedidoEncontrado.getIdCliente()).orElseThrow(ClienteNaoExisteException::new);
-            // cliente.notifica(cliente.getNomeCompleto() + ", o seu pedido está sendo preparado pelo estabelecimento " + estabelecimento.getNome()+".");
-        }
         EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento, EstabelecimentoDTO.class);
         return estabelecimentoDTO;
     }

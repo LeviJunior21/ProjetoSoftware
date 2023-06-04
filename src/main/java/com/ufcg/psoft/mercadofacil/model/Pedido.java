@@ -37,4 +37,5 @@ public class Pedido extends PedidoConcrect{
 
     @JsonProperty("metodoPagamento")
     private String metodoPagamento;
+
 }

@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ufcg.psoft.mercadofacil.estados.CriandoPedido;
 import com.ufcg.psoft.mercadofacil.estados.PedidoRecebido;
 import com.ufcg.psoft.mercadofacil.estados.PedidoState;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +28,7 @@ public abstract class PedidoConcrect {
     private PedidoState pedidoStateNext = new CriandoPedido();
 
     public void next() {
-        this.pedidoStateNext.next((Pedido) this, pedidoStateNext);
+        this.pedidoStateNext.next((Pedido) this, this.pedidoStateNext);
     }
 
     private Long getIdEstabelecimento() {
