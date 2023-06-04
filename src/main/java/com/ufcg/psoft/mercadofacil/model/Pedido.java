@@ -25,6 +25,8 @@ public class Pedido extends PedidoConcrect{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @JsonProperty("idCliente")
+    private Long idCliente;
     @JsonProperty("enderecoEntrega")
     private String enderecoEntrega;
 
