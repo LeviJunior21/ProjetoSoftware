@@ -5,7 +5,7 @@ import com.ufcg.psoft.mercadofacil.model.Pedido;
 public class PedidoEntregue implements PedidoState{
 
     @Override
-    public void next(Pedido pedido, PedidoState state) {
+    public void next(Pedido pedido) {
         // Não tem implementação para esse método nesse estado.
     }
 

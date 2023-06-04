@@ -10,7 +10,7 @@ public class PedidoRecebido implements PedidoState{
     }
 
     @Override
-    public void next(Pedido pedido, PedidoState state) {
+    public void next(Pedido pedido) {
         pedido.setStatePedido(new PedidoEmPreparo());
     }
 

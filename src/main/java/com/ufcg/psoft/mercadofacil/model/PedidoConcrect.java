@@ -28,7 +28,7 @@ public abstract class PedidoConcrect {
     private PedidoState pedidoStateNext = new CriandoPedido();
 
     public void next() {
-        this.pedidoStateNext.next((Pedido) this, this.pedidoStateNext);
+        this.pedidoStateNext.next((Pedido) this);
     }
 
     public Long getIdEstabelecimento() {

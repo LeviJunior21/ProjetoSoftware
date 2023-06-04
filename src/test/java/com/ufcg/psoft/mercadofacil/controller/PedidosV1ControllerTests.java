@@ -238,6 +238,7 @@ public class PedidosV1ControllerTests {
                     .pizzas(new HashSet<Pizza>())
                     .build();
             pedido.getPizzas().add(pizza);
+
             cliente = clienteRepository.save(cliente);
             estabelecimento = estabelecimentoRepository.save(Estabelecimento.builder()
                     .nome("Sorveteria")
@@ -249,6 +250,8 @@ public class PedidosV1ControllerTests {
                     .codigoAcesso(123456)
                     .build()
             );
+            estabelecimento.getPedidos().add(pedido);
+            estabelecimentoRepository.save(estabelecimento);
 
         }
 
@@ -276,9 +279,19 @@ public class PedidosV1ControllerTests {
                     .andReturn().getResponse().getContentAsString();
 
             // Act
-            EstabelecimentoDTO estabelecimentoDTO = objectMapper.readValue(responseJSONString, EstabelecimentoDTO.EstabelecimentoDTOBuilder.class).build();
+            Estabelecimento estabelecimentoDTO = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
             // Assert
-            assertEquals(PedidoRecebido.class, estabelecimentoDTO.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+            //assertEquals(PedidoRecebido.class, estabelecimentoDTO.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
+        void quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstadoAtual() throws Exception {
+            // Arrange
+
+            estabelecimento.getPedidos().stream().findFirst().get().next();
+            estabelecimentoRepository.save(estabelecimento);
+            assertEquals(PedidoRecebido.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
     }
 }

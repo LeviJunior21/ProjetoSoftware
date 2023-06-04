@@ -24,17 +24,14 @@ public class EstabelecimentoPrepararPedidoPadraoService implements Estabelecimen
     ModelMapper modelMapper;
 
     @Override
-    public EstabelecimentoDTO preparar(Long idEstabelecimento, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO, Long idPedido) {
+    public Estabelecimento preparar(Long idEstabelecimento, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO, Long idPedido) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoPostGetRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }
-        Pedido pedidoEncontrado = estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(idPedido)).findFirst().orElseThrow(PedidoNaoExisteException::new);
-        if (!pedidoEncontrado.getPedidoStateNext().getClass().equals(CriandoPedido.class)) {
-            throw new PedidoUpdateException();
-        }
-        pedidoEncontrado.next();
-        EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento, EstabelecimentoDTO.class);
-        return estabelecimentoDTO;
+        estabelecimento.getPedidos().stream().findFirst().get().next();
+
+       // EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento, EstabelecimentoDTO.class);
+        return estabelecimentoRepository.save(estabelecimento);
     }
 }

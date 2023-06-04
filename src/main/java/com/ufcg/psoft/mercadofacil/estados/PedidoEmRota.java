@@ -16,7 +16,7 @@ public class PedidoEmRota implements PedidoState{
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     @Override
-    public void next(Pedido pedido, PedidoState state) {
+    public void next(Pedido pedido) {
 
         pedido.setStatePedido(new PedidoEntregue());
     }
