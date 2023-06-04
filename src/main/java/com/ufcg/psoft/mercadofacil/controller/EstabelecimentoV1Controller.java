@@ -45,6 +45,8 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoPizzaService estabelecimentoPizzaService;
     @Autowired
     EstabelecimentoPrepararPedidoService estabelecimentoPrepararPedidoService;
+    @Autowired
+    EstabelecimentoAlterarParaEmRotaService estabelecimentoAlterarParaEmRotaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
@@ -210,8 +212,22 @@ public class EstabelecimentoV1Controller {
             @PathVariable Long idCliente,
             @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
     ) {
+        estabelecimentoPrepararPedidoService.preparar(id, estabelecimentoPostGetRequestDTO, idCliente);
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(estabelecimentoPrepararPedidoService.preparar(id, estabelecimentoPostGetRequestDTO, idCliente));
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PostMapping("/{id}/em-rota/{idCliente}/{idPedido}")
+    public ResponseEntity<?> prepararPedido(
+            @PathVariable Long id,
+            @PathVariable Long idCliente,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoAlterarParaEmRotaService.alterarParaEmRota(id, idCliente, idPedido, estabelecimentoPostGetRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
     }
 }

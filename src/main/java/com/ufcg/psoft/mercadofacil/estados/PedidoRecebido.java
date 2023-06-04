@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.estados;
 
+import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
 
 public class PedidoRecebido implements PedidoState{
@@ -20,7 +22,7 @@ public class PedidoRecebido implements PedidoState{
     }
 
     @Override
-    public void notifica(Long idCliente, String message) {
+    public void notifica(Cliente cliente, Estabelecimento estabelecimento) {
         // Busca cliente no banco
         // Chama a funcao notifica no cliente passando a mensagem
     }

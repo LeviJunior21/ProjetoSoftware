@@ -9,7 +9,9 @@ import com.ufcg.psoft.mercadofacil.notifica.notificaRota.PedidoSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PedidoEmRota implements PedidoState{
     @Autowired
     ClienteRepository clienteRepository;
@@ -27,23 +29,23 @@ public class PedidoEmRota implements PedidoState{
     }
 
     @Override
-    public void notifica(Long idCliente, String message) {
-        // Busca cliente no banco
-        // Chama a funcao notifica no cliente passando a mensagem
+    public void notifica(Cliente cliente, Estabelecimento estabelecimento) {
+        this.notificaClienteQuandoPedidoEMRota(cliente, estabelecimento);
     }
 
-    public void notificaClienteQuandoPedidoEMRota(Long idCliente, Long idEstabelecimento) {
-        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(ClienteNaoExisteException::new);
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(ClienteNaoExisteException::new);
-        Entregador entregador1 = new Entregador();
+    public void notificaClienteQuandoPedidoEMRota(Cliente cliente, Estabelecimento estabelecimento) {
+        Entregador entregador1 = null;
         for (Entregador entregador: estabelecimento.getEntregadores()) {
             if (entregador.isEntregando() == false) {
                 entregador1 = entregador;
                 entregador.setEntregando(true);
+                break;
             }
         }
-        PedidoSource pedidoSource = new PedidoSource();
-        pedidoSource.addPedidoDoClienteEmRota(cliente);
-        pedidoSource.notificaEmRota(entregador1);
+        if (entregador1 != null) {
+            PedidoSource pedidoSource = new PedidoSource();
+            pedidoSource.addPedidoDoClienteEmRota(cliente);
+            pedidoSource.notificaEmRota(entregador1);
+        }
     }
 }

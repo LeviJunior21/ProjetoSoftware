@@ -3,7 +3,6 @@ package com.ufcg.psoft.mercadofacil.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.estados.*;
 import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
@@ -28,7 +27,7 @@ import java.util.HashSet;
 @AutoConfigureMockMvc
 @Transactional
 @DisplayName("Casos para cliente fazer o pedido")
-public class PedidosV1ControllerTests {
+public class ClienteEstabelecimentoPedidosTests {
 
     @Autowired
     MockMvc driver;
@@ -271,27 +270,30 @@ public class PedidosV1ControllerTests {
                     .endereco("Rua de Campina Grande")
                     .carrinho(pedido)
                     .build();
-            String responseJSONString = driver.perform(post(URI_CLIENT + "/" + cliente.getId() + "/solicitar-pedido/" + estabelecimento.getId())
+            String responseJSONString = driver.perform(post( "/v1/estabelecimentos/" + estabelecimento.getId() + "/preparar/" + cliente.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(clientePedidoRequestDTO)))
                     .andDo(print())
-                    .andExpect(status().isOk())
+                    .andExpect(status().isNoContent())
                     .andReturn().getResponse().getContentAsString();
-
             // Act
-            Estabelecimento estabelecimentoDTO = objectMapper.readValue(responseJSONString, Estabelecimento.EstabelecimentoBuilder.class).build();
             // Assert
-            //assertEquals(PedidoRecebido.class, estabelecimentoDTO.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
 
         @Test
         @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
         void quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstadoAtual() throws Exception {
-            // Arrange
-
             estabelecimento.getPedidos().stream().findFirst().get().next();
-            estabelecimentoRepository.save(estabelecimento);
-            assertEquals(PedidoRecebido.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+            Estabelecimento estabelecimento1 = estabelecimentoRepository.save(estabelecimento);
+
+            quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstado();
+            assertEquals(PedidoEmPreparo.class, estabelecimento1.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando o pedido está em rota")
+        void quandoUmPedidoEstaEmRota() {
+
         }
     }
 }

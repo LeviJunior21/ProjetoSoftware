@@ -80,6 +80,7 @@ public class ClienteV1ControllerTests {
                 .codigoAcesso(123456)
                 .build();
     }
+
     @Nested
     @DisplayName("Casos de testes fazendo atualizações usando Data Transfer Object - DTO")
     class casosDeAlteracaoDTO {

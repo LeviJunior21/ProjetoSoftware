@@ -60,8 +60,8 @@ public class ClienteSolicitarPedidoPadraoService implements ClienteSolicitarPedi
             throw new MetodoPagamentoException();
         }
         clientePedidoRequestDTO.getCarrinho().setValorPedido(valorTotal);
-        clientePedidoRequestDTO.getCarrinho().next();
         Pedido pedido = (Pedido) clientePedidoRequestDTO.getCarrinho();
+        pedido.next();
         estabelecimento.getPedidos().add(pedido);
         Estabelecimento estabelecimento1 = estabelecimentoRepository.save(estabelecimento);
         EstabelecimentoDTO estabelecimentoDTO = modelMapper.map(estabelecimento1, EstabelecimentoDTO.class);

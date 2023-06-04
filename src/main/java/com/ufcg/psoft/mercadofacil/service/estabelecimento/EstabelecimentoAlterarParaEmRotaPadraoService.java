@@ -1,35 +1,35 @@
 package com.ufcg.psoft.mercadofacil.service.estabelecimento;
 
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetRequestDTO;
-import com.ufcg.psoft.mercadofacil.estados.CriandoPedido;
-import com.ufcg.psoft.mercadofacil.estados.PedidoEmPreparo;
-import com.ufcg.psoft.mercadofacil.exception.*;
+import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
+import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EstabelecimentoPrepararPedidoPadraoService implements EstabelecimentoPrepararPedidoService {
+public class EstabelecimentoAlterarParaEmRotaPadraoService implements EstabelecimentoAlterarParaEmRotaService {
+
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     @Autowired
     ClienteRepository clienteRepository;
-    @Autowired
-    ModelMapper modelMapper;
 
     @Override
-    public void preparar(Long idEstabelecimento, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO, Long idPedido) {
+    public void alterarParaEmRota(Long idEstabelecimento, Long idCliente, Long idPedido, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoPostGetRequestDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }
-        estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(idPedido)).findFirst().get().next();
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(ClienteNaoExisteException::new);
+        Pedido pedidoResponse = estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(idPedido)).findFirst().get();
+        pedidoResponse.next();
+        pedidoResponse.notifica(cliente, estabelecimento);
         estabelecimentoRepository.save(estabelecimento);
     }
 }
