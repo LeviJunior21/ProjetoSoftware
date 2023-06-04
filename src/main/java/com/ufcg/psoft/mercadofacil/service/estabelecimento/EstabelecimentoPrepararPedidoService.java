@@ -4,6 +4,6 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetRequestDTO;
 
 @FunctionalInterface
-public interface EstabelecimentoGetService {
-    EstabelecimentoDTO get(Long id, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO);
+public interface EstabelecimentoPrepararPedidoService {
+    EstabelecimentoDTO preparar(Long idEstabelecimento, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO, Long idCliente);
 }

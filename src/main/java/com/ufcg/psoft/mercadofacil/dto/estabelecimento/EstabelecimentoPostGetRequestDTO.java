@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstabelecimentoGetRequestDTO {
+public class EstabelecimentoPostGetRequestDTO {
     @JsonProperty("codigoAcesso")
     @CodigoAcesso
     private Integer codigoAcesso;

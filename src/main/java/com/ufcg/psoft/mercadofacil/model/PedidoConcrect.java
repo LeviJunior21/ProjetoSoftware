@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ufcg.psoft.mercadofacil.estados.CriandoPedido;
 import com.ufcg.psoft.mercadofacil.estados.PedidoRecebido;
 import com.ufcg.psoft.mercadofacil.estados.PedidoState;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class PedidoConcrect {
