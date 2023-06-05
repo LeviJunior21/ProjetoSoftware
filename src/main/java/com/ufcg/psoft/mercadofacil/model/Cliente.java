@@ -44,8 +44,8 @@ public class Cliente implements ClienteListener, PedidoListener {
 
     @Override
     public void notificaPedidoEmRota(PedidoEvent event) {
-        System.out.println("Cliente: " + this.getNomeCompleto() + "seu pedido esta em rota e o nome do entregador eh:"
-                + event.getEntregador().getNome() + "e o seu veiculo eh: " + event.getEntregador().getVeiculo() + ", pĺaca: "
-                + event.getEntregador().getPlaca() + "e cor: " + event.getEntregador().getCor());
+        System.out.println("Cliente: " + this.getNomeCompleto() + ", seu pedido está em rota e o nome do entregador é: "
+                + event.getEntregador().getNome() + " e o seu veículo é: " + event.getEntregador().getVeiculo() + ", placa: "
+                + event.getEntregador().getPlaca() + " e cor do veículo: " + event.getEntregador().getCor() + ".");
     }
 }

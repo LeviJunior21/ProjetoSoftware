@@ -4,6 +4,7 @@ import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetReq
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
+import com.ufcg.psoft.mercadofacil.exception.PedidoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;

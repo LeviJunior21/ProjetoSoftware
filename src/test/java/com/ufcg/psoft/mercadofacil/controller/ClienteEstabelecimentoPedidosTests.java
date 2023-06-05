@@ -290,5 +290,10 @@ public class ClienteEstabelecimentoPedidosTests {
             assertEquals(PedidoEmPreparo.class, estabelecimento1.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
 
+        @Test
+        @DisplayName("Quando o pedido está em rota")
+        void quandoUmPedidoEstaEmRota() {
+
+        }
     }
 }
