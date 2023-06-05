@@ -33,7 +33,7 @@ public class ClienteAlterarStateParaEntreguePadraoService implements ClienteAlte
         if(!(clientePedidoPatchRequestDTO.getCarrinho().getPedidoStateNext() instanceof PedidoEmRota)){
             throw new AlteraPedidoException();
         } else{
-            clientePedidoPatchRequestDTO.getCarrinho().getPedidoStateNext().next(clientePedidoPatchRequestDTO.getCarrinho(), new PedidoEntregue());
+            //clientePedidoPatchRequestDTO.getCarrinho().getPedidoStateNext().next(clientePedidoPatchRequestDTO.getCarrinho(), new PedidoEntregue());
         }
         Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);        
         estabelecimento.getPedidos().add(clientePedidoPatchRequestDTO.getCarrinho());

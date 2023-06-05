@@ -624,14 +624,14 @@ public class EstabelecimentoV1ControllerTests {
         @DisplayName("Quando buscamos pelo estabelecimento por id válido mas o codigo de acesso é inválido")
         void quandoBuscamosUmEstabelecimentoVlidoPeloIdComCodigoInvalidoPeloCodigoAcesso() throws Exception {
             // Arrange
-            EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO = EstabelecimentoGetRequestDTO.builder()
+            EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
                     .codigoAcesso(124599)
                     .build();
 
             // Act
             String responseJsonString = driver.perform(get(URI_ESTABELECIMENTOS + "/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(estabelecimentoGetRequestDTO)))
+                            .content(objectMapper.writeValueAsString(estabelecimentoPostGetRequestDTO)))
                     .andExpect(status().isBadRequest())
                     .andDo(print())
                     .andReturn().getResponse().getContentAsString();
@@ -695,7 +695,7 @@ public class EstabelecimentoV1ControllerTests {
     class CasosDeTesteApiRestFull {
 
         EstabelecimentoRemoveRequestDTO estabelecimentoRemoveRequestDTO;
-        EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO;
+        EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO;
 
         @Test
         @Transactional
@@ -772,7 +772,7 @@ public class EstabelecimentoV1ControllerTests {
         @DisplayName("Quando buscamos todos os estabelecimentos")
         void quandoBuscamosUmEstabelecimentos() throws Exception {
             // Arrange
-            estabelecimentoGetRequestDTO = EstabelecimentoGetRequestDTO.builder()
+            estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
                     .codigoAcesso(123458)
                     .build();
 

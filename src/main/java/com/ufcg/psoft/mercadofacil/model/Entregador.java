@@ -41,7 +41,4 @@ public class Entregador {
     @JsonProperty("entregando")
     @Column(nullable = false)
     private boolean entregando;
-    @JsonProperty("pedido")
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Pedido pedido;
 }

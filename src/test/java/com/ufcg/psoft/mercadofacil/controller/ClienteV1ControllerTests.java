@@ -55,14 +55,14 @@ public class ClienteV1ControllerTests {
                 .nomeCompleto("Levi de Lima Pereira Junior")
                 .enderecoPrincipal("Rua de Queimadas")
                 .codigoAcesso(123456)
-                .carrinho(new Pedido())
+                .pedido(new Pedido())
                 .build()
         );
         cliente2 = clienteRepository.save(Cliente.builder()
                 .nomeCompleto("Lucas de Souza Pereira")
                 .enderecoPrincipal("Rua de Campina Grande")
                 .codigoAcesso(123458)
-                .carrinho(new Pedido())
+                .pedido(new Pedido())
                 .build()
         );
 
@@ -80,6 +80,7 @@ public class ClienteV1ControllerTests {
                 .codigoAcesso(123456)
                 .build();
     }
+
     @Nested
     @DisplayName("Casos de testes fazendo atualizações usando Data Transfer Object - DTO")
     class casosDeAlteracaoDTO {
@@ -598,7 +599,7 @@ public class ClienteV1ControllerTests {
                             .nomeCompleto("Levi de Lima Pereira Junior")
                             .enderecoPrincipal("Rua de Queimadas")
                             .codigoAcesso(123456)
-                            .carrinho(pedido)
+                            .pedido(pedido)
                             .build();
 
             estabelecimento = Estabelecimento.builder()
@@ -629,7 +630,7 @@ public class ClienteV1ControllerTests {
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
                     .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
-                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .metodoPagamento(clienteDez.getPedido().getMetodoPagamento())
                     .build();
 
             String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
@@ -753,7 +754,7 @@ public class ClienteV1ControllerTests {
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
                     .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
-                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .metodoPagamento(clienteDez.getPedido().getMetodoPagamento())
                     .build();
 
             String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
@@ -779,11 +780,11 @@ public class ClienteV1ControllerTests {
         @Transactional
         @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento CREDITO")
         void quandoUsuarioFazPedidoEstabelecimentoUsandoCredito() throws Exception {
-            clienteDez.getCarrinho().setMetodoPagamento("CREDITO");
+            clienteDez.getPedido().setMetodoPagamento("CREDITO");
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
                     .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
-                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .metodoPagamento(clienteDez.getPedido().getMetodoPagamento())
                     .build();
 
             String responseJSONString = driver.perform(post(URI_CLIENTE + "/" + clienteDez.getId() + "/solicitar-pedido/" + estabelecimento.getId())
@@ -810,12 +811,12 @@ public class ClienteV1ControllerTests {
         @Transactional
         @DisplayName("Quando o usuario faz um pedido ao estabelecimento com metodo de pagamento DEBITO")
         void quandoUsuarioFazPedidoEstabelecimentoUsandoDebito() throws Exception {
-            clienteDez.getCarrinho().setMetodoPagamento("DEBITO");
-            clienteDez.getCarrinho().setEnderecoEntrega("Rua de Campina");
+            clienteDez.getPedido().setMetodoPagamento("DEBITO");
+            clienteDez.getPedido().setEnderecoEntrega("Rua de Campina");
             clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
                     .codigoAcesso(clienteDez.getCodigoAcesso())
                     .carrinho(pedido)
-                    .metodoPagamento(clienteDez.getCarrinho().getMetodoPagamento())
+                    .metodoPagamento(clienteDez.getPedido().getMetodoPagamento())
                     .endereco("Rua de Campina")
                     .build();
 

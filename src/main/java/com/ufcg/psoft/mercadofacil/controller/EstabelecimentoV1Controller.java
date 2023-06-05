@@ -43,15 +43,19 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoAlterarParaDisponivelPadraoService estabelecimentoAlterarParaDisponivelService;
     @Autowired
     EstabelecimentoPizzaService estabelecimentoPizzaService;
+    @Autowired
+    EstabelecimentoPrepararPedidoService estabelecimentoPrepararPedidoService;
+    @Autowired
+    EstabelecimentoAlterarParaEmRotaService estabelecimentoAlterarParaEmRotaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
             @PathVariable Long id,
-            @RequestBody @Valid EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
             ) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(estabelecimentoGetService.get(id, estabelecimentoGetRequestDTO));
+                    .body(estabelecimentoGetService.get(id, estabelecimentoPostGetRequestDTO));
     }
 
     @GetMapping()
@@ -202,4 +206,28 @@ public class EstabelecimentoV1Controller {
                 .body(estabelecimentoPizzaService.listar(id));
     }
 
+    @PostMapping("/{id}/preparar/{idCliente}")
+    public ResponseEntity<?> prepararPedido(
+            @PathVariable Long id,
+            @PathVariable Long idCliente,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoPrepararPedidoService.preparar(id, estabelecimentoPostGetRequestDTO, idCliente);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PostMapping("/{id}/em-rota/{idCliente}/{idPedido}")
+    public ResponseEntity<?> prepararPedido(
+            @PathVariable Long id,
+            @PathVariable Long idCliente,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoAlterarParaEmRotaService.alterarParaEmRota(id, idCliente, idPedido, estabelecimentoPostGetRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
 }
