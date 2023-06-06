@@ -1,8 +1,7 @@
 package com.ufcg.psoft.mercadofacil.service.cliente;
 
-import com.ufcg.psoft.mercadofacil.dto.cliente.ClienteDTO;
-import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
-
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoPostDTO;
+@FunctionalInterface
 public interface ClienteCancelarPedidoService {
-    ClienteDTO cancelaPedido(Long idCliente, Long idEstabelecimento, ClientePedidoRequestDTO clientePedidoRequestDTO);
+    void cancelaPedido(Long idCliente, Long idEstabelecimento, ClientePedidoPostDTO clientePedidoPostDTO);
 }

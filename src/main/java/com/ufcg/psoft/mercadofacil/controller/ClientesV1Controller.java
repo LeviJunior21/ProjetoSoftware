@@ -39,6 +39,8 @@ public class ClientesV1Controller {
     ClienteAlterarStateParaEntregueService clienteAlterarStateParaEntregueService;
     @Autowired
     ClienteAlterarParaEntregueService clienteAlterarParaEntregueService;
+    @Autowired
+    ClienteCancelarPedidoService clienteCancelarPedidoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmCliente(
@@ -156,6 +158,18 @@ public class ClientesV1Controller {
             @RequestBody @Valid ClientePedidoPostDTO clientePedidoPostDTO
     ) {
         clienteAlterarParaEntregueService.alterarParaEntregue(idCliente, idEstabelecimento, idPedido, clientePedidoPostDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PostMapping("{idCliente}/cancelar/{idEstabelecimento}")
+    public ResponseEntity<?> cancelarPedido(
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @RequestBody @Valid ClientePedidoPostDTO clientePedidoPostDTO
+    ) {
+        clienteCancelarPedidoService.cancelaPedido(idCliente, idEstabelecimento, clientePedidoPostDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");

@@ -398,5 +398,32 @@ public class ClienteEstabelecimentoPedidosTests {
             // Assert
             assertEquals(PedidoEntregue.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
+
+        @Test
+        @DisplayName("Quando um pedido eh cancelado por um cliente")
+        public void quandoUmPedidoEhCancelado() throws Exception {
+            // Arrange
+            ClientePedidoPostDTO clientePedidoPostDTO = ClientePedidoPostDTO.builder()
+                    .codigoAcesso(cliente.getCodigoAcesso())
+                    .build();
+
+            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
+            // ESTADOS:
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+
+
+            // Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId()
+                            + "/cancelar/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoPostDTO)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            // Assert
+           // assertEquals(PedidoEntregue.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+        }
     }
 }
