@@ -16,6 +16,12 @@ Porém, em 2023, simplesmente não é viável voltar ao modo de trabalho “pré
 - Eu, enquanto cliente, quero utilizar o sistema para fazer pedidos de pizza a um  estabelecimento. Mais detalhadamente, deve ser possível criar, ler, editar e remover pedidos.
 - Eu, enquanto cliente, quero demonstrar interesse em sabores de pizza que não estão disponíveis no momento.
 - Eu, enquanto estabelecimento, quero disponibilizar diferentes meios de pagamento para os pedidos, tal que cada meio de pagamento também gere descontos distintos.
+- Eu, enquanto estabelecimento, quero que o sistema garanta a corretude nas mudanças de status dos pedidos. 
+- Eu, enquanto cliente, quero ser notificado(a) quando meus pedidos estiverem em rota e, por medidas de segurança, quero ser informado(a) com o nome do(a) entregador(a) responsável pela entrega e os detalhes sobre seu veículo.
+- Eu, enquanto cliente, quero ser responsável por confirmar a entrega dos meus pedidos. 
+- Eu, enquanto estabelecimento, quero ser notificado(a) sempre que o status de um pedido for modificado para “Pedido entregue”. A notificação deve ser representada como uma mensagem no terminal da aplicação (print), indicando o motivo e quem está recebendo a notificação.
+- Eu, enquanto cliente, quero ter a possibilidade de cancelar um pedido que fiz no estabelecimento.
+- Eu, enquanto cliente, quero poder verificar os pedidos que já realizei no estabelecimento. 
 ## Estrutura básica
 
 - Um projeto: PitsA;
@@ -46,8 +52,11 @@ Código base gerado via [start.sprint.io](https://start.spring.io/#!type=maven-p
 
 <code>> mvn clean test </code>
 
-# Modelagem
+# Modelagem da parte dois:
 [Clique aqui para abrir modelagem - Lucid Chart](https://lucid.app/lucidchart/1b9761ca-5d80-49de-b24e-306098dd4bb5/edit?viewport_loc=2515%2C-264%2C12320%2C5398%2CcpC2P~Ovhr8B&invitationId=inv_aa61c7f1-578a-4d9b-8700-51d63a1706e7)
+
+# Modelagem da parte três:
+- Link: https://drive.google.com/file/d/1or3knWqp-b7406YmwDpo4uZpn3uxAb2g/view?usp=drive_link
 
 ## Contato e Dúvidas
 
