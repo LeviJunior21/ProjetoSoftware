@@ -163,13 +163,14 @@ public class ClientesV1Controller {
                 .body("");
     }
 
-    @PostMapping("{idCliente}/cancelar/{idEstabelecimento}")
+    @PostMapping("{idCliente}/{idPedido}/cancelar/{idEstabelecimento}")
     public ResponseEntity<?> cancelarPedido(
             @PathVariable Long idCliente,
             @PathVariable Long idEstabelecimento,
+            @PathVariable Long idPedido,
             @RequestBody @Valid ClientePedidoPostDTO clientePedidoPostDTO
     ) {
-        clienteCancelarPedidoService.cancelaPedido(idCliente, idEstabelecimento, clientePedidoPostDTO);
+        clienteCancelarPedidoService.cancelaPedido(idCliente, idPedido, idEstabelecimento, clientePedidoPostDTO);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body("");

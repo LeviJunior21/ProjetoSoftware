@@ -6,6 +6,7 @@ import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoPostDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.estados.*;
+import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
@@ -282,7 +283,7 @@ public class ClienteEstabelecimentoPedidosTests {
         }
 
         @Test
-        @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
+        @DisplayName("Quando o pedido é recebido")
         void quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstado() throws Exception {
             // Arrange
             EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
@@ -303,7 +304,7 @@ public class ClienteEstabelecimentoPedidosTests {
         }
 
         @Test
-        @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
+        @DisplayName("Quando o pedido está em preparo")
         void quandoUmPedidoEstaEmPreparo() throws Exception {
             // Arrange
             EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
@@ -326,7 +327,7 @@ public class ClienteEstabelecimentoPedidosTests {
         }
 
         @Test
-        @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
+        @DisplayName("Quando o pedido está em pronto")
         void quandoUmPedidoEstaPronto() throws Exception {
             // Arrange
             EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
@@ -411,10 +412,36 @@ public class ClienteEstabelecimentoPedidosTests {
             // ESTADOS:
             estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
             estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
-
-
             // Act
-            String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId()
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/"
+                            + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId()
+                            + "/cancelar/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoPostDTO)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent())
+                    .andReturn().getResponse().getContentAsString();
+
+            // Assert
+           assertEquals(0, estabelecimentoRepository.findById(estabelecimento.getId()).get().getPedidos().size());
+        }
+
+        @Test
+        @DisplayName("Quando um pedido não pode ser cancelado por um cliente")
+        public void quandoUmPedidoNaoPodeCancelado() throws Exception {
+            // Arrange
+            ClientePedidoPostDTO clientePedidoPostDTO = ClientePedidoPostDTO.builder()
+                    .codigoAcesso(cliente.getCodigoAcesso())
+                    .build();
+
+            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
+            // ESTADOS:
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().findFirst().get().next();
+            // Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/"
+                            + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId()
                             + "/cancelar/" + estabelecimento.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(clientePedidoPostDTO)))
@@ -423,7 +450,42 @@ public class ClienteEstabelecimentoPedidosTests {
                     .andReturn().getResponse().getContentAsString();
 
             // Assert
-           // assertEquals(PedidoEntregue.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Alteracao de estado do pedido invalida!", resultado.getMessage());
         }
+
+        @Test
+        @DisplayName("Quando um pedido não pode ser cancelado por um cliente por ser entregue")
+        public void quandoUmPedidoNaoPodeCanceladoJaEntregue() throws Exception {
+            // Arrange
+            ClientePedidoPostDTO clientePedidoPostDTO = ClientePedidoPostDTO.builder()
+                    .codigoAcesso(cliente.getCodigoAcesso())
+                    .build();
+
+            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
+            // ESTADOS:
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().findFirst().get().next();
+            estabelecimento.getPedidos().stream().findFirst().get().next();
+            // Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/"
+                            + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId()
+                            + "/cancelar/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoPostDTO)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+
+            // Assert
+            CustomErrorType resultado = objectMapper.readValue(responseJSONString, CustomErrorType.class);
+
+            // Assert
+            assertEquals("Alteracao de estado do pedido invalida!", resultado.getMessage());
+        }
+
     }
 }
