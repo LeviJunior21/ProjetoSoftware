@@ -1,8 +1,8 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.notifica.ClienteListener;
-import com.ufcg.psoft.mercadofacil.notifica.NotificaEvent;
+import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.ClienteListener;
+import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificaEvent;
 import com.ufcg.psoft.mercadofacil.notifica.notificaRota.PedidoEvent;
 import com.ufcg.psoft.mercadofacil.notifica.notificaRota.PedidoListener;
 import jakarta.persistence.*;

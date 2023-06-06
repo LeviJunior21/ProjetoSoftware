@@ -1,22 +1,12 @@
 package com.ufcg.psoft.mercadofacil.estados;
 
-import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
 import com.ufcg.psoft.mercadofacil.notifica.notificaRota.PedidoSource;
-import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
-import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
 public class PedidoEmRota implements PedidoState{
-    @Autowired
-    ClienteRepository clienteRepository;
-    @Autowired
-    EstabelecimentoRepository estabelecimentoRepository;
     @Override
     public void next(Pedido pedido) {
 
@@ -37,8 +27,8 @@ public class PedidoEmRota implements PedidoState{
         Entregador entregador1 = null;
         for (Entregador entregador: estabelecimento.getEntregadores()) {
             if (entregador.isEntregando() == false) {
-                entregador1 = entregador;
                 entregador.setEntregando(true);
+                entregador1 = entregador;
                 break;
             }
         }
@@ -46,6 +36,7 @@ public class PedidoEmRota implements PedidoState{
             PedidoSource pedidoSource = new PedidoSource();
             pedidoSource.addPedidoDoClienteEmRota(cliente);
             pedidoSource.notificaEmRota(entregador1);
+            pedidoSource.removeInteresse(cliente);
         }
     }
 }

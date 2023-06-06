@@ -35,9 +35,10 @@ public class ClientesV1Controller {
     ClienteSolicitarPedidoService clienteSolicitarPedidoService;
     @Autowired
     ClienteInteressePizzaService clienteInteressePizzaService;
-
     @Autowired
     ClienteAlterarStateParaEntregueService clienteAlterarStateParaEntregueService;
+    @Autowired
+    ClienteAlterarParaEntregueService clienteAlterarParaEntregueService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmCliente(
@@ -137,7 +138,7 @@ public class ClientesV1Controller {
     }
 
     @PatchMapping("/{idCliente}/alterar-state-pedido/{idEstabelecimento}")
-    public ResponseEntity<?> alteraStatePedido (
+    public ResponseEntity<?> alteraStatePedido(
             @PathVariable Long idCliente,
             @PathVariable Long idEstabelecimento,
             @RequestBody @Valid ClientePedidoPatchRequestDTO clientePedidoPatchRequestDTO
@@ -145,5 +146,18 @@ public class ClientesV1Controller {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(clienteAlterarStateParaEntregueService.alterarPedidoState(idCliente, idEstabelecimento, clientePedidoPatchRequestDTO));
+    }
+
+    @PostMapping("{idCliente}/entregue/{idEstabelecimento}/{idPedido}")
+    public ResponseEntity<?> alteraParaEntregue(
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid ClientePedidoPostDTO clientePedidoPostDTO
+    ) {
+        clienteAlterarParaEntregueService.alterarParaEntregue(idCliente, idEstabelecimento, idPedido, clientePedidoPostDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
     }
 }

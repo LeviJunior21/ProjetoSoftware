@@ -2,12 +2,15 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoPostDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.estados.*;
 import com.ufcg.psoft.mercadofacil.model.*;
-import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
+import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
+import com.ufcg.psoft.mercadofacil.repository.PedidoRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,6 +200,8 @@ public class ClienteEstabelecimentoPedidosTests {
         ClienteRepository clienteRepository;
         @Autowired
         EstabelecimentoRepository estabelecimentoRepository;
+        @Autowired
+        PedidoRepository pedidoRepository;
 
         ObjectMapper objectMapper = new ObjectMapper();
         Pedido pedido;
@@ -205,11 +210,25 @@ public class ClienteEstabelecimentoPedidosTests {
         Sabor sabor;
         Estabelecimento estabelecimento;
         ClientePedidoRequestDTO clientePedidoRequestDTO;
+        Entregador entregador;
         String URI_CLIENT = "/v1/clientes";
 
         @BeforeEach
         void setup() {
             objectMapper.registerModule(new JavaTimeModule());
+            cliente = Cliente.builder()
+                    .nomeCompleto("Desgraçado")
+                    .enderecoPrincipal("Rua de Queimadas")
+                    .codigoAcesso(654321)
+                    .pedido(new Pedido())
+                    .build();
+            clienteRepository.save(cliente);
+
+            entregador = Entregador.builder().nome("fabio da motoca")
+                    .veiculo("MOTO")
+                    .placa("sssdadez")
+                    .cor("vermei").entregando(false)
+                    .build();
             sabor = Sabor.builder()
                     .nomeSabor("Calabreza")
                     .preco(10.00)
@@ -223,77 +242,161 @@ public class ClienteEstabelecimentoPedidosTests {
                     .build();
             pizza.getSabor().add(sabor);
 
-            cliente = Cliente.builder()
-                    .nomeCompleto("Levi de Lima Pereira Junior")
-                    .enderecoPrincipal("Rua de Queimadas")
-                    .codigoAcesso(123456)
-                    .pedido(pedido)
-                    .build();
-
             pedido = Pedido.builder()
                     .valorPedido(10.00)
+                    .idCliente(cliente.getId())
                     .enderecoEntrega(cliente.getEnderecoPrincipal())
                     .metodoPagamento("PIX")
                     .pizzas(new HashSet<Pizza>())
                     .build();
             pedido.getPizzas().add(pizza);
+            pedidoRepository.save(pedido);
 
-            cliente = clienteRepository.save(cliente);
+            cliente.setPedido(pedido);
+            clienteRepository.save(cliente);
+
             estabelecimento = estabelecimentoRepository.save(Estabelecimento.builder()
-                    .nome("Sorveteria")
+                    .nome("Pizzaria do Carlos")
                     .espera(new HashSet<Funcionario>())
                     .entregadores(new HashSet<>())
                     .cardapio(new HashSet<>())
                     .notificadorSource(new NotificadorSource())
                     .pedidos(new HashSet<>())
                     .codigoAcesso(123456)
-                    .build()
-            );
-            estabelecimento.getPedidos().add(pedido);
-            estabelecimentoRepository.save(estabelecimento);
+                    .build());
 
+            //pedido.setIdCliente(cliente.getId());
+            //pedidoRepository.save(pedido);
+            //pedido.setIdEstabelecimento(estabelecimento.getId());
+
+            estabelecimento.getPedidos().add(pedido);
+            estabelecimento.getEntregadores().add(entregador);
+            estabelecimentoRepository.save(estabelecimento);
         }
 
         @AfterEach
         void tearDown() {
             clienteRepository.deleteAll();
             estabelecimentoRepository.deleteAll();
+            pedidoRepository.deleteAll();
         }
 
         @Test
         @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
         void quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstado() throws Exception {
             // Arrange
-            clientePedidoRequestDTO = ClientePedidoRequestDTO.builder()
-                    .metodoPagamento("PIX")
-                    .codigoAcesso(cliente.getCodigoAcesso())
-                    .endereco("Rua de Campina Grande")
-                    .carrinho(pedido)
+            EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
+                    .codigoAcesso(estabelecimento.getCodigoAcesso())
                     .build();
-            String responseJSONString = driver.perform(post( "/v1/estabelecimentos/" + estabelecimento.getId() + "/preparar/" + cliente.getId())
+
+            String responseJSONString = driver.perform(post( "/v1/estabelecimentos/" + estabelecimento.getId()
+                            + "/recebido/" + estabelecimento.getPedidos().stream().findFirst().get().getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(clientePedidoRequestDTO)))
+                    .content(objectMapper.writeValueAsString(estabelecimentoPostGetRequestDTO)))
                     .andDo(print())
                     .andExpect(status().isNoContent())
                     .andReturn().getResponse().getContentAsString();
+
             // Act
             // Assert
+            assertEquals(PedidoRecebido.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
 
         @Test
         @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
-        void quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstadoAtual() throws Exception {
-            estabelecimento.getPedidos().stream().findFirst().get().next();
-            Estabelecimento estabelecimento1 = estabelecimentoRepository.save(estabelecimento);
+        void quandoUmPedidoEstaEmPreparo() throws Exception {
+            // Arrange
+            EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
+                    .codigoAcesso(estabelecimento.getCodigoAcesso())
+                    .build();
 
-            quandoEnviamosUmPedidoAoEstabelecimentoEVerificamosSeuEstado();
-            assertEquals(PedidoEmPreparo.class, estabelecimento1.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+
+            String responseJSONString = driver.perform(post( "/v1/estabelecimentos/" + estabelecimento.getId()
+                            + "/em-preparo/" + estabelecimento.getPedidos().stream().findFirst().get().getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(estabelecimentoPostGetRequestDTO)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent())
+                    .andReturn().getResponse().getContentAsString();
+
+            // Act
+            // Assert
+            assertEquals(PedidoEmPreparo.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando enviamos um pedido ao estabelecimento e verificamos o estado dele")
+        void quandoUmPedidoEstaPronto() throws Exception {
+            // Arrange
+            EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
+                    .codigoAcesso(estabelecimento.getCodigoAcesso())
+                    .build();
+
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+
+            String responseJSONString = driver.perform(post( "/v1/estabelecimentos/" + estabelecimento.getId()
+                            + "/pronto/" + estabelecimento.getPedidos().stream().findFirst().get().getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(estabelecimentoPostGetRequestDTO)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent())
+                    .andReturn().getResponse().getContentAsString();
+
+            // Act
+            // Assert
+            assertEquals(PedidoPronto.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
 
         @Test
         @DisplayName("Quando o pedido está em rota")
-        void quandoUmPedidoEstaEmRota() {
+        void quandoUmPedidoEstaEmRota() throws Exception {
+            EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO = EstabelecimentoPostGetRequestDTO.builder()
+                    .codigoAcesso(estabelecimento.getCodigoAcesso())
+                    .build();
 
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Pronto
+
+            String responseJSONString = driver.perform(post( "/v1/estabelecimentos/" + estabelecimento.getId() + "/em-rota/"
+                            + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(estabelecimentoPostGetRequestDTO)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent())
+                    .andReturn().getResponse().getContentAsString();
+
+            assertEquals(PedidoEmRota.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+        }
+
+        @Test
+        @DisplayName("Quando um pedido foi entregue com sucesso")
+        void quandoUmPedidoFoiEntregue() throws Exception {
+            // Arrange
+            ClientePedidoPostDTO clientePedidoPostDTO = ClientePedidoPostDTO.builder()
+                    .codigoAcesso(cliente.getCodigoAcesso())
+                    .build();
+
+            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
+                                                                            // ESTADOS:
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Pronto
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmRota
+
+            // Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId()
+                            + "/entregue/" + estabelecimento.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoPostDTO)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent())
+                    .andReturn().getResponse().getContentAsString();
+
+            // Assert
+            assertEquals(PedidoEntregue.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
     }
 }

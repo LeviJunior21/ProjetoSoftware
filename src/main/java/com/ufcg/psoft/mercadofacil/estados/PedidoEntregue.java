@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.estados;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
+import com.ufcg.psoft.mercadofacil.notifica.notificaEntrega.PedidoEntregueSource;
 
 public class PedidoEntregue implements PedidoState{
 
@@ -17,7 +18,9 @@ public class PedidoEntregue implements PedidoState{
 
     @Override
     public void notifica(Cliente cliente, Estabelecimento estabelecimento) {
-        // Busca cliente no banco
-        // Chama a funcao notifica no cliente passando a mensagem
+        PedidoEntregueSource pedidoEntregueSource = new PedidoEntregueSource();
+        pedidoEntregueSource.addEstabelecimentoParaPedidoEntregue(estabelecimento);
+        pedidoEntregueSource.notificaEntregue(cliente.getPedido());
+        pedidoEntregueSource.removeEstabelecimentoPedidoEntregue(estabelecimento);
     }
 }

@@ -1,6 +1,6 @@
-package com.ufcg.psoft.mercadofacil.service.estabelecimento;
+package com.ufcg.psoft.mercadofacil.service.cliente;
 
-import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoPostDTO;
 import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
@@ -13,20 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EstabelecimentoAlterarParaEmRotaPadraoService implements EstabelecimentoAlterarParaEmRotaService {
-
+public class ClienteAlterarParaEntreguePadraoService implements ClienteAlterarParaEntregueService {
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
     @Autowired
     ClienteRepository clienteRepository;
-
     @Override
-    public void alterarParaEmRota(Long idEstabelecimento, Long idCliente, Long idPedido, EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO) {
-        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
-        if (!estabelecimento.getCodigoAcesso().equals(estabelecimentoPostGetRequestDTO.getCodigoAcesso())) {
+    public void alterarParaEntregue(Long idCliente, Long idEstabelecimento, Long idPedido, ClientePedidoPostDTO clientePedidoPostDTO) {
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(ClienteNaoExisteException::new);
+        if (!cliente.getCodigoAcesso().equals(clientePedidoPostDTO.getCodigoAcesso())) {
             throw new CodigoAcessoDiferenteException();
         }
-        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(ClienteNaoExisteException::new);
+        Estabelecimento estabelecimento = estabelecimentoRepository.findById(idEstabelecimento).orElseThrow(EstabelecimentoNaoExisteException::new);
         Pedido pedidoResponse = estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(idPedido)).findFirst().get();
         pedidoResponse.next();
         pedidoResponse.notifica(cliente, estabelecimento);

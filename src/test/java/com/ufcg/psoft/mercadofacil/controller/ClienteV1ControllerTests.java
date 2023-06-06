@@ -7,7 +7,7 @@ import com.ufcg.psoft.mercadofacil.dto.cliente.*;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoDTO;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.*;
-import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
+import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.repository.PizzaRepository;

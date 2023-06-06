@@ -9,7 +9,7 @@ import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaGetRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaRemoveRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.pizza.PizzaPostPutRequestDTO;
 import com.ufcg.psoft.mercadofacil.model.*;
-import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
+import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 import com.ufcg.psoft.mercadofacil.repository.FuncionarioRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
