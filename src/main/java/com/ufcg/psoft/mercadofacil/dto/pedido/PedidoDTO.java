@@ -1,35 +1,21 @@
-package com.ufcg.psoft.mercadofacil.model;
+package com.ufcg.psoft.mercadofacil.dto.pedido;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ufcg.psoft.mercadofacil.model.Pizza;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pedidos")
-public class Pedido extends PedidoConcrect {
-    @JsonProperty("id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-
-    @JsonProperty("idCliente")
-    private Long idCliente;
-
-    @JsonProperty("idEstabelecimento")
-    private Long idEstabelecimento;
-
-    @JsonProperty("entregador")
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Entregador entregador;
-
+public class PedidoDTO {
     @JsonProperty("enderecoEntrega")
     private String enderecoEntrega;
 

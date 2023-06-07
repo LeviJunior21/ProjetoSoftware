@@ -5,6 +5,7 @@ import com.ufcg.psoft.mercadofacil.exception.ClienteNaoExisteException;
 import com.ufcg.psoft.mercadofacil.exception.CodigoAcessoDiferenteException;
 import com.ufcg.psoft.mercadofacil.exception.EstabelecimentoNaoExisteException;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Entregador;
 import com.ufcg.psoft.mercadofacil.model.Estabelecimento;
 import com.ufcg.psoft.mercadofacil.model.Pedido;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
@@ -28,6 +29,9 @@ public class ClienteAlterarParaEntreguePadraoService implements ClienteAlterarPa
         Pedido pedidoResponse = estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(idPedido)).findFirst().get();
         pedidoResponse.next();
         pedidoResponse.notifica(cliente, estabelecimento);
+        pedidoResponse.getEntregador().setEntregando(false);
+        Entregador entregador = pedidoResponse.getEntregador();
+        estabelecimento.getEntregadores().add(entregador);
         estabelecimentoRepository.save(estabelecimento);
     }
 }

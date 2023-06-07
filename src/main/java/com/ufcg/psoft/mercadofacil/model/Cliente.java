@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Data
 @Builder
@@ -35,6 +37,10 @@ public class Cliente implements ClienteListener, PedidoListener {
 
     @JsonProperty("codigoAcesso")
     private Integer codigoAcesso;
+
+    @JsonProperty("historico")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Pedido> historicoPedidos;
 
     @Override
     public void notifica(NotificaEvent event) {

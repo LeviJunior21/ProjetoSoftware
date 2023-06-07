@@ -29,6 +29,8 @@ public class PedidoEmRota implements PedidoState{
             if (entregador.isEntregando() == false) {
                 entregador.setEntregando(true);
                 entregador1 = entregador;
+                Pedido pedido = estabelecimento.getPedidos().stream().filter(pedido1 -> pedido1.getId().equals(cliente.getPedido().getId())).findFirst().get();
+                pedido.setEntregador(entregador);
                 break;
             }
         }

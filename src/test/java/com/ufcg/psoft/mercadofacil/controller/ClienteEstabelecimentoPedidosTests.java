@@ -1,15 +1,19 @@
 package com.ufcg.psoft.mercadofacil.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoGetFiltragemDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoPostDTO;
 import com.ufcg.psoft.mercadofacil.dto.cliente.ClientePedidoRequestDTO;
 import com.ufcg.psoft.mercadofacil.dto.estabelecimento.EstabelecimentoPostGetRequestDTO;
+import com.ufcg.psoft.mercadofacil.dto.pedido.PedidoDTO;
 import com.ufcg.psoft.mercadofacil.estados.*;
 import com.ufcg.psoft.mercadofacil.exception.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificadorSource;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
+import com.ufcg.psoft.mercadofacil.repository.EntregadorRepository;
 import com.ufcg.psoft.mercadofacil.repository.EstabelecimentoRepository;
 import com.ufcg.psoft.mercadofacil.repository.PedidoRepository;
 import jakarta.transaction.Transactional;
@@ -26,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashSet;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -203,6 +208,8 @@ public class ClienteEstabelecimentoPedidosTests {
         EstabelecimentoRepository estabelecimentoRepository;
         @Autowired
         PedidoRepository pedidoRepository;
+        @Autowired
+        EntregadorRepository entregadorRepository;
 
         ObjectMapper objectMapper = new ObjectMapper();
         Pedido pedido;
@@ -218,18 +225,21 @@ public class ClienteEstabelecimentoPedidosTests {
         void setup() {
             objectMapper.registerModule(new JavaTimeModule());
             cliente = Cliente.builder()
-                    .nomeCompleto("Desgraçado")
+                    .nomeCompleto("Levi")
                     .enderecoPrincipal("Rua de Queimadas")
                     .codigoAcesso(654321)
                     .pedido(new Pedido())
+                    .historicoPedidos(new HashSet<>())
                     .build();
             clienteRepository.save(cliente);
 
             entregador = Entregador.builder().nome("fabio da motoca")
                     .veiculo("MOTO")
                     .placa("sssdadez")
-                    .cor("vermei").entregando(false)
+                    .cor("vermei")
+                    .entregando(false)
                     .build();
+            entregadorRepository.save(entregador);
             sabor = Sabor.builder()
                     .nomeSabor("Calabreza")
                     .preco(10.00)
@@ -248,6 +258,7 @@ public class ClienteEstabelecimentoPedidosTests {
                     .idCliente(cliente.getId())
                     .enderecoEntrega(cliente.getEnderecoPrincipal())
                     .metodoPagamento("PIX")
+                    .entregador(entregador)
                     .pizzas(new HashSet<Pizza>())
                     .build();
             pedido.getPizzas().add(pizza);
@@ -266,9 +277,8 @@ public class ClienteEstabelecimentoPedidosTests {
                     .codigoAcesso(123456)
                     .build());
 
-            //pedido.setIdCliente(cliente.getId());
-            //pedidoRepository.save(pedido);
-            //pedido.setIdEstabelecimento(estabelecimento.getId());
+            pedido.setIdEstabelecimento(estabelecimento.getId());
+            pedidoRepository.save(pedido);
 
             estabelecimento.getPedidos().add(pedido);
             estabelecimento.getEntregadores().add(entregador);
@@ -369,6 +379,7 @@ public class ClienteEstabelecimentoPedidosTests {
                     .andExpect(status().isNoContent())
                     .andReturn().getResponse().getContentAsString();
 
+            // Assert
             assertEquals(PedidoEmRota.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
         }
 
@@ -381,11 +392,7 @@ public class ClienteEstabelecimentoPedidosTests {
                     .build();
 
             // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
-                                                                            // ESTADOS:
-            estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
-            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
-            estabelecimento.getPedidos().stream().findFirst().get().next(); // Pronto
-            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmRota
+            quandoUmPedidoEstaEmRota();
 
             // Act
             String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId()
@@ -398,6 +405,7 @@ public class ClienteEstabelecimentoPedidosTests {
 
             // Assert
             assertEquals(PedidoEntregue.class, estabelecimento.getPedidos().stream().findFirst().get().getPedidoStateNext().getClass());
+            assertEquals(false, estabelecimento.getEntregadores().stream().findFirst().get().isEntregando());
         }
 
         @Test
@@ -408,10 +416,9 @@ public class ClienteEstabelecimentoPedidosTests {
                     .codigoAcesso(cliente.getCodigoAcesso())
                     .build();
 
-            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
-            // ESTADOS:
             estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
             estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
+
             // Act
             String responseJSONString = driver.perform(post( URI_CLIENT + "/"
                             + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId()
@@ -423,7 +430,7 @@ public class ClienteEstabelecimentoPedidosTests {
                     .andReturn().getResponse().getContentAsString();
 
             // Assert
-           assertEquals(0, estabelecimentoRepository.findById(estabelecimento.getId()).get().getPedidos().size());
+            assertEquals(0, estabelecimentoRepository.findById(estabelecimento.getId()).get().getPedidos().size());
         }
 
         @Test
@@ -434,11 +441,10 @@ public class ClienteEstabelecimentoPedidosTests {
                     .codigoAcesso(cliente.getCodigoAcesso())
                     .build();
 
-            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
-            // ESTADOS:
             estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
             estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
-            estabelecimento.getPedidos().stream().findFirst().get().next();
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Pronto
+
             // Act
             String responseJSONString = driver.perform(post( URI_CLIENT + "/"
                             + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId()
@@ -464,12 +470,11 @@ public class ClienteEstabelecimentoPedidosTests {
                     .codigoAcesso(cliente.getCodigoAcesso())
                     .build();
 
-            // Quando um pedido eh adicionado direto no estabelecimento, ele entra no estado "CriandoPedido"
-            // ESTADOS:
             estabelecimento.getPedidos().stream().findFirst().get().next(); // Recebido
             estabelecimento.getPedidos().stream().findFirst().get().next(); // EmPreparo
-            estabelecimento.getPedidos().stream().findFirst().get().next();
-            estabelecimento.getPedidos().stream().findFirst().get().next();
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // Pronto
+            estabelecimento.getPedidos().stream().findFirst().get().next(); // EmRota
+
             // Act
             String responseJSONString = driver.perform(post( URI_CLIENT + "/"
                             + cliente.getId() + "/" + estabelecimento.getPedidos().stream().findFirst().get().getId()
@@ -485,6 +490,171 @@ public class ClienteEstabelecimentoPedidosTests {
 
             // Assert
             assertEquals("Alteracao de estado do pedido invalida!", resultado.getMessage());
+        }
+
+        @Test
+        @DisplayName("Quando um cliente visualiza seu historico")
+        public void quandoUmClienteVisualizaSeuHistorico() throws Exception {
+            // Arrange
+            quandoUmPedidoEstaPronto();
+            Pedido pedido2 = Pedido.builder()
+                    .valorPedido(20.00)
+                    .idCliente(cliente.getId())
+                    .idEstabelecimento(estabelecimento.getId())
+                    .enderecoEntrega(cliente.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedidoRepository.save(pedido2);
+            estabelecimento.getPedidos().add(pedido2);
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Pronto
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // EmRota
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Entregue
+
+            estabelecimentoRepository.save(estabelecimento);
+
+            cliente.getHistoricoPedidos().add(pedido2);
+
+            Estabelecimento estabelecimento1 = estabelecimentoRepository.save(Estabelecimento.builder()
+                    .nome("Pizzaria do Fabio")
+                    .espera(new HashSet<Funcionario>())
+                    .entregadores(new HashSet<>())
+                    .cardapio(new HashSet<>())
+                    .notificadorSource(new NotificadorSource())
+                    .pedidos(new HashSet<>())
+                    .codigoAcesso(112233)
+                    .build());
+
+            Pedido pedido1 = Pedido.builder()
+                    .valorPedido(15.00)
+                    .idCliente(cliente.getId())
+                    .idEstabelecimento(estabelecimento1.getId())
+                    .enderecoEntrega(cliente.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedidoRepository.save(pedido1);
+
+            estabelecimento1.getPedidos().add(pedido1);
+            estabelecimento1.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // Recebido
+            estabelecimento1.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // EmPreparo
+            estabelecimento1.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // Pronto
+            estabelecimento1.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // EmRota
+
+            cliente.getHistoricoPedidos().add(pedido1);
+            clienteRepository.save(cliente);
+
+            // Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId() + "/historico/" + estabelecimento.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            List<PedidoDTO> list = objectMapper.readValue(responseJSONString, new TypeReference<List<PedidoDTO>>() {
+            });
+
+            // Assert
+            assertEquals(2, list.size());
+            assertEquals(pedido2.getValorPedido(), list.get(1).getValorPedido());
+        }
+
+        @Test
+        @DisplayName("Quando um cliente visualiza apenas um pedido")
+        public void quandoUmClienteVisualizaUmPedido() throws Exception {
+            // Arrange
+            quandoUmPedidoEstaPronto();
+            Pedido pedido2 = Pedido.builder()
+                    .valorPedido(20.00)
+                    .idCliente(cliente.getId())
+                    .idEstabelecimento(estabelecimento.getId())
+                    .enderecoEntrega(cliente.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedidoRepository.save(pedido2);
+            estabelecimento.getPedidos().add(pedido2);
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Pronto
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // EmRota
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Entregue
+
+            estabelecimentoRepository.save(estabelecimento);
+            cliente.getHistoricoPedidos().add(pedido2);
+            clienteRepository.save(cliente);
+
+            //Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId() + "/um-pedido/" + pedido2.getId())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            PedidoDTO result = objectMapper.readValue(responseJSONString, PedidoDTO.PedidoDTOBuilder.class).build();
+
+            //Assert
+            assertEquals(pedido2.getValorPedido(), result.getValorPedido());
+        }
+
+        @Test
+        @DisplayName("Quando um cliente visualiza pedidos por filtro")
+        public void quandoUmClienteVisualizaPedidosPorFiltro() throws Exception {
+            // Arrange
+            quandoUmPedidoEstaPronto();
+            Pedido pedido1 = Pedido.builder()
+                    .valorPedido(15.00)
+                    .idCliente(cliente.getId())
+                    .idEstabelecimento(estabelecimento.getId())
+                    .enderecoEntrega(cliente.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedidoRepository.save(pedido1);
+            estabelecimento.getPedidos().add(pedido1);
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // Pronto
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido1.getId())).findFirst().get().next(); // EmRota
+
+            Pedido pedido2 = Pedido.builder()
+                    .valorPedido(20.00)
+                    .idCliente(cliente.getId())
+                    .idEstabelecimento(estabelecimento.getId())
+                    .enderecoEntrega(cliente.getEnderecoPrincipal())
+                    .metodoPagamento("PIX")
+                    .pizzas(new HashSet<Pizza>())
+                    .build();
+            pedidoRepository.save(pedido2);
+            estabelecimento.getPedidos().add(pedido2);
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Recebido
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // EmPreparo
+            estabelecimento.getPedidos().stream().filter(pedido -> pedido.getId().equals(pedido2.getId())).findFirst().get().next(); // Pronto
+
+            estabelecimentoRepository.save(estabelecimento);
+            cliente.getHistoricoPedidos().add(pedido1);
+            cliente.getHistoricoPedidos().add(pedido2);
+            clienteRepository.save(cliente);
+
+            ClientePedidoGetFiltragemDTO clientePedidoGetFiltragemDTO = ClientePedidoGetFiltragemDTO.builder()
+                    .filtro("Pronto")
+                    .build();
+
+            // Act
+            String responseJSONString = driver.perform(post( URI_CLIENT + "/" + cliente.getId() + "/filtragem")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientePedidoGetFiltragemDTO)))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            List<PedidoDTO> list = objectMapper.readValue(responseJSONString, new TypeReference<List<PedidoDTO>>() {
+            });
+
+            //Assert
+            assertEquals(2, list.size());
         }
 
     }

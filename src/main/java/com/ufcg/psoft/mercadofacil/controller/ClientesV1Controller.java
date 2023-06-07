@@ -41,6 +41,12 @@ public class ClientesV1Controller {
     ClienteAlterarParaEntregueService clienteAlterarParaEntregueService;
     @Autowired
     ClienteCancelarPedidoService clienteCancelarPedidoService;
+    @Autowired
+    ClienteGetUmPedidoService clienteGetUmPedidoService;
+    @Autowired
+    ClienteGetHistoricoService clienteGetHistoricoService;
+    @Autowired
+    ClienteGetPedidosFiltragemService clienteGetPedidosFiltragemService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmCliente(
@@ -175,4 +181,35 @@ public class ClientesV1Controller {
                 .status(HttpStatus.NO_CONTENT)
                 .body("");
     }
+
+    @PostMapping("{idCliente}/um-pedido/{idPedido}")
+    public ResponseEntity<?> getUmPedido(
+            @PathVariable Long idCliente,
+            @PathVariable Long idPedido
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteGetUmPedidoService.getUmPedido(idCliente, idPedido));
+    }
+
+    @PostMapping("{idCliente}/historico/{idEstabelecimento}")
+    public ResponseEntity<?> getHistorico(
+            @PathVariable Long idCliente,
+            @PathVariable Long idEstabelecimento
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteGetHistoricoService.getHistorico(idCliente, idEstabelecimento));
+    }
+
+    @PostMapping("{idCliente}/filtragem")
+    public ResponseEntity<?> getHistorico(
+            @PathVariable Long idCliente,
+            @RequestBody @Valid ClientePedidoGetFiltragemDTO clientePedidoGetFiltragemDTO
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteGetPedidosFiltragemService.getPedidosFiltragem(idCliente, clientePedidoGetFiltragemDTO));
+    }
+
 }
