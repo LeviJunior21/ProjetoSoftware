@@ -1,7 +1,9 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ufcg.psoft.mercadofacil.notifica.NotificadorSource;
+import com.ufcg.psoft.mercadofacil.notifica.notificaInteresse.NotificadorSource;
+import com.ufcg.psoft.mercadofacil.notifica.notificaEntrega.PedidoEntregueEvent;
+import com.ufcg.psoft.mercadofacil.notifica.notificaEntrega.PedidoEntregueListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "estabelecimentos")
-public class Estabelecimento {
+public class Estabelecimento implements PedidoEntregueListener {
 
     @JsonProperty("id")
     @Id
@@ -42,10 +44,6 @@ public class Estabelecimento {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pizza> cardapio;
 
-    /*@JsonProperty("interessados")
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<ClienteInteressado> interessados;*/
-
     @JsonProperty("pedidosCliente")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Pedido> pedidos;
@@ -53,4 +51,10 @@ public class Estabelecimento {
     @JsonProperty("interessados")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private NotificadorSource notificadorSource;
+
+    @Override
+    public void notificaPedidoEntregue(PedidoEntregueEvent event) {
+        System.out.println(this.getNome() + ", o pedido de número: " + event.getPedido().getId()
+                + ", de valor: " + event.getPedido().getValorPedido() + ", foi entregue com sucesso.");
+    }
 }

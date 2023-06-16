@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.notifica;
+package com.ufcg.psoft.mercadofacil.notifica.notificaInteresse;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ufcg.psoft.mercadofacil.model.Cliente;

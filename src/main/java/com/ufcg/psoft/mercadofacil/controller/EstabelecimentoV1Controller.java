@@ -43,15 +43,23 @@ public class EstabelecimentoV1Controller {
     EstabelecimentoAlterarParaDisponivelPadraoService estabelecimentoAlterarParaDisponivelService;
     @Autowired
     EstabelecimentoPizzaService estabelecimentoPizzaService;
+    @Autowired
+    EstabelecimentoAlterarParaRecebidoService estabelecimentoPrepararPedidoService;
+    @Autowired
+    EstabelecimentoAlterarParaEmRotaService estabelecimentoAlterarParaEmRotaService;
+    @Autowired
+    EstabelecimentoAlterarParaEmPreparoService estabelecimentoAlterarParaEmPreparoService;
+    @Autowired
+    EstabelecimentoAlterarParaProntoService estabelecimentoAlterarParaProntoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUmEstabelecimento(
             @PathVariable Long id,
-            @RequestBody @Valid EstabelecimentoGetRequestDTO estabelecimentoGetRequestDTO
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
             ) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(estabelecimentoGetService.get(id, estabelecimentoGetRequestDTO));
+                    .body(estabelecimentoGetService.get(id, estabelecimentoPostGetRequestDTO));
     }
 
     @GetMapping()
@@ -200,6 +208,55 @@ public class EstabelecimentoV1Controller {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(estabelecimentoPizzaService.listar(id));
+    }
+
+    @PostMapping("/{id}/recebido/{idPedido}")
+    public ResponseEntity<?> alterarParaRecebido(
+            @PathVariable Long id,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoPrepararPedidoService.alterarParaRecebido(id, estabelecimentoPostGetRequestDTO, idPedido);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PostMapping("/{id}/em-preparo/{idPedido}")
+    public ResponseEntity<?> alterarParaEmPreparo(
+            @PathVariable Long id,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoAlterarParaEmPreparoService.alterarParaEmPreparo(id, idPedido, estabelecimentoPostGetRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PostMapping("/{id}/pronto/{idPedido}")
+    public ResponseEntity<?> alterarParaPronto(
+            @PathVariable Long id,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoAlterarParaProntoService.alterarParaPronto(id, idPedido, estabelecimentoPostGetRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
+    }
+
+    @PostMapping("/{id}/em-rota/{idCliente}/{idPedido}")
+    public ResponseEntity<?> alterarParaEmRota(
+            @PathVariable Long id,
+            @PathVariable Long idCliente,
+            @PathVariable Long idPedido,
+            @RequestBody @Valid EstabelecimentoPostGetRequestDTO estabelecimentoPostGetRequestDTO
+    ) {
+        estabelecimentoAlterarParaEmRotaService.alterarParaEmRota(id, idCliente, idPedido, estabelecimentoPostGetRequestDTO);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("");
     }
 
 }

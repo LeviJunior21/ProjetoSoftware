@@ -1,4 +1,4 @@
-package com.ufcg.psoft.mercadofacil.notifica;
+package com.ufcg.psoft.mercadofacil.notifica.notificaInteresse;
 
 import com.ufcg.psoft.mercadofacil.model.Pizza;
 import lombok.AllArgsConstructor;
