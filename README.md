@@ -21,7 +21,11 @@ Porém, em 2023, simplesmente não é viável voltar ao modo de trabalho “pré
 - Eu, enquanto cliente, quero ser responsável por confirmar a entrega dos meus pedidos. 
 - Eu, enquanto estabelecimento, quero ser notificado(a) sempre que o status de um pedido for modificado para “Pedido entregue”. A notificação deve ser representada como uma mensagem no terminal da aplicação (print), indicando o motivo e quem está recebendo a notificação.
 - Eu, enquanto cliente, quero ter a possibilidade de cancelar um pedido que fiz no estabelecimento.
-- Eu, enquanto cliente, quero poder verificar os pedidos que já realizei no estabelecimento. 
+- Eu, enquanto cliente, quero poder verificar os pedidos que já realizei no estabelecimento.
+- Eu, enquanto funcionário(a) terceirizado(a), desejo definir se estou disponível (ou não) para realizar as entregas do estabelecimento.
+- Eu, enquanto funcionário(a), gostaria que o sistema atribuísse automaticamente as entregas dos pedidos com status “Pedido Pronto” a um(a) entregador(a) que esteja disponível para realizar entregas.
+- Eu, enquanto cliente, quero ser notificado(a) quando meu pedido não puder ser atribuído para entrega devido à indisponibilidade de entregadores. A notificação deve ser representada como uma mensagem no terminal da aplicação (print), indicando o motivo e quem está recebendo a notificação.
+  
 ## Estrutura básica
 
 - Um projeto: PitsA;
@@ -57,6 +61,9 @@ Código base gerado via [start.sprint.io](https://start.spring.io/#!type=maven-p
 
 # Modelagem da parte três:
 - Link: https://drive.google.com/file/d/1or3knWqp-b7406YmwDpo4uZpn3uxAb2g/view?usp=drive_link
+
+# Modelagem da parte quatro:
+- Link: https://drive.google.com/drive/folders/1WcF3YoqBKPXGKk-Wtu6DsErIw63n8e0z?usp=sharing
 
 ## Contato e Dúvidas
 
