@@ -56,15 +56,6 @@ Código base gerado via [start.sprint.io](https://start.spring.io/#!type=maven-p
 
 <code>> mvn clean test </code>
 
-# Modelagem da parte dois:
-[Clique aqui para abrir modelagem - Lucid Chart](https://lucid.app/lucidchart/1b9761ca-5d80-49de-b24e-306098dd4bb5/edit?viewport_loc=2515%2C-264%2C12320%2C5398%2CcpC2P~Ovhr8B&invitationId=inv_aa61c7f1-578a-4d9b-8700-51d63a1706e7)
-
-# Modelagem da parte três:
-- Link: https://drive.google.com/file/d/1or3knWqp-b7406YmwDpo4uZpn3uxAb2g/view?usp=drive_link
-
-# Modelagem da parte quatro:
-- Link: https://drive.google.com/drive/folders/1WcF3YoqBKPXGKk-Wtu6DsErIw63n8e0z?usp=sharing
-
 ## Contato e Dúvidas
 
 - lucas.pereira@ccc.ufcg.edu.br
